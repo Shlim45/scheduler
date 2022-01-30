@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.FirstScreen"
-            prefHeight="600.0" prefWidth="800.0">
 
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FirstScreen">
+   <children>
+      <Label layoutX="319.0" layoutY="61.0" text="First Screen">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Label>
+      <Label fx:id="TheLabel" layoutX="261.0" layoutY="227.0" text="Click the button:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Button layoutX="446.0" layoutY="224.0" mnemonicParsing="false" onAction="#onButtonAction" text="Click Me">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+   </children>
 </AnchorPane>
