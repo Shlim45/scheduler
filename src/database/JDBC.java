@@ -1,7 +1,6 @@
 package database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.*;
 
 public abstract class JDBC {
     private static final String protocol = "jdbc";
@@ -23,7 +22,7 @@ public abstract class JDBC {
         }
         catch(Exception e)
         {
-            System.out.println("Error:" + e.getMessage());
+            System.err.println("Error:" + e.getMessage());
         }
     }
 
@@ -34,7 +33,23 @@ public abstract class JDBC {
         }
         catch(Exception e)
         {
-            System.out.println("Error:" + e.getMessage());
+            System.err.println("Error:" + e.getMessage());
         }
     }
+
+    public static ResultSet queryConnection(String query) throws SQLException {
+        try {
+            Statement S = connection.createStatement();
+            ResultSet R = S.executeQuery(query);
+            return R;
+        }
+        catch (SQLException sql) {
+//            throw sql;
+            // TODO(jon): Let user know connection error.
+            System.err.println(sql.getMessage());
+        }
+        return null;
+    }
+
+
 }
