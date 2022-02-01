@@ -6,32 +6,40 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import model.User;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class FirstScreen implements Initializable {
-    public Label TheLabel;
+    public Label  UserLabel;
+    public Button LoginButton;
+    private User  user;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("First Screen initialized.");
     }
 
+    public void initUser(User user) {
+        this.user = user;
+        LoginButton.setVisible(false);
+        UserLabel.setVisible(true);
+        UserLabel.setText("Logged in as " + user.getUserName());
+    }
+
     public void onLoginAction(ActionEvent actionEvent) {
-        TheLabel.setText("Thanks for clicking!");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoginScreen.fxml"));
-            Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle("Please log in");
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(loader.load()));
             stage.show();
 
-            // hide main window?
             ((Node) actionEvent.getSource()).getScene().getWindow().hide();
         }
         catch (IOException e) {

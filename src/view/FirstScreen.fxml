@@ -11,12 +11,12 @@
             <Font size="32.0" />
          </font>
       </Label>
-      <Label fx:id="TheLabel" layoutX="261.0" layoutY="227.0" text="Click the button:">
+      <Label fx:id="UserLabel" layoutX="596.0" layoutY="23.0" prefHeight="25.0" prefWidth="179.0" text="Logged in as " visible="false">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Button layoutX="446.0" layoutY="224.0" mnemonicParsing="false" onAction="#onLoginAction" text="Log In">
+      <Button fx:id="LoginButton" layoutX="656.0" layoutY="21.0" mnemonicParsing="false" onAction="#onLoginAction" text="Log In">
          <font>
             <Font size="14.0" />
          </font>

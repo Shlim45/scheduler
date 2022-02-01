@@ -3,11 +3,16 @@ package controller;
 import database.JDBC;
 import exceptions.LoginException;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import model.User;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,6 +59,7 @@ public class LoginScreen implements Initializable {
 
         if (uName.length() <= 0 || pass.length() <= 0) {
             Information.setText("Enter a username and password.");
+            Username.requestFocus();
             return;
         }
 
@@ -83,8 +89,29 @@ public class LoginScreen implements Initializable {
             Information.setText(le.getMessage());
         }
         finally {
-            if (user != null)
+            if (user != null) {
                 Information.setText("Logged in as " + user.getUserName());
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/FirstScreen.fxml"));
+
+                    Stage stage = new Stage();
+                    stage.setScene(
+                            new Scene(loader.load())
+                    );
+                    stage.setTitle("Appointment Scheduler");
+
+                    FirstScreen controller = loader.getController();
+                    controller.initUser(user);
+
+                    stage.show();
+                }
+                catch (IOException io) {
+                    System.err.println(io.getMessage());
+                }
+
+
+                ((Node) actionEvent.getSource()).getScene().getWindow().hide();
+            }
         }
     }
 }
