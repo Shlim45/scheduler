@@ -12,22 +12,39 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.time.ZoneId;
+import java.util.*;
 
 public class LoginScreen implements Initializable {
     public TextField Username;
     public TextField Password;
     public Label     Location;
     public Label     Information;
-    private Locale   L;
+    private ZoneId   zoneId;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        L = Locale.getDefault();
-        String labelText = "Your language is set to " + L.getLanguage();
-        Location.setText(labelText);
+        zoneId = ZoneId.systemDefault();
+        Location.setText("Your location is " + zoneId.getId().replaceAll("_"," "));
+    }
+
+    public void onEnterAction(ActionEvent actionEvent) {
+        Information.setText("");
+        final Object aSource = actionEvent.getSource();
+        if (aSource == Username) {
+            if (Username.getText().length() == 0)
+                Information.setText("Enter a username.");
+            else if (Password.getText().length() > 0)
+                onLoginAction(actionEvent);
+            else
+                Password.requestFocus();
+        }
+        else if (aSource == Password) {
+            if (Password.getText().length() == 0)
+                Information.setText("Enter a password.");
+            else
+                onLoginAction(actionEvent);
+        }
     }
 
     public void onLoginAction(ActionEvent actionEvent) {
@@ -66,7 +83,8 @@ public class LoginScreen implements Initializable {
             Information.setText(le.getMessage());
         }
         finally {
-            Information.setText("Logged in as " + user.getUserName());
+            if (user != null)
+                Information.setText("Logged in as " + user.getUserName());
         }
     }
 }
