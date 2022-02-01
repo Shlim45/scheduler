@@ -52,6 +52,21 @@ public class LoginScreen implements Initializable {
         }
     }
 
+    private void showMainWindow(User user) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/FirstScreen.fxml"));
+
+        Stage stage = new Stage();
+        stage.setScene(
+                new Scene(loader.load())
+        );
+        stage.setTitle("Appointment Scheduler");
+
+        FirstScreen controller = loader.getController();
+        controller.initUser(user);
+
+        stage.show();
+    }
+
     public void onLoginAction(ActionEvent actionEvent) {
         Information.setText("");
         final String uName = Username.getText();
@@ -64,18 +79,14 @@ public class LoginScreen implements Initializable {
         }
 
         User user = null;
-        try(ResultSet R = JDBC.queryConnection("SELECT User_ID, User_Name, Password, Create_Date, Created_By, Last_Update, Last_Updated_By "
+        try(ResultSet R = JDBC.queryConnection("SELECT User_ID, User_Name, Password " // , Create_Date, Created_By, Last_Update, Last_Updated_By
                 + "FROM client_schedule.users WHERE User_Name='" + uName + "' AND Password='" + pass + "';")) {
             if (R.next()) {
                 int    userId        = R.getInt("User_ID");
                 String username      = R.getString("User_Name");
                 String password      = R.getString("Password");
-                Date   createDate    = R.getDate("Create_Date");
-                String createdBy     = R.getString("Created_By");
-                Time   lastUpdate    = R.getTime("Last_Update");
-                String lastUpdatedBy = R.getString("Last_Updated_By");
 
-                user = new User(userId, username, password, createDate, createdBy, lastUpdate, lastUpdatedBy);
+                user = new User(userId, username, password);
             }
             else {
                 throw new LoginException("Invalid username/password.");
@@ -91,26 +102,15 @@ public class LoginScreen implements Initializable {
         finally {
             if (user != null) {
                 Information.setText("Logged in as " + user.getUserName());
+
                 try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/FirstScreen.fxml"));
+                    showMainWindow(user);
 
-                    Stage stage = new Stage();
-                    stage.setScene(
-                            new Scene(loader.load())
-                    );
-                    stage.setTitle("Appointment Scheduler");
-
-                    FirstScreen controller = loader.getController();
-                    controller.initUser(user);
-
-                    stage.show();
+                    ((Node) actionEvent.getSource()).getScene().getWindow().hide();
                 }
-                catch (IOException io) {
-                    System.err.println(io.getMessage());
+                catch (IOException ioe) {
+                    System.err.println(ioe.getMessage());
                 }
-
-
-                ((Node) actionEvent.getSource()).getScene().getWindow().hide();
             }
         }
     }

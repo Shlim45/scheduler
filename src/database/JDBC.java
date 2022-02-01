@@ -38,18 +38,8 @@ public abstract class JDBC {
     }
 
     public static ResultSet queryConnection(String query) throws SQLException {
-        try {
-            Statement S = connection.createStatement();
-            ResultSet R = S.executeQuery(query);
-            return R;
-        }
-        catch (SQLException sql) {
-//            throw sql;
-            // TODO(jon): Let user know connection error.
-            System.err.println(sql.getMessage());
-        }
-        return null;
+        Statement S = connection.createStatement();
+        ResultSet R = S.executeQuery(query);
+        return R;
     }
-
-
 }
