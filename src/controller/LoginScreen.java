@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -16,21 +17,37 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.time.ZoneId;
 import java.util.*;
 
 public class LoginScreen implements Initializable {
+    public Label     Header;
+    public Label     User;
+    public Label     Pass;
     public TextField Username;
     public TextField Password;
+    public Button    Login;
     public Label     Location;
     public Label     Information;
-    private ZoneId   zoneId;
+    private ResourceBundle rb;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        zoneId = ZoneId.systemDefault();
-        Location.setText("Your location is " + zoneId.getId().replaceAll("_"," "));
+        try {
+            ZoneId zoneId = ZoneId.systemDefault();
+//            Locale.setDefault(Locale.FRENCH);
+            rb = ResourceBundle.getBundle("prop/LoginScreen", Locale.getDefault());
+            Header.setText(rb.getString("header"));
+            User.setText(rb.getString("username"));
+            Pass.setText(rb.getString("password"));
+            Login.setText(rb.getString("button"));
+            Login.setText(rb.getString("button"));
+            Location.setText(rb.getString("location") + zoneId.getId().replaceAll("_"," "));
+        }
+        catch (MissingResourceException mre) {
+            System.err.println(mre.getMessage());
+        }
+
     }
 
     public void onEnterAction(ActionEvent actionEvent) {
@@ -38,7 +55,7 @@ public class LoginScreen implements Initializable {
         final Object aSource = actionEvent.getSource();
         if (aSource == Username) {
             if (Username.getText().length() == 0)
-                Information.setText("Enter a username.");
+                Information.setText(rb.getString("nouser"));
             else if (Password.getText().length() > 0)
                 onLoginAction(actionEvent);
             else
@@ -46,7 +63,7 @@ public class LoginScreen implements Initializable {
         }
         else if (aSource == Password) {
             if (Password.getText().length() == 0)
-                Information.setText("Enter a password.");
+                Information.setText(rb.getString("nopass"));
             else
                 onLoginAction(actionEvent);
         }
@@ -73,7 +90,7 @@ public class LoginScreen implements Initializable {
         final String pass = Password.getText();
 
         if (uName.length() <= 0 || pass.length() <= 0) {
-            Information.setText("Enter a username and password.");
+            Information.setText(rb.getString("nouserpass"));
             Username.requestFocus();
             return;
         }
@@ -89,7 +106,7 @@ public class LoginScreen implements Initializable {
                 user = new User(userId, username, password);
             }
             else {
-                throw new LoginException("Invalid username/password.");
+                throw new LoginException(rb.getString("invalid"));
             }
         }
         catch (SQLException sql) {
@@ -101,11 +118,8 @@ public class LoginScreen implements Initializable {
         }
         finally {
             if (user != null) {
-                Information.setText("Logged in as " + user.getUserName());
-
                 try {
                     showMainWindow(user);
-
                     ((Node) actionEvent.getSource()).getScene().getWindow().hide();
                 }
                 catch (IOException ioe) {
