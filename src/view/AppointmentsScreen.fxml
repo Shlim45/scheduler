@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AppointmentsScreen">
+   <children>
+      <Label layoutX="210.0" layoutY="30.0" text="Appointment Scheduler">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Label>
+      <Label fx:id="UserLabel" layoutX="596.0" layoutY="23.0" prefHeight="25.0" prefWidth="179.0" text="Logged in as " visible="false">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Button fx:id="LoginButton" layoutX="656.0" layoutY="21.0" mnemonicParsing="false" onAction="#onLoginAction" text="Log In">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <TableView fx:id="AppTable" layoutX="50.0" layoutY="131.0" prefHeight="369.0" prefWidth="700.0">
+        <columns>
+          <TableColumn fx:id="ID" prefWidth="23.0" text="ID" />
+          <TableColumn fx:id="Title" prefWidth="85.0" text="Title" />
+            <TableColumn fx:id="Desc" prefWidth="72.0" text="Desc" />
+            <TableColumn fx:id="Location" prefWidth="73.0" text="Location" />
+            <TableColumn fx:id="Contact" prefWidth="69.0" text="Contact" />
+            <TableColumn fx:id="Type" prefWidth="51.0" text="Type" />
+            <TableColumn fx:id="Start" prefWidth="105.0" text="Start" />
+            <TableColumn fx:id="End" prefWidth="97.0" text="End" />
+            <TableColumn fx:id="CustID" prefWidth="75.0" text="Customer ID" />
+            <TableColumn fx:id="UserID" prefWidth="49.0" text="User ID" />
+        </columns>
+      </TableView>
+      <RadioButton fx:id="Weekly" layoutX="271.0" layoutY="103.0" mnemonicParsing="false" text="By Week" />
+      <RadioButton fx:id="Monthly" layoutX="421.0" layoutY="103.0" mnemonicParsing="false" text="By Month" />
+   </children>
+</AnchorPane>
