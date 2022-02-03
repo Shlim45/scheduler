@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AppointmentsScreen implements Initializable {
     private User       user;
@@ -277,9 +277,51 @@ public class AppointmentsScreen implements Initializable {
     }
 
     public void filterByCountry(ActionEvent actionEvent) {
+        final Country C = (Country) CountryCombo.getValue();
+        final List<Integer> Divisions = new ArrayList<>();
 
+        if (C == null)
+            return;
+
+        // filter divisions list by selected country
+        ObservableList<Division>    oDivisions = FXCollections.observableArrayList();
+        for (final Division D : this.divisions)
+            if (D.getCountryId() == C.getCountryId()) {
+                oDivisions.add(D);
+                Divisions.add(D.getDivisionId());
+            }
+
+        DivisionCombo.setItems(oDivisions);
+
+        // filter customers list by selected country
+        ObservableList<Customer>    oCustomers = FXCollections.observableArrayList();
+        for (final Customer Cust : this.customers)
+            if (Divisions.contains(Cust.getDivisionId()))
+                oCustomers.add(Cust);
+
+        CustomerTable.setItems(oCustomers);
     }
 
     public void filterByDivision(ActionEvent actionEvent) {
+        final Division D = (Division) DivisionCombo.getValue();
+
+        if (D == null)
+            return;
+
+        // filter customers list by selected division
+        ObservableList<Customer>    oCustomers = FXCollections.observableArrayList();
+        for (final Customer Cust : this.customers)
+            if (Cust.getDivisionId() == D.getDivisionId())
+                oCustomers.add(Cust);
+
+        CustomerTable.setItems(oCustomers);
+    }
+
+    public void onClearFiltersAction(ActionEvent actionEvent) {
+        CountryCombo.getSelectionModel().clearSelection();
+        DivisionCombo.getSelectionModel().clearSelection();
+
+        DivisionCombo.setItems(this.divisions);
+        CustomerTable.setItems(this.customers);
     }
 }

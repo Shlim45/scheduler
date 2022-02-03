@@ -53,5 +53,6 @@
       </TableView>
       <ComboBox fx:id="CountryCombo" layoutX="57.0" layoutY="91.0" onAction="#filterByCountry" prefWidth="150.0" promptText="Filter by country" />
       <ComboBox fx:id="DivisionCombo" layoutX="231.0" layoutY="91.0" onAction="#filterByDivision" prefWidth="150.0" promptText="Filter by division" />
+      <Button layoutX="403.0" layoutY="91.0" mnemonicParsing="false" onAction="#onClearFiltersAction" text="Clear" />
    </children>
 </AnchorPane>
