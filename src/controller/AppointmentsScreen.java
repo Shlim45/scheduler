@@ -11,9 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import model.Appointment;
-import model.Customer;
-import model.User;
+import javafx.util.StringConverter;
+import model.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +26,8 @@ public class AppointmentsScreen implements Initializable {
     private User       user;
     private ObservableList<Appointment> appts;
     private ObservableList<Customer>    customers;
+    private ObservableList<Country>     countries;
+    private ObservableList<Division>    divisions;
 
     public Label       UserLabel;
     public Button      LoginButton;
@@ -92,8 +93,99 @@ public class AppointmentsScreen implements Initializable {
         UserLabel.setVisible(true);
         UserLabel.setText("Logged in as " + user.getUserName());
 
+        populateCountries();
+        populateDivisions();
+
         populateAppointments();
         populateCustomers();
+    }
+
+    public void populateCountries() {
+        this.countries = FXCollections.observableArrayList();
+
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.countries")) {
+            while (R.next()) {
+                Country C = new Country(R.getInt("Country_ID"));
+                C.setCountry(R.getString("Country"));
+
+                Timestamp created = R.getTimestamp("Create_Date");
+                C.setCreateDate(created.toLocalDateTime());
+                C.setCreatedBy(R.getString("Created_By"));
+
+                Timestamp updated = R.getTimestamp("Last_Update");
+                C.setLastUpdate(updated.toLocalDateTime().toLocalTime());
+                C.setLastUpdatedBy(R.getString("Last_Updated_By"));
+
+                this.countries.add(C);
+            }
+        }
+        catch (SQLException sql) {
+            // TODO
+            System.err.println(sql.getMessage());
+        }
+        finally {
+            CountryCombo.setItems(this.countries);
+            CountryCombo.setConverter(new StringConverter<Country>() {
+
+                @Override
+                public String toString(Country country) {
+                    return country.getCountry();
+                }
+
+                @Override
+                public Country fromString(String s) {
+                    for (final Country C : countries)
+                        if (C.getCountry().equalsIgnoreCase(s))
+                            return C;
+                    return null;
+                }
+            });
+        }
+    }
+
+    public void populateDivisions() {
+        this.divisions = FXCollections.observableArrayList();
+
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.first_level_divisions")) {
+            while (R.next()) {
+                Division D = new Division(R.getInt("Division_ID"));
+                D.setDivision(R.getString("Division"));
+
+                Timestamp created = R.getTimestamp("Create_Date");
+                D.setCreateDate(created.toLocalDateTime());
+                D.setCreatedBy(R.getString("Created_By"));
+
+                Timestamp updated = R.getTimestamp("Last_Update");
+                D.setLastUpdate(updated.toLocalDateTime().toLocalTime());
+                D.setLastUpdatedBy(R.getString("Last_Updated_By"));
+
+                D.setCountryId(R.getInt("Country_ID"));
+
+                this.divisions.add(D);
+            }
+        }
+        catch (SQLException sql) {
+            // TODO
+            System.err.println(sql.getMessage());
+        }
+        finally {
+            DivisionCombo.setItems(this.divisions);
+            DivisionCombo.setConverter(new StringConverter<Division>() {
+
+                @Override
+                public String toString(Division division) {
+                    return division.getDivision();
+                }
+
+                @Override
+                public Division fromString(String s) {
+                    for (final Division D : divisions)
+                        if (D.getDivision().equalsIgnoreCase(s))
+                            return D;
+                    return null;
+                }
+            });
+        }
     }
 
     public void populateCustomers() {
