@@ -4,24 +4,24 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AppointmentsScreen">
+<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AppointmentsScreen">
    <children>
-      <Label layoutX="210.0" layoutY="30.0" text="Appointment Scheduler">
+      <Label layoutX="375.0" layoutY="30.0" text="Appointment Scheduler">
          <font>
             <Font size="32.0" />
          </font>
       </Label>
-      <Label fx:id="UserLabel" layoutX="596.0" layoutY="23.0" prefHeight="25.0" prefWidth="179.0" text="Logged in as " visible="false">
+      <Label fx:id="UserLabel" layoutX="990.0" layoutY="23.0" prefHeight="25.0" prefWidth="200.0" visible="false">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Button fx:id="LoginButton" layoutX="656.0" layoutY="21.0" mnemonicParsing="false" onAction="#onLoginAction" text="Log In">
+      <Button fx:id="LoginButton" layoutX="1124.0" layoutY="21.0" mnemonicParsing="false" onAction="#onLoginAction" text="Log In">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <TableView fx:id="AppTable" layoutX="50.0" layoutY="131.0" prefHeight="369.0" prefWidth="700.0">
+      <TableView fx:id="AppTable" layoutX="485.0" layoutY="131.0" prefHeight="369.0" prefWidth="700.0">
         <columns>
           <TableColumn fx:id="ID" prefWidth="23.0" text="ID" />
           <TableColumn fx:id="Title" prefWidth="85.0" text="Title" />
@@ -31,11 +31,27 @@
             <TableColumn fx:id="Type" prefWidth="51.0" text="Type" />
             <TableColumn fx:id="Start" prefWidth="105.0" text="Start" />
             <TableColumn fx:id="End" prefWidth="97.0" text="End" />
-            <TableColumn fx:id="CustID" prefWidth="75.0" text="Customer ID" />
+            <TableColumn fx:id="CustomerID" prefWidth="75.0" text="Customer ID" />
             <TableColumn fx:id="UserID" prefWidth="49.0" text="User ID" />
         </columns>
       </TableView>
-      <RadioButton fx:id="Weekly" layoutX="271.0" layoutY="103.0" mnemonicParsing="false" text="By Week" />
-      <RadioButton fx:id="Monthly" layoutX="421.0" layoutY="103.0" mnemonicParsing="false" text="By Month" />
+      <RadioButton fx:id="Weekly" layoutX="696.0" layoutY="103.0" mnemonicParsing="false" text="By Week" />
+      <RadioButton fx:id="Monthly" layoutX="846.0" layoutY="103.0" mnemonicParsing="false" text="By Month" />
+      <TableView fx:id="CustomerTable" layoutX="17.0" layoutY="131.0" prefHeight="369.0" prefWidth="460.0">
+        <columns>
+          <TableColumn fx:id="CustID" minWidth="8.0" prefWidth="23.0" text="ID" />
+          <TableColumn fx:id="CustName" prefWidth="73.0" text="Name" />
+            <TableColumn fx:id="CustAddress" prefWidth="92.0" text="Address" />
+            <TableColumn fx:id="CustPostal" prefWidth="52.0" text="Postal Code" />
+            <TableColumn fx:id="CustPhone" prefWidth="62.0" text="Phone" />
+            <TableColumn fx:id="CustCreatedOn" prefWidth="75.0" text="Created On" />
+            <TableColumn fx:id="CustCreatedBy" prefWidth="75.0" text="Created By" />
+            <TableColumn fx:id="CustLastUpdate" prefWidth="75.0" text="Last Update" />
+            <TableColumn fx:id="CustLastUpdatedBy" prefWidth="75.0" text="Last Updated By" />
+            <TableColumn fx:id="CustDivision" prefWidth="75.0" text="Division" />
+        </columns>
+      </TableView>
+      <ComboBox fx:id="CountryCombo" layoutX="57.0" layoutY="91.0" onAction="#filterByCountry" prefWidth="150.0" promptText="Filter by country" />
+      <ComboBox fx:id="DivisionCombo" layoutX="231.0" layoutY="91.0" onAction="#filterByDivision" prefWidth="150.0" promptText="Filter by division" />
    </children>
 </AnchorPane>
