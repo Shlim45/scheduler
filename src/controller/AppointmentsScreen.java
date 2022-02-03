@@ -64,6 +64,11 @@ public class AppointmentsScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        populateCountries();
+        populateDivisions();
+        populateCustomers();
+        populateAppointments();
+
         ID.setCellValueFactory(new PropertyValueFactory<Appointment,Integer>("apptId"));
         Title.setCellValueFactory(new PropertyValueFactory<Appointment,String>("title"));
         Desc.setCellValueFactory(new PropertyValueFactory<Appointment,String>("desc"));
@@ -93,11 +98,43 @@ public class AppointmentsScreen implements Initializable {
         UserLabel.setVisible(true);
         UserLabel.setText("Logged in as " + user.getUserName());
 
-        populateCountries();
-        populateDivisions();
+        CountryCombo.setItems(this.countries);
+        CountryCombo.setConverter(new StringConverter<Country>() {
 
-        populateAppointments();
-        populateCustomers();
+            @Override
+            public String toString(Country country) {
+                return country.getCountry();
+            }
+
+            @Override
+            public Country fromString(String s) {
+                for (final Country C : countries)
+                    if (C.getCountry().equalsIgnoreCase(s))
+                        return C;
+                return null;
+            }
+        });
+
+        DivisionCombo.setItems(this.divisions);
+        DivisionCombo.setConverter(new StringConverter<Division>() {
+
+            @Override
+            public String toString(Division division) {
+                return division.getDivision();
+            }
+
+            @Override
+            public Division fromString(String s) {
+                for (final Division D : divisions)
+                    if (D.getDivision().equalsIgnoreCase(s))
+                        return D;
+                return null;
+            }
+        });
+
+        AppTable.setItems(this.appts);
+
+        CustomerTable.setItems(this.customers);
     }
 
     public void populateCountries() {
@@ -122,24 +159,6 @@ public class AppointmentsScreen implements Initializable {
         catch (SQLException sql) {
             // TODO
             System.err.println(sql.getMessage());
-        }
-        finally {
-            CountryCombo.setItems(this.countries);
-            CountryCombo.setConverter(new StringConverter<Country>() {
-
-                @Override
-                public String toString(Country country) {
-                    return country.getCountry();
-                }
-
-                @Override
-                public Country fromString(String s) {
-                    for (final Country C : countries)
-                        if (C.getCountry().equalsIgnoreCase(s))
-                            return C;
-                    return null;
-                }
-            });
         }
     }
 
@@ -167,24 +186,6 @@ public class AppointmentsScreen implements Initializable {
         catch (SQLException sql) {
             // TODO
             System.err.println(sql.getMessage());
-        }
-        finally {
-            DivisionCombo.setItems(this.divisions);
-            DivisionCombo.setConverter(new StringConverter<Division>() {
-
-                @Override
-                public String toString(Division division) {
-                    return division.getDivision();
-                }
-
-                @Override
-                public Division fromString(String s) {
-                    for (final Division D : divisions)
-                        if (D.getDivision().equalsIgnoreCase(s))
-                            return D;
-                    return null;
-                }
-            });
         }
     }
 
@@ -217,9 +218,6 @@ public class AppointmentsScreen implements Initializable {
         catch (SQLException sql) {
             // TODO(jon): Handle error
             System.err.println(sql.getMessage());
-        }
-        finally {
-            CustomerTable.setItems(this.customers);
         }
     }
 
@@ -261,9 +259,6 @@ public class AppointmentsScreen implements Initializable {
             // TODO(jon): Handle error
             System.err.println(sql.getMessage());
         }
-        finally {
-            AppTable.setItems(this.appts);
-        }
     }
 
     public void onLoginAction(ActionEvent actionEvent) {
@@ -282,6 +277,7 @@ public class AppointmentsScreen implements Initializable {
     }
 
     public void filterByCountry(ActionEvent actionEvent) {
+
     }
 
     public void filterByDivision(ActionEvent actionEvent) {
