@@ -16,6 +16,10 @@ public class Customer {
     private int divisionId;
     private String division;
 
+    public Customer() {
+        super();
+    }
+
     public Customer(int custId) {
         super();
         this.customerId = custId;

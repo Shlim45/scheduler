@@ -20,10 +20,10 @@
       <TextField fx:id="Address" layoutX="150.0" layoutY="105.0" onAction="#onEnterAction" />
       <TextField fx:id="Postal" layoutX="150.0" layoutY="135.0" onAction="#onEnterAction" />
       <TextField fx:id="Phone" layoutX="150.0" layoutY="165.0" onAction="#onEnterAction" />
-      <TextField fx:id="CreateDate" layoutX="150.0" layoutY="195.0" onAction="#onEnterAction" />
-      <TextField fx:id="CreatedBy" layoutX="150.0" layoutY="225.0" onAction="#onEnterAction" />
-      <TextField fx:id="LastUpdate" layoutX="150.0" layoutY="255.0" onAction="#onEnterAction" />
-      <TextField fx:id="LastUpdatedBy" layoutX="150.0" layoutY="285.0" onAction="#onEnterAction" />
+      <TextField fx:id="CreateDate" disable="true" layoutX="150.0" layoutY="195.0" onAction="#onEnterAction" />
+      <TextField fx:id="CreatedBy" disable="true" layoutX="150.0" layoutY="225.0" onAction="#onEnterAction" />
+      <TextField fx:id="LastUpdate" disable="true" layoutX="150.0" layoutY="255.0" onAction="#onEnterAction" />
+      <TextField fx:id="LastUpdatedBy" disable="true" layoutX="150.0" layoutY="285.0" onAction="#onEnterAction" />
       <TextField fx:id="DivisionID" layoutX="150.0" layoutY="315.0" onAction="#onEnterAction" />
       <Label fx:id="HeaderLabel" layoutX="79.0" layoutY="14.0" text="New Customer Information" />
       <Button defaultButton="true" layoutX="81.0" layoutY="356.0" mnemonicParsing="false" onAction="#onSubmitAction" text="Submit" />

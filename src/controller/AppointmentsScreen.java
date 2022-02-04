@@ -333,6 +333,7 @@ public class AppointmentsScreen implements Initializable {
             stage.setTitle("Customer Information");
             stage.setScene(new Scene(loader.load()));
             CustomerScreen controller = loader.getController();
+            controller.setUser(this.user);
             controller.setCustomer(customer);
             stage.show();
         }
@@ -343,10 +344,12 @@ public class AppointmentsScreen implements Initializable {
 
     public void onNewCustomerAction(ActionEvent actionEvent) {
         showCustomerScreen(null);
+        ((Node) actionEvent.getSource()).getScene().getWindow().hide();
     }
 
     public void onEditCustomerAction(ActionEvent actionEvent) {
         showCustomerScreen((Customer) CustomerTable.getSelectionModel().getSelectedItem());
+        ((Node) actionEvent.getSource()).getScene().getWindow().hide();
     }
 
     public void onDeleteCustomerAction(ActionEvent actionEvent) {
