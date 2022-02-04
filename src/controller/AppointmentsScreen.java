@@ -13,14 +13,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.*;
+import util.TimeConversion;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class AppointmentsScreen implements Initializable {
     private User       user;
@@ -69,14 +73,38 @@ public class AppointmentsScreen implements Initializable {
         populateCustomers();
         populateAppointments();
 
+        final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
         ID.setCellValueFactory(new PropertyValueFactory<Appointment,Integer>("apptId"));
         Title.setCellValueFactory(new PropertyValueFactory<Appointment,String>("title"));
         Desc.setCellValueFactory(new PropertyValueFactory<Appointment,String>("desc"));
         Location.setCellValueFactory(new PropertyValueFactory<Appointment,String>("location"));
         Contact.setCellValueFactory(new PropertyValueFactory<Appointment,String>("contact"));
         Type.setCellValueFactory(new PropertyValueFactory<Appointment,String>("type"));
-        Start.setCellValueFactory(new PropertyValueFactory<Appointment, LocalDateTime>("start"));
-        End.setCellValueFactory(new PropertyValueFactory<Appointment, LocalDateTime>("end"));
+        Start.setCellValueFactory(new PropertyValueFactory<Appointment, ZonedDateTime>("start"));
+        Start.setCellFactory(tableColumn -> new TableCell<Appointment, ZonedDateTime>() {
+            @Override
+            protected void updateItem(ZonedDateTime item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item == null || empty)
+                    setText(null);
+                else
+                    setText(dateFormatter.format(item));
+            }
+        });
+        End.setCellValueFactory(new PropertyValueFactory<Appointment, ZonedDateTime>("end"));
+        End.setCellFactory(tableColumn -> new TableCell<Appointment, ZonedDateTime>() {
+            @Override
+            protected void updateItem(ZonedDateTime item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item == null || empty)
+                    setText(null);
+                else
+                    setText(dateFormatter.format(item));
+            }
+        });
         CustomerID.setCellValueFactory(new PropertyValueFactory<Appointment,Integer>("customerId"));
         UserID.setCellValueFactory(new PropertyValueFactory<Appointment,Integer>("userId"));
 
@@ -85,9 +113,32 @@ public class AppointmentsScreen implements Initializable {
         CustAddress.setCellValueFactory(new PropertyValueFactory<Customer,String>("address"));
         CustPostal.setCellValueFactory(new PropertyValueFactory<Customer,String>("postalCode"));
         CustPhone.setCellValueFactory(new PropertyValueFactory<Customer,String>("phone"));
-        CustCreatedOn.setCellValueFactory(new PropertyValueFactory<Customer, LocalDateTime>("createDate"));
+        CustCreatedOn.setCellValueFactory(new PropertyValueFactory<Customer, ZonedDateTime>("createDate"));
+        CustCreatedOn.setCellFactory(tableColumn -> new TableCell<Customer, ZonedDateTime>() {
+            @Override
+            protected void updateItem(ZonedDateTime item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item == null || empty)
+                    setText(null);
+                else
+                    setText(dateFormatter.format(item));
+            }
+        });
         CustCreatedBy.setCellValueFactory(new PropertyValueFactory<Customer,String>("createdBy"));
-        CustLastUpdate.setCellValueFactory(new PropertyValueFactory<Customer, LocalDateTime>("lastUpdate"));
+
+        CustLastUpdate.setCellValueFactory(new PropertyValueFactory<Customer, ZonedDateTime>("lastUpdate"));
+        CustLastUpdate.setCellFactory(tableColumn -> new TableCell<Customer, ZonedDateTime>() {
+            @Override
+            protected void updateItem(ZonedDateTime item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item == null || empty)
+                    setText(null);
+                else
+                    setText(dateFormatter.format(item));
+            }
+        });
         CustLastUpdatedBy.setCellValueFactory(new PropertyValueFactory<Customer,String>("lastUpdatedBy"));
         CustDivision.setCellValueFactory(new PropertyValueFactory<Customer,String>("division"));
     }
@@ -146,11 +197,11 @@ public class AppointmentsScreen implements Initializable {
                 C.setCountry(R.getString("Country"));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                C.setCreateDate(created.toLocalDateTime());
+                C.setCreateDate(TimeConversion.toLocalTime(created));
                 C.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                C.setLastUpdate(updated.toLocalDateTime().toLocalTime());
+                C.setLastUpdate(TimeConversion.toLocalTime(updated));
                 C.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 this.countries.add(C);
@@ -171,11 +222,11 @@ public class AppointmentsScreen implements Initializable {
                 D.setDivision(R.getString("Division"));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                D.setCreateDate(created.toLocalDateTime());
+                D.setCreateDate(TimeConversion.toLocalTime(created));
                 D.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                D.setLastUpdate(updated.toLocalDateTime().toLocalTime());
+                D.setLastUpdate(TimeConversion.toLocalTime(updated));
                 D.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 D.setCountryId(R.getInt("Country_ID"));
@@ -202,11 +253,11 @@ public class AppointmentsScreen implements Initializable {
                 C.setPhone(R.getString("Phone"));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                C.setCreateDate(created.toLocalDateTime());
+                C.setCreateDate(TimeConversion.toLocalTime(created));
                 C.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                C.setLastUpdate(updated.toLocalDateTime().toLocalTime());
+                C.setLastUpdate(TimeConversion.toLocalTime(updated));
                 C.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 C.setDivisionId(R.getInt("Division_ID"));
@@ -234,17 +285,17 @@ public class AppointmentsScreen implements Initializable {
                 A.setType(R.getString("Type"));
 
                 Timestamp start = R.getTimestamp("Start");
-                A.setStart(start.toLocalDateTime());
+                A.setStart(TimeConversion.toLocalTime(start));
 
                 Timestamp end = R.getTimestamp("End");
-                A.setEnd(end.toLocalDateTime());
+                A.setEnd(TimeConversion.toLocalTime(end));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                A.setCreateDate(created.toLocalDateTime());
+                A.setCreateDate(TimeConversion.toLocalTime(created));
                 A.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                A.setLastUpdate(updated.toLocalDateTime().toLocalTime());
+                A.setLastUpdate(TimeConversion.toLocalTime(updated));
                 A.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 A.setCustomerId(R.getInt("Customer_ID"));
@@ -353,5 +404,22 @@ public class AppointmentsScreen implements Initializable {
     }
 
     public void onDeleteCustomerAction(ActionEvent actionEvent) {
+        // promp user, asking if they're sure
+
+        // delete customer and associated appointments
+        Customer toDelete = (Customer) CustomerTable.getSelectionModel().getSelectedItem();
+        if (toDelete == null) {
+            // TODO(jon): ask user delete who?
+            return;
+        }
+
+        try {
+            JDBC.deleteCustomer(toDelete);
+            customers.remove(toDelete);
+            appts = appts.filtered(z -> z.getCustomerId() != toDelete.getCustomerId());
+        }
+        catch (SQLException sqle) {
+            System.err.println(sqle.getMessage());
+        }
     }
 }

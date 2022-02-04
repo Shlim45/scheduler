@@ -79,4 +79,18 @@ public abstract class JDBC {
             update.executeUpdate();
         }
     }
+
+    public static void deleteCustomer(Customer customer) throws SQLException {
+        final String deleteAppointments = "DELETE FROM client_schedule.appointments WHERE Customer_ID=?";
+        try (PreparedStatement delete = connection.prepareStatement(deleteAppointments)) {
+            delete.setInt(1, customer.getCustomerId());
+            delete.executeUpdate();
+        }
+
+        final String deleteCustomer = "DELETE FROM client_schedule.customers WHERE Customer_ID=?";
+        try (PreparedStatement delete = connection.prepareStatement(deleteCustomer)) {
+            delete.setInt(1, customer.getCustomerId());
+            delete.executeUpdate();
+        }
+    }
 }

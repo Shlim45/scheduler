@@ -1,7 +1,6 @@
 package model;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.ZonedDateTime;
 
 public class Appointment {
     private int apptId;
@@ -9,11 +8,11 @@ public class Appointment {
     private String desc;
     private String location;
     private String type;
-    private LocalDateTime start;
-    private LocalDateTime end;
-    private LocalDateTime createDate;
+    private ZonedDateTime start;
+    private ZonedDateTime end;
+    private ZonedDateTime createDate;
     private String createdBy;
-    private LocalTime lastUpdate;
+    private ZonedDateTime lastUpdate;
     private String lastUpdatedBy;
     private int customerId;
     private int userId;
@@ -65,27 +64,27 @@ public class Appointment {
         this.type = type;
     }
 
-    public LocalDateTime getStart() {
+    public ZonedDateTime getStart() {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    public void setStart(ZonedDateTime start) {
         this.start = start;
     }
 
-    public LocalDateTime getEnd() {
+    public ZonedDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(LocalDateTime end) {
+    public void setEnd(ZonedDateTime end) {
         this.end = end;
     }
 
-    public LocalDateTime getCreateDate() {
+    public ZonedDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(LocalDateTime createDate) {
+    public void setCreateDate(ZonedDateTime createDate) {
         this.createDate = createDate;
     }
 
@@ -97,11 +96,11 @@ public class Appointment {
         this.createdBy = createdBy;
     }
 
-    public LocalTime getLastUpdate() {
+    public ZonedDateTime getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(LocalTime lastUpdate) {
+    public void setLastUpdate(ZonedDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

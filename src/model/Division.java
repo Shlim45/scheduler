@@ -1,14 +1,13 @@
 package model;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.ZonedDateTime;
 
 public class Division {
     private int divisionId;
     private String division;
-    private LocalDateTime createDate;
+    private ZonedDateTime createDate;
     private String createdBy;
-    private LocalTime lastUpdate;
+    private ZonedDateTime lastUpdate;
     private String lastUpdatedBy;
     private int countryId;
 
@@ -33,11 +32,11 @@ public class Division {
         this.division = division;
     }
 
-    public LocalDateTime getCreateDate() {
+    public ZonedDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(LocalDateTime createDate) {
+    public void setCreateDate(ZonedDateTime createDate) {
         this.createDate = createDate;
     }
 
@@ -49,11 +48,11 @@ public class Division {
         this.createdBy = createdBy;
     }
 
-    public LocalTime getLastUpdate() {
+    public ZonedDateTime getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(LocalTime lastUpdate) {
+    public void setLastUpdate(ZonedDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

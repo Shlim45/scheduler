@@ -56,6 +56,6 @@
       <Button layoutX="403.0" layoutY="91.0" mnemonicParsing="false" onAction="#onClearFiltersAction" text="Clear" />
       <Button layoutX="77.0" layoutY="520.0" mnemonicParsing="false" onAction="#onNewCustomerAction" text="New Customer" />
       <Button fx:id="EditCustomer" layoutX="192.0" layoutY="520.0" mnemonicParsing="false" onAction="#onEditCustomerAction" text="Edit Customer" />
-      <Button fx:id="DeleteCustomer" disable="true" layoutX="307.0" layoutY="520.0" mnemonicParsing="false" onAction="#onDeleteCustomerAction" text="Delete Customer" />
+      <Button fx:id="DeleteCustomer" layoutX="307.0" layoutY="520.0" mnemonicParsing="false" onAction="#onDeleteCustomerAction" text="Delete Customer" />
    </children>
 </AnchorPane>
