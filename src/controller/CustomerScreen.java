@@ -8,6 +8,8 @@ import javafx.scene.control.TextField;
 import model.Customer;
 
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class CustomerScreen implements Initializable {
@@ -30,9 +32,27 @@ public class CustomerScreen implements Initializable {
 
     }
 
+    private void populateFields() {
+        if (customer == null)
+            return;
+
+        HeaderLabel.setText("Modify Customer Information");
+
+        CustomerID.setText(Integer.toString(customer.getCustomerId()));
+        Name.setText(customer.getName());
+        Address.setText(customer.getAddress());
+        Postal.setText(customer.getPostalCode());
+        Phone.setText(customer.getPhone());
+        CreateDate.setText(customer.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        CreatedBy.setText(customer.getCreatedBy());
+        LastUpdate.setText(customer.getLastUpdate().format(DateTimeFormatter.ofPattern("HH:mm")));
+        LastUpdatedBy.setText(customer.getLastUpdatedBy());
+        DivisionID.setText(Integer.toString(customer.getDivisionId()));
+    }
+
     public void setCustomer(Customer customer) {
         this.customer = customer;
-        // TODO(jon): Populate fields
+        populateFields();
     }
 
     public void onEnterAction(ActionEvent actionEvent) {

@@ -332,6 +332,8 @@ public class AppointmentsScreen implements Initializable {
             Stage stage = new Stage();
             stage.setTitle("Customer Information");
             stage.setScene(new Scene(loader.load()));
+            CustomerScreen controller = loader.getController();
+            controller.setCustomer(customer);
             stage.show();
         }
         catch (IOException e) {
@@ -344,6 +346,7 @@ public class AppointmentsScreen implements Initializable {
     }
 
     public void onEditCustomerAction(ActionEvent actionEvent) {
+        showCustomerScreen((Customer) CustomerTable.getSelectionModel().getSelectedItem());
     }
 
     public void onDeleteCustomerAction(ActionEvent actionEvent) {
