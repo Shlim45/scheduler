@@ -302,6 +302,7 @@ public class AppointmentsScreen implements Initializable {
         CustomerTable.setItems(oCustomers);
     }
 
+    // TODO(jon): Use a lambda here?
     public void filterByDivision(ActionEvent actionEvent) {
         final Division D = (Division) DivisionCombo.getValue();
 
@@ -323,5 +324,28 @@ public class AppointmentsScreen implements Initializable {
 
         DivisionCombo.setItems(this.divisions);
         CustomerTable.setItems(this.customers);
+    }
+
+    public void showCustomerScreen(Customer customer) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CustomerScreen.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Customer Information");
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onNewCustomerAction(ActionEvent actionEvent) {
+        showCustomerScreen(null);
+    }
+
+    public void onEditCustomerAction(ActionEvent actionEvent) {
+    }
+
+    public void onDeleteCustomerAction(ActionEvent actionEvent) {
     }
 }
