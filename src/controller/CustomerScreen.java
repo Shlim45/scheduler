@@ -16,6 +16,7 @@ import model.Country;
 import model.Customer;
 import model.Division;
 import model.User;
+import util.Dialogs;
 import util.Filtering;
 
 import java.io.IOException;
@@ -146,6 +147,15 @@ public class CustomerScreen implements Initializable {
     }
 
     public void onSubmitAction(ActionEvent actionEvent) {
+        final boolean newCustomer = this.customer == null;
+        final String header = newCustomer ? "Create new customer?" : "Submit changes to customer?";
+        final String message = newCustomer
+                ? "Are you sure you want to create a new customer with this information?"
+                : "Are you sure you want to modify this customer's information?";
+        final boolean confirm = Dialogs.promptUser(header, message);
+        if (!confirm)
+            return;
+
         final String name = Name.getText();
         final String address = Address.getText();
         final String postal = Postal.getText();
@@ -156,7 +166,6 @@ public class CustomerScreen implements Initializable {
                 || phone.length() == 0)
             return;
 
-        final boolean newCustomer = this.customer == null;
         if (newCustomer)
             this.customer = new Customer();
 
@@ -181,9 +190,12 @@ public class CustomerScreen implements Initializable {
     }
 
     public void onCancelAction(ActionEvent actionEvent) {
-        // TODO(jon): Prompt if any changes?
-        ((Node) actionEvent.getSource()).getScene().getWindow().hide();
-        showAppointmentsWindow();
+        final boolean confirm = Dialogs.promptUser("Lose all changes?",
+                "Are you sure you want to cancel and lose all changes?");
+        if (confirm) {
+            ((Node) actionEvent.getSource()).getScene().getWindow().hide();
+            showAppointmentsWindow();
+        }
     }
 
     private void showAppointmentsWindow() {

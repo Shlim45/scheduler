@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.*;
+import util.Dialogs;
 import util.Filtering;
 import util.TimeConversion;
 
@@ -373,19 +374,9 @@ public class AppointmentsScreen implements Initializable {
         ((Node) actionEvent.getSource()).getScene().getWindow().hide();
     }
 
-    private boolean promptUser(String header, String message) {
-        Alert prompt = new Alert(Alert.AlertType.CONFIRMATION);
-        prompt.setTitle("Confirm");
-        prompt.setHeaderText(header);
-        prompt.setContentText(message);
-
-        Optional<ButtonType> response = prompt.showAndWait();
-        return response.get() == ButtonType.OK;
-    }
-
     public void onDeleteCustomerAction(ActionEvent actionEvent) {
         // promp user, asking if they're sure
-        final boolean confirm = promptUser("Delete Customer and all associated Appointments?",
+        final boolean confirm = Dialogs.promptUser("Delete Customer and all associated Appointments?",
                 "Are you sure you want to delete this customer and all of their scheduled appointments?");
         if (!confirm)
             return;
