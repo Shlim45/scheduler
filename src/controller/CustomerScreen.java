@@ -1,21 +1,26 @@
 package controller;
 
 import database.JDBC;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
+import model.Country;
 import model.Customer;
+import model.Division;
 import model.User;
+import util.Filtering;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class CustomerScreen implements Initializable {
@@ -24,37 +29,90 @@ public class CustomerScreen implements Initializable {
     public TextField Address;
     public TextField Postal;
     public TextField Phone;
-    public TextField CreateDate;
-    public TextField CreatedBy;
-    public TextField LastUpdate;
-    public TextField LastUpdatedBy;
-    public TextField DivisionID;
-    public Label HeaderLabel;
+//    public TextField CreateDate;
+//    public TextField CreatedBy;
+//    public TextField LastUpdate;
+//    public TextField LastUpdatedBy;
+//    public TextField DivisionID;
+    public Label     HeaderLabel;
+    public ComboBox  CountryCombo;
+    public ComboBox  DivisionCombo;
 
-    private Customer customer;
-    private User user;
+    private Customer                 customer;
+    private User                     user;
+    private ObservableList<Country>  countries;
+    private ObservableList<Division> divisions;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
 
+    public void passCountriesAndDivisions(ObservableList<Country> C, ObservableList<Division> D) {
+        this.countries = C;
+        this.divisions = D;
+    }
+
     private void populateFields() {
-        if (customer == null)
-            return;
+        if (customer != null) {
+            HeaderLabel.setText("Modify Customer Information");
 
-        HeaderLabel.setText("Modify Customer Information");
+            CustomerID.setText(Integer.toString(customer.getCustomerId()));
+            Name.setText(customer.getName());
+            Address.setText(customer.getAddress());
+            Postal.setText(customer.getPostalCode());
+            Phone.setText(customer.getPhone());
+        }
 
-        CustomerID.setText(Integer.toString(customer.getCustomerId()));
-        Name.setText(customer.getName());
-        Address.setText(customer.getAddress());
-        Postal.setText(customer.getPostalCode());
-        Phone.setText(customer.getPhone());
-        CreateDate.setText(customer.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        CreatedBy.setText(customer.getCreatedBy());
-        LastUpdate.setText(customer.getLastUpdate().format(DateTimeFormatter.ofPattern("HH:mm")));
-        LastUpdatedBy.setText(customer.getLastUpdatedBy());
-        DivisionID.setText(Integer.toString(customer.getDivisionId()));
+        if (countries != null) {
+            CountryCombo.setItems(this.countries);
+            CountryCombo.setConverter(new StringConverter<Country>() {
+
+                @Override
+                public String toString(Country country) {
+                    if (country == null)
+                        return "";
+                    return country.getCountry();
+                }
+
+                @Override
+                public Country fromString(String s) {
+                    for (final Country C : countries)
+                        if (C.getCountry().equalsIgnoreCase(s))
+                            return C;
+                    return null;
+                }
+            });
+
+            if (customer != null) {
+                Country C = countries.filtered(country -> country.getCountryId() == customer.getDivision().getCountryId()).get(0);
+                CountryCombo.getSelectionModel().select(C);
+            }
+        }
+
+        // TODO(jon): Divisions should NOT populate until a Country has been selected.
+        if (divisions != null) {
+            DivisionCombo.setItems(this.divisions);
+            DivisionCombo.setConverter(new StringConverter<Division>() {
+
+                @Override
+                public String toString(Division division) {
+                    if (division == null)
+                        return "";
+                    return division.getDivision();
+                }
+
+                @Override
+                public Division fromString(String s) {
+                    for (final Division D : divisions)
+                        if (D.getDivision().equalsIgnoreCase(s))
+                            return D;
+                    return null;
+                }
+            });
+            if (customer != null)
+                DivisionCombo.getSelectionModel().select(customer.getDivision());
+        }
     }
 
     public void setCustomer(Customer customer) {
@@ -71,7 +129,7 @@ public class CustomerScreen implements Initializable {
         final String address = Address.getText();
         final String postal = Postal.getText();
         final String phone = Phone.getText();
-        final String divId = DivisionID.getText();
+        final Division division = (Division) DivisionCombo.getSelectionModel().getSelectedItem();
 
         if (name.length() == 0)
             Name.requestFocus();
@@ -81,8 +139,8 @@ public class CustomerScreen implements Initializable {
             Postal.requestFocus();
         else if (phone.length() == 0)
             Phone.requestFocus();
-        else if (divId.length() == 0)
-            DivisionID.requestFocus();
+        else if (division == null)
+            DivisionCombo.requestFocus();
         else
             onSubmitAction(actionEvent);
     }
@@ -92,10 +150,11 @@ public class CustomerScreen implements Initializable {
         final String address = Address.getText();
         final String postal = Postal.getText();
         final String phone = Phone.getText();
-        final String divId = DivisionID.getText();
+//        final String divId = DivisionID.getText();
+        final Division division = (Division) DivisionCombo.getSelectionModel().getSelectedItem();
 
         if (name.length() == 0 || address.length() == 0 || postal.length() == 0
-                || phone.length() == 0 || divId.length() == 0)
+                || phone.length() == 0)// || divId.length() == 0)
             return;
 
         if (this.customer == null) {
@@ -106,12 +165,13 @@ public class CustomerScreen implements Initializable {
             this.customer.setAddress(address);
             this.customer.setPostalCode(postal);
             this.customer.setPhone(phone);
-            try {
-                this.customer.setDivisionId(Integer.parseInt(divId));
-            }
-            catch (NumberFormatException nfe) {
-                System.err.println("Customer division ID is not a number.");
-            }
+            this.customer.setDivision(division);
+//            try {
+//                this.customer.setDivisionId(Integer.parseInt(divId));
+//            }
+//            catch (NumberFormatException nfe) {
+//                System.err.println("Customer division ID is not a number.");
+//            }
 
             try {
                 JDBC.insertCustomer(this.user, this.customer);
@@ -127,13 +187,7 @@ public class CustomerScreen implements Initializable {
             this.customer.setAddress(address);
             this.customer.setPostalCode(postal);
             this.customer.setPhone(phone);
-
-            try {
-                this.customer.setDivisionId(Integer.parseInt(divId));
-            }
-            catch (NumberFormatException nfe) {
-                System.err.println("Customer division ID is not a number.");
-            }
+            this.customer.setDivision((Division) DivisionCombo.getSelectionModel().getSelectedItem());
 
             try {
                 JDBC.updateCustomer(this.user, this.customer);
@@ -173,5 +227,13 @@ public class CustomerScreen implements Initializable {
             System.err.println(ioe.getMessage());
         }
 
+    }
+
+    public void onCountrySelect(ActionEvent actionEvent) {
+        final Country C = (Country) CountryCombo.getValue();
+        if (C == null)
+            return;
+
+        DivisionCombo.setItems(Filtering.filterDivisionsByCountry(this.divisions, C));
     }
 }

@@ -12,8 +12,7 @@ public class Customer {
     private String createdBy;
     private ZonedDateTime lastUpdate;
     private String lastUpdatedBy;
-    private int divisionId;
-    private String division;
+    private Division division;
 
     public Customer() {
         super();
@@ -96,19 +95,11 @@ public class Customer {
         this.lastUpdatedBy = lastUpdatedBy;
     }
 
-    public int getDivisionId() {
-        return divisionId;
-    }
-
-    public void setDivisionId(int divisionId) {
-        this.divisionId = divisionId;
-    }
-
-    public String getDivision() {
+    public Division getDivision() {
         return division;
     }
 
-    public void setDivision(String division) {
+    public void setDivision(Division division) {
         this.division = division;
     }
 }

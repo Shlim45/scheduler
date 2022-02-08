@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.*;
+import util.Filtering;
 import util.TimeConversion;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AppointmentsScreen implements Initializable {
@@ -260,8 +262,10 @@ public class AppointmentsScreen implements Initializable {
                 C.setLastUpdate(TimeConversion.toLocalTime(updated));
                 C.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
-                C.setDivisionId(R.getInt("Division_ID"));
-                C.setDivision(R.getString("Division"));
+//                C.setDivisionId(R.getInt("Division_ID"));
+                final String divName = R.getString("Division");
+                Division D = divisions.filtered(div -> div.getDivision().equals(divName)).get(0);
+                C.setDivision(D);
 
                 this.customers.add(C);
             }
@@ -335,19 +339,16 @@ public class AppointmentsScreen implements Initializable {
             return;
 
         // filter divisions list by selected country
-        ObservableList<Division>    oDivisions = FXCollections.observableArrayList();
-        for (final Division D : this.divisions)
-            if (D.getCountryId() == C.getCountryId()) {
-                oDivisions.add(D);
+        divisions.forEach(D -> {
+            if (D.getCountryId() == C.getCountryId())
                 Divisions.add(D.getDivisionId());
-            }
-
-        DivisionCombo.setItems(oDivisions);
+        });
+        DivisionCombo.setItems(Filtering.filterDivisionsByCountry(this.divisions, C));
 
         // filter customers list by selected country
         ObservableList<Customer>    oCustomers = FXCollections.observableArrayList();
         for (final Customer Cust : this.customers)
-            if (Divisions.contains(Cust.getDivisionId()))
+            if (Divisions.contains(Cust.getDivision().getDivisionId()))
                 oCustomers.add(Cust);
 
         CustomerTable.setItems(oCustomers);
@@ -363,7 +364,7 @@ public class AppointmentsScreen implements Initializable {
         // filter customers list by selected division
         ObservableList<Customer>    oCustomers = FXCollections.observableArrayList();
         for (final Customer Cust : this.customers)
-            if (Cust.getDivisionId() == D.getDivisionId())
+            if (Cust.getDivision().getDivisionId() == D.getDivisionId())
                 oCustomers.add(Cust);
 
         CustomerTable.setItems(oCustomers);
@@ -385,6 +386,7 @@ public class AppointmentsScreen implements Initializable {
             stage.setScene(new Scene(loader.load()));
             CustomerScreen controller = loader.getController();
             controller.setUser(this.user);
+            controller.passCountriesAndDivisions(this.countries, this.divisions);
             controller.setCustomer(customer);
             stage.show();
         }
@@ -403,8 +405,22 @@ public class AppointmentsScreen implements Initializable {
         ((Node) actionEvent.getSource()).getScene().getWindow().hide();
     }
 
+    private boolean promptUser(String header, String message) {
+        Alert prompt = new Alert(Alert.AlertType.CONFIRMATION);
+        prompt.setTitle("Confirm");
+        prompt.setHeaderText(header);
+        prompt.setContentText(message);
+
+        Optional<ButtonType> response = prompt.showAndWait();
+        return response.get() == ButtonType.OK;
+    }
+
     public void onDeleteCustomerAction(ActionEvent actionEvent) {
         // promp user, asking if they're sure
+        final boolean confirm = promptUser("Delete Customer and all associated Appointments?",
+                "Are you sure you want to delete this customer and all of their scheduled appointments?");
+        if (!confirm)
+            return;
 
         // delete customer and associated appointments
         Customer toDelete = (Customer) CustomerTable.getSelectionModel().getSelectedItem();

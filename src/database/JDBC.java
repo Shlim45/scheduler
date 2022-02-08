@@ -41,9 +41,15 @@ public abstract class JDBC {
     }
 
     public static ResultSet queryConnection(String query) throws SQLException {
-        Statement S = connection.createStatement();
-        ResultSet R = S.executeQuery(query);
-        return R;
+        try {
+            Statement S = connection.createStatement();
+            ResultSet R = S.executeQuery(query);
+            return R;
+        }
+        catch (NullPointerException npe) {
+            System.err.println(npe.getMessage());
+            return null;
+        }
     }
 
     public static void insertCustomer(User user, Customer customer) throws SQLException {
@@ -57,7 +63,7 @@ public abstract class JDBC {
             insert.setString(4, customer.getPhone());
             insert.setString(5, user.getUserName());
             insert.setString(6, user.getUserName());
-            insert.setInt(7, customer.getDivisionId());
+            insert.setInt(7, customer.getDivision().getDivisionId());
 
             insert.executeUpdate();
         }
@@ -73,7 +79,7 @@ public abstract class JDBC {
             update.setString(3, customer.getPostalCode());
             update.setString(4, customer.getPhone());
             update.setString(5, user.getUserName());
-            update.setInt(6, customer.getDivisionId());
+            update.setInt(6, customer.getDivision().getDivisionId());
             update.setInt(7, customer.getCustomerId());
 
             update.executeUpdate();
