@@ -6,12 +6,12 @@
 
 <AnchorPane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainScreen">
    <children>
-      <Label layoutX="585.0" layoutY="30.0" text="Appointment Scheduler">
+      <Label layoutX="585.0" layoutY="30.0" text="Appointment Scheduler" textFill="#0614b2">
          <font>
-            <Font size="32.0" />
+            <Font name="Verdana" size="32.0" />
          </font>
       </Label>
-      <Label fx:id="UserLabel" layoutX="990.0" layoutY="23.0" prefHeight="25.0" prefWidth="200.0" visible="false">
+      <Label fx:id="UserLabel" layoutX="1390.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" visible="false">
          <font>
             <Font size="16.0" />
          </font>
@@ -23,16 +23,16 @@
       </Button>
       <TableView fx:id="AppTable" layoutX="785.0" layoutY="131.0" prefHeight="369.0" prefWidth="800.0">
         <columns>
-          <TableColumn fx:id="ID" prefWidth="23.0" text="ID" />
+          <TableColumn fx:id="ID" prefWidth="20.0" text="ID" />
           <TableColumn fx:id="Title" prefWidth="85.0" text="Title" />
-            <TableColumn fx:id="Desc" prefWidth="103.0" text="Desc" />
+            <TableColumn fx:id="Desc" prefWidth="105.0" text="Desc" />
             <TableColumn fx:id="Location" prefWidth="75.0" text="Location" />
-            <TableColumn fx:id="Contact" prefWidth="61.0" text="Contact" />
-            <TableColumn fx:id="Type" prefWidth="65.0" text="Type" />
-            <TableColumn fx:id="Start" prefWidth="120.0" text="Start" />
-            <TableColumn fx:id="End" prefWidth="116.0" text="End" />
-            <TableColumn fx:id="CustomerID" prefWidth="75.0" text="Customer ID" />
-            <TableColumn fx:id="UserID" prefWidth="76.0" text="User ID" />
+            <TableColumn fx:id="Contact" prefWidth="80.0" text="Contact" />
+            <TableColumn fx:id="Type" prefWidth="105.0" text="Type" />
+            <TableColumn fx:id="Start" prefWidth="105.0" text="Start" />
+            <TableColumn fx:id="End" prefWidth="105.0" text="End" />
+            <TableColumn fx:id="CustomerID" prefWidth="70.0" text="Customer ID" />
+            <TableColumn fx:id="UserID" prefWidth="50.0" text="User ID" />
         </columns>
       </TableView>
       <RadioButton fx:id="Weekly" layoutX="806.0" layoutY="103.0" mnemonicParsing="false" text="Current Week" />
@@ -40,16 +40,16 @@
       <RadioButton fx:id="AllAppts" layoutX="1021.0" layoutY="103.0" mnemonicParsing="false" selected="true" text="All" />
       <TableView fx:id="CustomerTable" layoutX="17.0" layoutY="131.0" prefHeight="369.0" prefWidth="700.0">
         <columns>
-          <TableColumn fx:id="CustID" minWidth="8.0" prefWidth="23.0" text="ID" />
-          <TableColumn fx:id="CustName" prefWidth="73.0" text="Name" />
-            <TableColumn fx:id="CustAddress" prefWidth="92.0" text="Address" />
-            <TableColumn fx:id="CustPostal" prefWidth="52.0" text="Postal Code" />
-            <TableColumn fx:id="CustPhone" prefWidth="62.0" text="Phone" />
-            <TableColumn fx:id="CustDivision" prefWidth="86.0" text="Division" />
-            <TableColumn fx:id="CustCreatedOn" prefWidth="75.0" text="Created On" />
-            <TableColumn fx:id="CustCreatedBy" prefWidth="75.0" text="Created By" />
-            <TableColumn fx:id="CustLastUpdate" prefWidth="75.0" text="Last Update" />
-            <TableColumn fx:id="CustLastUpdatedBy" prefWidth="86.0" text="Last Updated By" />
+          <TableColumn fx:id="CustID" minWidth="10.0" prefWidth="20.0" text="ID" />
+          <TableColumn fx:id="CustName" prefWidth="115.0" text="Name" />
+            <TableColumn fx:id="CustAddress" prefWidth="125.0" text="Address" />
+            <TableColumn fx:id="CustPostal" prefWidth="45.0" text="Postal Code" />
+            <TableColumn fx:id="CustPhone" prefWidth="80.0" text="Phone" />
+            <TableColumn fx:id="CustDivision" prefWidth="95.0" text="Division" />
+            <TableColumn fx:id="CustCreatedOn" prefWidth="105.0" text="Created On" />
+            <TableColumn fx:id="CustCreatedBy" prefWidth="40.0" text="Created By" />
+            <TableColumn fx:id="CustLastUpdate" prefWidth="105.0" text="Last Update" />
+            <TableColumn fx:id="CustLastUpdatedBy" prefWidth="40.0" text="Last Updated By" />
         </columns>
       </TableView>
       <ComboBox fx:id="CountryCombo" layoutX="57.0" layoutY="91.0" prefWidth="150.0" promptText="Filter by country" />

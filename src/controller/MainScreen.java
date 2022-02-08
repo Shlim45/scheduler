@@ -1,8 +1,6 @@
 package controller;
 
 import database.JDBC;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -99,9 +97,8 @@ public class MainScreen implements Initializable {
             CustomerTable.setItems(Filtering.filterCustomersByCountryId(this.customers, C));
         });
 
-        DivisionCombo.valueProperty().addListener((ov, t, newSelection) -> {
-            CustomerTable.setItems(Filtering.filterCustomersByDivision(this.customers, (Division) newSelection));
-        });
+        DivisionCombo.valueProperty().addListener(
+                (ov, t, newSelection) -> CustomerTable.setItems(Filtering.filterCustomersByDivision(this.customers, (Division) newSelection)));
 
         final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -384,17 +381,25 @@ public class MainScreen implements Initializable {
     }
 
     public void onNewCustomerAction(ActionEvent actionEvent) {
-        showCustomerScreen(null);
         ((Node) actionEvent.getSource()).getScene().getWindow().hide();
+        showCustomerScreen(null);
     }
 
     public void onEditCustomerAction(ActionEvent actionEvent) {
-        showCustomerScreen((Customer) CustomerTable.getSelectionModel().getSelectedItem());
+        Customer toEdit = (Customer) CustomerTable.getSelectionModel().getSelectedItem();
+        if (toEdit == null) {
+            Dialogs.alertUser(
+                    Alert.AlertType.ERROR,
+                    "Edit Customer",
+                    "Edit Customer",
+                    "You must select a customer to edit.");
+            return;
+        }
         ((Node) actionEvent.getSource()).getScene().getWindow().hide();
+        showCustomerScreen(toEdit);
     }
 
     public void onDeleteCustomerAction(ActionEvent actionEvent) {
-
         Customer toDelete = (Customer) CustomerTable.getSelectionModel().getSelectedItem();
         if (toDelete == null) {
             Dialogs.alertUser(
