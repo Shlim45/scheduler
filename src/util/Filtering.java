@@ -2,10 +2,12 @@ package util;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import model.Appointment;
 import model.Country;
 import model.Customer;
 import model.Division;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public abstract class Filtering {
@@ -49,5 +51,35 @@ public abstract class Filtering {
         });
 
         return filteredCustomers;
+    }
+
+    public static ObservableList<Appointment> filterAppointmentsThisWeek(List<Appointment> appts) {
+        ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
+
+        if (appts == null)
+            return filteredAppointments;
+
+        ZonedDateTime lastWeek = ZonedDateTime.now().minusWeeks(1);
+        appts.forEach(appt -> {
+            if (appt.getStart().isAfter(lastWeek))
+                filteredAppointments.add(appt);
+        });
+
+        return filteredAppointments;
+    }
+
+    public static ObservableList<Appointment> filterAppointmentsThisMonth(List<Appointment> appts) {
+        ObservableList<Appointment> filteredAppointments = FXCollections.observableArrayList();
+
+        if (appts == null)
+            return filteredAppointments;
+
+        ZonedDateTime lastMonth = ZonedDateTime.now().minusMonths(1);
+        appts.forEach(appt -> {
+            if (appt.getStart().isAfter(lastMonth))
+                filteredAppointments.add(appt);
+        });
+
+        return filteredAppointments;
     }
 }

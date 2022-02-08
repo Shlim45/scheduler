@@ -199,7 +199,7 @@ public class CustomerScreen implements Initializable {
 
     private void showAppointmentsWindow() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AppointmentsScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainScreen.fxml"));
 
             Stage stage = new Stage();
             stage.setScene(
@@ -207,7 +207,7 @@ public class CustomerScreen implements Initializable {
             );
             stage.setTitle("Appointment Scheduler");
 
-            AppointmentsScreen controller = loader.getController();
+            MainScreen controller = loader.getController();
             controller.initUser(this.user);
 
             stage.show();

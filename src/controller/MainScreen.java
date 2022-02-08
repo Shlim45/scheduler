@@ -1,6 +1,8 @@
 package controller;
 
 import database.JDBC;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,7 +28,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-public class AppointmentsScreen implements Initializable {
+public class MainScreen implements Initializable {
     private User       user;
     private ObservableList<Appointment> appts;
     private ObservableList<Customer>    customers;
@@ -39,6 +41,7 @@ public class AppointmentsScreen implements Initializable {
     // Appointments Table
     public RadioButton Weekly;
     public RadioButton Monthly;
+    public RadioButton AllAppts;
     public TableView   AppTable;
     public TableColumn ID;
     public TableColumn Title;
@@ -65,6 +68,9 @@ public class AppointmentsScreen implements Initializable {
     public TableColumn CustLastUpdate;
     public TableColumn CustLastUpdatedBy;
     public TableColumn CustDivision;
+    public Button NewCustomer;
+    public Button EditCustomer;
+    public Button DeleteCustomer;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -73,13 +79,27 @@ public class AppointmentsScreen implements Initializable {
         populateCustomers();
         populateAppointments();
 
-        CountryCombo.valueProperty().addListener((ov, prevSelection, newSelection) -> {
+        final ToggleGroup radios = new ToggleGroup();
+        Weekly.setToggleGroup(radios);
+        Monthly.setToggleGroup(radios);
+        AllAppts.setToggleGroup(radios);
+        radios.selectedToggleProperty().addListener((ov, t, newToggle) -> {
+            if (newToggle == Weekly)
+                AppTable.setItems(Filtering.filterAppointmentsThisWeek(this.appts));
+            else if (newToggle == Monthly)
+                AppTable.setItems(Filtering.filterAppointmentsThisMonth(this.appts));
+            else
+                AppTable.setItems(this.appts);
+
+        });
+
+        CountryCombo.valueProperty().addListener((ov, t, newSelection) -> {
             final Country C = (Country) newSelection;
             DivisionCombo.setItems(Filtering.filterDivisionsByCountry(this.divisions, C));
             CustomerTable.setItems(Filtering.filterCustomersByCountryId(this.customers, C));
         });
 
-        DivisionCombo.valueProperty().addListener((ov, prevSelection, newSelection) -> {
+        DivisionCombo.valueProperty().addListener((ov, t, newSelection) -> {
             CustomerTable.setItems(Filtering.filterCustomersByDivision(this.customers, (Division) newSelection));
         });
 

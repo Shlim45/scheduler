@@ -10,9 +10,9 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentsScreen.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/MainScreen.fxml"));
         primaryStage.setTitle("Appointment Scheduler");
-        primaryStage.setScene(new Scene(root, 1200, 900));
+        primaryStage.setScene(new Scene(root, 1600, 900));
         primaryStage.show();
     }
 

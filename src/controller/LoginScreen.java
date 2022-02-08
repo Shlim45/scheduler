@@ -70,7 +70,7 @@ public class LoginScreen implements Initializable {
     }
 
     private void showMainWindow(User user) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AppointmentsScreen.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainScreen.fxml"));
 
         Stage stage = new Stage();
         stage.setScene(
@@ -78,7 +78,7 @@ public class LoginScreen implements Initializable {
         );
         stage.setTitle("Appointment Scheduler");
 
-        AppointmentsScreen controller = loader.getController();
+        MainScreen controller = loader.getController();
         controller.initUser(user);
 
         stage.show();
