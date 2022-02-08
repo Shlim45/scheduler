@@ -11,6 +11,9 @@ public abstract class Filtering {
     public static ObservableList<Division> filterDivisionsByCountry(List<Division> D, Country C) {
         ObservableList<Division> filteredDivisions = FXCollections.observableArrayList();
 
+        if (C == null)
+            return filteredDivisions;
+
         D.forEach(div -> {
             if (div.getCountryId() == C.getCountryId())
                 filteredDivisions.add(div);

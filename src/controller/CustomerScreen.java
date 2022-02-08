@@ -29,11 +29,6 @@ public class CustomerScreen implements Initializable {
     public TextField Address;
     public TextField Postal;
     public TextField Phone;
-//    public TextField CreateDate;
-//    public TextField CreatedBy;
-//    public TextField LastUpdate;
-//    public TextField LastUpdatedBy;
-//    public TextField DivisionID;
     public Label     HeaderLabel;
     public ComboBox  CountryCombo;
     public ComboBox  DivisionCombo;
@@ -92,7 +87,8 @@ public class CustomerScreen implements Initializable {
 
         // TODO(jon): Divisions should NOT populate until a Country has been selected.
         if (divisions != null) {
-            DivisionCombo.setItems(this.divisions);
+            Country C = (Country) CountryCombo.getSelectionModel().getSelectedItem();
+            DivisionCombo.setItems(Filtering.filterDivisionsByCountry(this.divisions, C));
             DivisionCombo.setConverter(new StringConverter<Division>() {
 
                 @Override
@@ -125,10 +121,11 @@ public class CustomerScreen implements Initializable {
     }
 
     public void onEnterAction(ActionEvent actionEvent) {
-        final String name = Name.getText();
-        final String address = Address.getText();
-        final String postal = Postal.getText();
-        final String phone = Phone.getText();
+        final String name       = Name.getText();
+        final String address    = Address.getText();
+        final String postal     = Postal.getText();
+        final String phone      = Phone.getText();
+        final Country  country  = (Country) CountryCombo.getSelectionModel().getSelectedItem();
         final Division division = (Division) DivisionCombo.getSelectionModel().getSelectedItem();
 
         if (name.length() == 0)
@@ -139,6 +136,8 @@ public class CustomerScreen implements Initializable {
             Postal.requestFocus();
         else if (phone.length() == 0)
             Phone.requestFocus();
+        else if (country == null)
+            CountryCombo.requestFocus();
         else if (division == null)
             DivisionCombo.requestFocus();
         else
@@ -150,11 +149,10 @@ public class CustomerScreen implements Initializable {
         final String address = Address.getText();
         final String postal = Postal.getText();
         final String phone = Phone.getText();
-//        final String divId = DivisionID.getText();
         final Division division = (Division) DivisionCombo.getSelectionModel().getSelectedItem();
 
         if (name.length() == 0 || address.length() == 0 || postal.length() == 0
-                || phone.length() == 0)// || divId.length() == 0)
+                || phone.length() == 0)
             return;
 
         if (this.customer == null) {
@@ -166,13 +164,6 @@ public class CustomerScreen implements Initializable {
             this.customer.setPostalCode(postal);
             this.customer.setPhone(phone);
             this.customer.setDivision(division);
-//            try {
-//                this.customer.setDivisionId(Integer.parseInt(divId));
-//            }
-//            catch (NumberFormatException nfe) {
-//                System.err.println("Customer division ID is not a number.");
-//            }
-
             try {
                 JDBC.insertCustomer(this.user, this.customer);
             }
