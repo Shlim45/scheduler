@@ -51,8 +51,8 @@
             <TableColumn fx:id="CustDivision" prefWidth="75.0" text="Division" />
         </columns>
       </TableView>
-      <ComboBox fx:id="CountryCombo" layoutX="57.0" layoutY="91.0" onAction="#filterByCountry" prefWidth="150.0" promptText="Filter by country" />
-      <ComboBox fx:id="DivisionCombo" layoutX="231.0" layoutY="91.0" onAction="#filterByDivision" prefWidth="150.0" promptText="Filter by division" />
+      <ComboBox fx:id="CountryCombo" layoutX="57.0" layoutY="91.0" prefWidth="150.0" promptText="Filter by country" />
+      <ComboBox fx:id="DivisionCombo" layoutX="231.0" layoutY="91.0" prefWidth="150.0" promptText="Filter by division" />
       <Button layoutX="403.0" layoutY="91.0" mnemonicParsing="false" onAction="#onClearFiltersAction" text="Clear" />
       <Button layoutX="77.0" layoutY="520.0" mnemonicParsing="false" onAction="#onNewCustomerAction" text="New Customer" />
       <Button fx:id="EditCustomer" layoutX="192.0" layoutY="520.0" mnemonicParsing="false" onAction="#onEditCustomerAction" text="Edit Customer" />

@@ -23,8 +23,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -74,6 +72,16 @@ public class AppointmentsScreen implements Initializable {
         populateDivisions();
         populateCustomers();
         populateAppointments();
+
+        CountryCombo.valueProperty().addListener((ov, prevSelection, newSelection) -> {
+            final Country C = (Country) newSelection;
+            DivisionCombo.setItems(Filtering.filterDivisionsByCountry(this.divisions, C));
+            CustomerTable.setItems(Filtering.filterCustomersByCountryId(this.customers, C));
+        });
+
+        DivisionCombo.valueProperty().addListener((ov, prevSelection, newSelection) -> {
+            CustomerTable.setItems(Filtering.filterCustomersByDivision(this.customers, (Division) newSelection));
+        });
 
         final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -262,7 +270,6 @@ public class AppointmentsScreen implements Initializable {
                 C.setLastUpdate(TimeConversion.toLocalTime(updated));
                 C.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
-//                C.setDivisionId(R.getInt("Division_ID"));
                 final String divName = R.getString("Division");
                 Division D = divisions.filtered(div -> div.getDivision().equals(divName)).get(0);
                 C.setDivision(D);
@@ -329,45 +336,6 @@ public class AppointmentsScreen implements Initializable {
         catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void filterByCountry(ActionEvent actionEvent) {
-        final Country C = (Country) CountryCombo.getValue();
-        final List<Integer> Divisions = new ArrayList<>();
-
-        if (C == null)
-            return;
-
-        // filter divisions list by selected country
-        divisions.forEach(D -> {
-            if (D.getCountryId() == C.getCountryId())
-                Divisions.add(D.getDivisionId());
-        });
-        DivisionCombo.setItems(Filtering.filterDivisionsByCountry(this.divisions, C));
-
-        // filter customers list by selected country
-        ObservableList<Customer>    oCustomers = FXCollections.observableArrayList();
-        for (final Customer Cust : this.customers)
-            if (Divisions.contains(Cust.getDivision().getDivisionId()))
-                oCustomers.add(Cust);
-
-        CustomerTable.setItems(oCustomers);
-    }
-
-    // TODO(jon): Use a lambda here?
-    public void filterByDivision(ActionEvent actionEvent) {
-        final Division D = (Division) DivisionCombo.getValue();
-
-        if (D == null)
-            return;
-
-        // filter customers list by selected division
-        ObservableList<Customer>    oCustomers = FXCollections.observableArrayList();
-        for (final Customer Cust : this.customers)
-            if (Cust.getDivision().getDivisionId() == D.getDivisionId())
-                oCustomers.add(Cust);
-
-        CustomerTable.setItems(oCustomers);
     }
 
     public void onClearFiltersAction(ActionEvent actionEvent) {

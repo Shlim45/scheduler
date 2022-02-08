@@ -40,7 +40,17 @@ public class CustomerScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        CountryCombo.valueProperty().addListener(
+                (ov, prevSelection, newSelection) -> DivisionCombo.setItems(Filtering.filterDivisionsByCountry(divisions, (Country) newSelection)));
+    }
 
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+        populateFields();
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void passCountriesAndDivisions(ObservableList<Country> C, ObservableList<Division> D) {
@@ -111,15 +121,6 @@ public class CustomerScreen implements Initializable {
         }
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-        populateFields();
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public void onEnterAction(ActionEvent actionEvent) {
         final String name       = Name.getText();
         final String address    = Address.getText();
@@ -155,38 +156,24 @@ public class CustomerScreen implements Initializable {
                 || phone.length() == 0)
             return;
 
-        if (this.customer == null) {
-            // handle new customer
-
+        final boolean newCustomer = this.customer == null;
+        if (newCustomer)
             this.customer = new Customer();
-            this.customer.setName(name);
-            this.customer.setAddress(address);
-            this.customer.setPostalCode(postal);
-            this.customer.setPhone(phone);
-            this.customer.setDivision(division);
-            try {
-                JDBC.insertCustomer(this.user, this.customer);
-            }
-            catch (SQLException sqle) {
-                System.err.println(sqle.getSQLState() + sqle.getMessage());
-                return;
-            }
-        }
-        else {
-            // handle update customer
-            this.customer.setName(name);
-            this.customer.setAddress(address);
-            this.customer.setPostalCode(postal);
-            this.customer.setPhone(phone);
-            this.customer.setDivision((Division) DivisionCombo.getSelectionModel().getSelectedItem());
 
-            try {
+        this.customer.setName(name);
+        this.customer.setAddress(address);
+        this.customer.setPostalCode(postal);
+        this.customer.setPhone(phone);
+        this.customer.setDivision(division);
+        try {
+            if (newCustomer)
+                JDBC.insertCustomer(this.user, this.customer);
+            else
                 JDBC.updateCustomer(this.user, this.customer);
-            }
-            catch (SQLException sqle) {
-                System.err.println(sqle.getSQLState() + sqle.getMessage());
-                return;
-            }
+        }
+        catch (SQLException sqle) {
+            System.err.println(sqle.getSQLState() + sqle.getMessage());
+            return;
         }
 
         ((Node) actionEvent.getSource()).getScene().getWindow().hide();
@@ -218,13 +205,5 @@ public class CustomerScreen implements Initializable {
             System.err.println(ioe.getMessage());
         }
 
-    }
-
-    public void onCountrySelect(ActionEvent actionEvent) {
-        final Country C = (Country) CountryCombo.getValue();
-        if (C == null)
-            return;
-
-        DivisionCombo.setItems(Filtering.filterDivisionsByCountry(this.divisions, C));
     }
 }
