@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AppointmentsScreen implements Initializable {
@@ -375,6 +374,17 @@ public class AppointmentsScreen implements Initializable {
     }
 
     public void onDeleteCustomerAction(ActionEvent actionEvent) {
+
+        Customer toDelete = (Customer) CustomerTable.getSelectionModel().getSelectedItem();
+        if (toDelete == null) {
+            Dialogs.alertUser(
+                    Alert.AlertType.ERROR,
+                    "Delete Customer",
+                    "Delete Customer",
+                    "You must select a customer to delete.");
+            return;
+        }
+
         // promp user, asking if they're sure
         final boolean confirm = Dialogs.promptUser("Delete Customer and all associated Appointments?",
                 "Are you sure you want to delete this customer and all of their scheduled appointments?");
@@ -382,19 +392,24 @@ public class AppointmentsScreen implements Initializable {
             return;
 
         // delete customer and associated appointments
-        Customer toDelete = (Customer) CustomerTable.getSelectionModel().getSelectedItem();
-        if (toDelete == null) {
-            // TODO(jon): ask user delete who?
-            return;
-        }
-
         try {
             JDBC.deleteCustomer(toDelete);
             customers.remove(toDelete);
             appts = appts.filtered(z -> z.getCustomerId() != toDelete.getCustomerId());
+            // TODO(jon): Is a popup appropriate?
+            Dialogs.alertUser(
+                    Alert.AlertType.INFORMATION,
+                    "Customer Deleted",
+                    "Customer Deleted",
+                    toDelete.getName() + " and their associated appointments have been deleted.");
         }
         catch (SQLException sqle) {
             System.err.println(sqle.getMessage());
+            Dialogs.alertUser(
+                    Alert.AlertType.ERROR,
+                    "Delete Customer",
+                    "Delete Customer",
+                    "There was an error when trying to delete the customer.");
         }
     }
 }

@@ -96,7 +96,6 @@ public class CustomerScreen implements Initializable {
             }
         }
 
-        // TODO(jon): Divisions should NOT populate until a Country has been selected.
         if (divisions != null) {
             Country C = (Country) CountryCombo.getSelectionModel().getSelectedItem();
             DivisionCombo.setItems(Filtering.filterDivisionsByCountry(this.divisions, C));

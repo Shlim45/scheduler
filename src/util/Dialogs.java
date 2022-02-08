@@ -15,4 +15,12 @@ public abstract class Dialogs {
         Optional<ButtonType> response = prompt.showAndWait();
         return response.get() == ButtonType.OK;
     }
+    public static void alertUser(Alert.AlertType type, String title, String header, String message) {
+        Alert prompt = new Alert(type);
+        prompt.setTitle(title);
+        prompt.setHeaderText(header);
+        prompt.setContentText(message);
+
+        prompt.show();
+    }
 }
