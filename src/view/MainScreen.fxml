@@ -55,8 +55,11 @@
       <ComboBox fx:id="CountryCombo" layoutX="57.0" layoutY="91.0" prefWidth="150.0" promptText="Filter by country" />
       <ComboBox fx:id="DivisionCombo" layoutX="231.0" layoutY="91.0" prefWidth="150.0" promptText="Filter by division" />
       <Button layoutX="403.0" layoutY="91.0" mnemonicParsing="false" onAction="#onClearFiltersAction" text="Clear" />
-      <Button fx:id="NewCustomer" layoutX="77.0" layoutY="520.0" mnemonicParsing="false" onAction="#onNewCustomerAction" text="New Customer" />
-      <Button fx:id="EditCustomer" layoutX="192.0" layoutY="520.0" mnemonicParsing="false" onAction="#onEditCustomerAction" text="Edit Customer" />
-      <Button fx:id="DeleteCustomer" layoutX="307.0" layoutY="520.0" mnemonicParsing="false" onAction="#onDeleteCustomerAction" text="Delete Customer" />
+      <Button layoutX="77.0" layoutY="520.0" mnemonicParsing="false" onAction="#onNewCustomerAction" text="New Customer" />
+      <Button layoutX="192.0" layoutY="520.0" mnemonicParsing="false" onAction="#onEditCustomerAction" text="Edit Customer" />
+      <Button layoutX="303.0" layoutY="520.0" mnemonicParsing="false" onAction="#onDeleteCustomerAction" text="Delete Customer" />
+      <Button layoutX="827.0" layoutY="520.0" mnemonicParsing="false" onAction="#onAddApptAction" text="Add Appt" />
+      <Button layoutX="915.0" layoutY="520.0" mnemonicParsing="false" onAction="#onEditApptAction" text="Edit Appt" />
+      <Button layoutX="1001.0" layoutY="520.0" mnemonicParsing="false" onAction="#onDeleteApptAction" text="Delete Appt" />
    </children>
 </AnchorPane>

@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import model.*;
 import util.Dialogs;
@@ -66,9 +67,6 @@ public class MainScreen implements Initializable {
     public TableColumn CustLastUpdate;
     public TableColumn CustLastUpdatedBy;
     public TableColumn CustDivision;
-    public Button NewCustomer;
-    public Button EditCustomer;
-    public Button DeleteCustomer;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -343,8 +341,7 @@ public class MainScreen implements Initializable {
     public void onLoginAction(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoginScreen.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Please log in");
+            Stage stage = new Stage(StageStyle.UNDECORATED);
             stage.setScene(new Scene(loader.load()));
             stage.show();
 
@@ -366,13 +363,27 @@ public class MainScreen implements Initializable {
     public void showCustomerScreen(Customer customer) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CustomerScreen.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Customer Information");
+            Stage stage = new Stage(StageStyle.UNDECORATED);
             stage.setScene(new Scene(loader.load()));
             CustomerScreen controller = loader.getController();
             controller.setUser(this.user);
             controller.passCountriesAndDivisions(this.countries, this.divisions);
             controller.setCustomer(customer);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showAppointmentScreen(Appointment appointment) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AppointmentScreen.fxml"));
+            Stage stage = new Stage(StageStyle.UNDECORATED);
+            stage.setScene(new Scene(loader.load()));
+            AppointmentScreen controller = loader.getController();
+            controller.setUser(this.user);
+            controller.setAppointment(appointment);
             stage.show();
         }
         catch (IOException e) {
@@ -436,5 +447,25 @@ public class MainScreen implements Initializable {
                     "Delete Customer",
                     "There was an error when trying to delete the customer.");
         }
+    }
+
+    public void onAddApptAction(ActionEvent actionEvent) {
+    }
+
+    public void onEditApptAction(ActionEvent actionEvent) {
+        Appointment toEdit = (Appointment) AppTable.getSelectionModel().getSelectedItem();
+        if (toEdit == null) {
+            Dialogs.alertUser(
+                    Alert.AlertType.ERROR,
+                    "Edit Appointment",
+                    "Edit Appointment",
+                    "You must select an appointment to edit.");
+            return;
+        }
+        ((Node) actionEvent.getSource()).getScene().getWindow().hide();
+        showAppointmentScreen(toEdit);
+    }
+
+    public void onDeleteApptAction(ActionEvent actionEvent) {
     }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="420.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AppointmentScreen">
+   <children>
+      <Label layoutX="60.0" layoutY="48.0" text="Appointment ID" />
+      <Label layoutX="60.0" layoutY="78.0" text="Title" />
+      <Label layoutX="60.0" layoutY="108.0" text="Description" />
+      <Label layoutX="60.0" layoutY="138.0" text="Location" />
+      <Label layoutX="60.0" layoutY="168.0" text="Contact" />
+      <Label layoutX="60.0" layoutY="198.0" text="Type" />
+      <Label layoutX="60.0" layoutY="228.0" text="Start Date and Time" />
+      <Label layoutX="60.0" layoutY="258.0" text="End Date and Time" />
+      <Label layoutX="60.0" layoutY="288.0" text="Customer ID" />
+      <Label layoutX="60.0" layoutY="318.0" text="User ID" />
+      <TextField fx:id="ApptId" disable="true" layoutX="215.0" layoutY="44.0" promptText="Auto Generated" />
+      <TextField fx:id="ApptTitle" layoutX="215.0" layoutY="74.0" />
+      <TextField fx:id="ApptDesc" layoutX="215.0" layoutY="104.0" />
+      <TextField fx:id="ApptLocation" layoutX="215.0" layoutY="134.0" />
+      <ComboBox fx:id="ContactCombo" layoutX="215.0" layoutY="164.0" prefWidth="150.0" />
+      <TextField fx:id="ApptType" layoutX="215.0" layoutY="194.0" />
+      <DatePicker fx:id="StartDate" layoutX="215.0" layoutY="224.0" prefHeight="25.0" prefWidth="101.0" />
+      <TextField fx:id="StartTime" layoutX="325.0" layoutY="224.0" prefHeight="25.0" prefWidth="52.0" />
+      <DatePicker fx:id="EndDate" layoutX="215.0" layoutY="254.0" prefHeight="25.0" prefWidth="101.0" />
+      <TextField fx:id="EndTime" layoutX="325.0" layoutY="254.0" prefHeight="25.0" prefWidth="52.0" />
+      <TextField fx:id="ApptCustomerId" layoutX="215.0" layoutY="284.0" />
+      <TextField fx:id="ApptUserId" layoutX="215.0" layoutY="314.0" />
+      <Button defaultButton="true" layoutX="125.0" layoutY="350.0" mnemonicParsing="false" onAction="#onSubmitAction" text="Submit" />
+      <Button cancelButton="true" layoutX="240.0" layoutY="350.0" mnemonicParsing="false" onAction="#onCancelAction" text="Cancel" />
+   </children>
+</AnchorPane>

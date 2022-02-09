@@ -1,9 +1,15 @@
 package database;
 
+import javafx.collections.FXCollections;
+import model.Contact;
+import model.Country;
 import model.Customer;
 import model.User;
+import util.TimeConversion;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class JDBC {
     private static final String protocol = "jdbc";
@@ -98,5 +104,25 @@ public abstract class JDBC {
             delete.setInt(1, customer.getCustomerId());
             delete.executeUpdate();
         }
+    }
+
+    public static List<Contact> loadContacts() {
+        List<Contact> contacts = new ArrayList<>();
+
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.contacts")) {
+            while (R.next()) {
+                Contact C = new Contact(R.getInt("Contact_ID"));
+                C.setName(R.getString("Contact_Name"));
+                C.setEmail(R.getString("Email"));
+
+                contacts.add(C);
+            }
+        }
+        catch (SQLException sql) {
+            // TODO
+            System.err.println(sql.getMessage());
+        }
+
+        return contacts;
     }
 }
