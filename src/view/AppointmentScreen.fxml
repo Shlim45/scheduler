@@ -16,17 +16,17 @@
       <Label layoutX="60.0" layoutY="288.0" text="Customer ID" />
       <Label layoutX="60.0" layoutY="318.0" text="User ID" />
       <TextField fx:id="ApptId" disable="true" layoutX="215.0" layoutY="44.0" promptText="Auto Generated" />
-      <TextField fx:id="ApptTitle" layoutX="215.0" layoutY="74.0" />
-      <TextField fx:id="ApptDesc" layoutX="215.0" layoutY="104.0" />
-      <TextField fx:id="ApptLocation" layoutX="215.0" layoutY="134.0" />
+      <TextField fx:id="ApptTitle" layoutX="215.0" layoutY="74.0" onAction="#onEnterAction" />
+      <TextField fx:id="ApptDesc" layoutX="215.0" layoutY="104.0" onAction="#onEnterAction" />
+      <TextField fx:id="ApptLocation" layoutX="215.0" layoutY="134.0" onAction="#onEnterAction" />
       <ComboBox fx:id="ContactCombo" layoutX="215.0" layoutY="164.0" prefWidth="150.0" />
-      <TextField fx:id="ApptType" layoutX="215.0" layoutY="194.0" />
-      <DatePicker fx:id="StartDate" layoutX="215.0" layoutY="224.0" prefHeight="25.0" prefWidth="101.0" />
-      <TextField fx:id="StartTime" layoutX="325.0" layoutY="224.0" prefHeight="25.0" prefWidth="52.0" />
-      <DatePicker fx:id="EndDate" layoutX="215.0" layoutY="254.0" prefHeight="25.0" prefWidth="101.0" />
-      <TextField fx:id="EndTime" layoutX="325.0" layoutY="254.0" prefHeight="25.0" prefWidth="52.0" />
-      <TextField fx:id="ApptCustomerId" layoutX="215.0" layoutY="284.0" />
-      <TextField fx:id="ApptUserId" layoutX="215.0" layoutY="314.0" />
+      <TextField fx:id="ApptType" layoutX="215.0" layoutY="194.0" onAction="#onEnterAction" />
+      <DatePicker fx:id="StartDate" layoutX="215.0" layoutY="224.0" prefHeight="25.0" prefWidth="101.0" onAction="#onDateAction" />
+      <TextField fx:id="StartTime" layoutX="325.0" layoutY="224.0" prefHeight="25.0" prefWidth="52.0" onAction="#onTimeAction" />
+      <DatePicker fx:id="EndDate" layoutX="215.0" layoutY="254.0" prefHeight="25.0" prefWidth="101.0" onAction="#onDateAction" />
+      <TextField fx:id="EndTime" layoutX="325.0" layoutY="254.0" prefHeight="25.0" prefWidth="52.0" onAction="#onTimeAction" />
+      <TextField fx:id="ApptCustomerId" layoutX="215.0" layoutY="284.0" onAction="#onEnterAction" />
+      <TextField fx:id="ApptUserId" layoutX="215.0" layoutY="314.0" onAction="#onEnterAction" />
       <Button defaultButton="true" layoutX="125.0" layoutY="350.0" mnemonicParsing="false" onAction="#onSubmitAction" text="Submit" />
       <Button cancelButton="true" layoutX="240.0" layoutY="350.0" mnemonicParsing="false" onAction="#onCancelAction" text="Cancel" />
    </children>

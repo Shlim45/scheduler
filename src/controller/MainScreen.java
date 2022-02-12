@@ -248,6 +248,21 @@ public class MainScreen implements Initializable {
         }
     }
 
+    public void showAppointmentScreen(Customer customer) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AppointmentScreen.fxml"));
+            Stage stage = new Stage(StageStyle.UNDECORATED);
+            stage.setScene(new Scene(loader.load()));
+            AppointmentScreen controller = loader.getController();
+            controller.setUser(this.user);
+            controller.setCustomer(customer);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void showAppointmentScreen(Appointment appointment) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AppointmentScreen.fxml"));
@@ -322,6 +337,17 @@ public class MainScreen implements Initializable {
     }
 
     public void onAddApptAction(ActionEvent actionEvent) {
+        Customer customer = (Customer) CustomerTable.getSelectionModel().getSelectedItem();
+        if (customer == null) {
+            Dialogs.alertUser(
+                    Alert.AlertType.ERROR,
+                    "Add Appointment",
+                    "Customer Not Selected",
+                    "You must select a customer to add an appointment for.");
+            return;
+        }
+        ((Node) actionEvent.getSource()).getScene().getWindow().hide();
+        showAppointmentScreen(customer);
     }
 
     public void onEditApptAction(ActionEvent actionEvent) {
