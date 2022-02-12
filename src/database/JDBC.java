@@ -1,7 +1,5 @@
 package database;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import model.*;
 import util.TimeConversion;
 

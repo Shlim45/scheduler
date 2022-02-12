@@ -16,13 +16,10 @@ import javafx.util.StringConverter;
 import model.*;
 import util.Dialogs;
 import util.Filtering;
-import util.TimeConversion;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -70,10 +67,10 @@ public class MainScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        populateCountries();
-        populateDivisions();
-        populateCustomers();
-        populateAppointments();
+        this.countries = FXCollections.observableArrayList(JDBC.loadCountries());
+        this.divisions = FXCollections.observableArrayList(JDBC.loadDivisions());
+        this.customers = FXCollections.observableArrayList(JDBC.loadCustomers(this.divisions));
+        this.appts = FXCollections.observableArrayList(JDBC.loadAppointments());
 
         final ToggleGroup radios = new ToggleGroup();
         Weekly.setToggleGroup(radios);
@@ -211,22 +208,6 @@ public class MainScreen implements Initializable {
         AppTable.setItems(this.appts);
 
         CustomerTable.setItems(this.customers);
-    }
-
-    public void populateCountries() {
-        this.countries = FXCollections.observableArrayList(JDBC.loadCountries());
-    }
-
-    public void populateDivisions() {
-        this.divisions = FXCollections.observableArrayList(JDBC.loadDivisions());
-    }
-
-    public void populateCustomers() {
-        this.customers = FXCollections.observableArrayList(JDBC.loadCustomers(this.divisions));
-    }
-
-    public void populateAppointments() {
-        this.appts = FXCollections.observableArrayList(JDBC.loadAppointments());
     }
 
     public void onLoginAction(ActionEvent actionEvent) {
