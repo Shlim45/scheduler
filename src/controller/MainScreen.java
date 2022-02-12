@@ -214,128 +214,19 @@ public class MainScreen implements Initializable {
     }
 
     public void populateCountries() {
-        this.countries = FXCollections.observableArrayList();
-
-        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.countries")) {
-            while (R.next()) {
-                Country C = new Country(R.getInt("Country_ID"));
-                C.setCountry(R.getString("Country"));
-
-                Timestamp created = R.getTimestamp("Create_Date");
-                C.setCreateDate(TimeConversion.toLocalTime(created));
-                C.setCreatedBy(R.getString("Created_By"));
-
-                Timestamp updated = R.getTimestamp("Last_Update");
-                C.setLastUpdate(TimeConversion.toLocalTime(updated));
-                C.setLastUpdatedBy(R.getString("Last_Updated_By"));
-
-                this.countries.add(C);
-            }
-        }
-        catch (SQLException sql) {
-            // TODO
-            System.err.println(sql.getMessage());
-        }
+        this.countries = FXCollections.observableArrayList(JDBC.loadCountries());
     }
 
     public void populateDivisions() {
-        this.divisions = FXCollections.observableArrayList();
-
-        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.first_level_divisions")) {
-            while (R.next()) {
-                Division D = new Division(R.getInt("Division_ID"));
-                D.setDivision(R.getString("Division"));
-
-                Timestamp created = R.getTimestamp("Create_Date");
-                D.setCreateDate(TimeConversion.toLocalTime(created));
-                D.setCreatedBy(R.getString("Created_By"));
-
-                Timestamp updated = R.getTimestamp("Last_Update");
-                D.setLastUpdate(TimeConversion.toLocalTime(updated));
-                D.setLastUpdatedBy(R.getString("Last_Updated_By"));
-
-                D.setCountryId(R.getInt("Country_ID"));
-
-                this.divisions.add(D);
-            }
-        }
-        catch (SQLException sql) {
-            // TODO
-            System.err.println(sql.getMessage());
-        }
+        this.divisions = FXCollections.observableArrayList(JDBC.loadDivisions());
     }
 
     public void populateCustomers() {
-        this.customers = FXCollections.observableArrayList();
-
-        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.customers "
-                +"LEFT JOIN client_schedule.first_level_divisions ON customers.Division_ID = first_level_divisions.Division_ID")) {
-            while (R.next()) {
-                Customer C = new Customer(R.getInt("Customer_ID"));
-                C.setName(R.getString("Customer_Name"));
-                C.setAddress(R.getString("Address"));
-                C.setPostalCode(R.getString("Postal_Code"));
-                C.setPhone(R.getString("Phone"));
-
-                Timestamp created = R.getTimestamp("Create_Date");
-                C.setCreateDate(TimeConversion.toLocalTime(created));
-                C.setCreatedBy(R.getString("Created_By"));
-
-                Timestamp updated = R.getTimestamp("Last_Update");
-                C.setLastUpdate(TimeConversion.toLocalTime(updated));
-                C.setLastUpdatedBy(R.getString("Last_Updated_By"));
-
-                final String divName = R.getString("Division");
-                Division D = divisions.filtered(div -> div.getDivision().equals(divName)).get(0);
-                C.setDivision(D);
-
-                this.customers.add(C);
-            }
-        }
-        catch (SQLException sql) {
-            // TODO(jon): Handle error
-            System.err.println(sql.getMessage());
-        }
+        this.customers = FXCollections.observableArrayList(JDBC.loadCustomers(this.divisions));
     }
 
     public void populateAppointments() {
-        this.appts = FXCollections.observableArrayList();
-
-        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.appointments "
-                +"LEFT JOIN client_schedule.contacts ON appointments.Contact_ID = contacts.Contact_ID;")) {
-            while (R.next()) {
-                Appointment A = new Appointment(R.getInt("Appointment_ID"));
-                A.setTitle(R.getString("Title"));
-                A.setDesc(R.getString("Description"));
-                A.setLocation(R.getString("Location"));
-                A.setType(R.getString("Type"));
-
-                Timestamp start = R.getTimestamp("Start");
-                A.setStart(TimeConversion.toLocalTime(start));
-
-                Timestamp end = R.getTimestamp("End");
-                A.setEnd(TimeConversion.toLocalTime(end));
-
-                Timestamp created = R.getTimestamp("Create_Date");
-                A.setCreateDate(TimeConversion.toLocalTime(created));
-                A.setCreatedBy(R.getString("Created_By"));
-
-                Timestamp updated = R.getTimestamp("Last_Update");
-                A.setLastUpdate(TimeConversion.toLocalTime(updated));
-                A.setLastUpdatedBy(R.getString("Last_Updated_By"));
-
-                A.setCustomerId(R.getInt("Customer_ID"));
-                A.setUserId(R.getInt("User_ID"));
-                A.setContactId(R.getInt("Contact_ID"));
-                A.setContact(R.getString("Contact_Name"));
-
-                this.appts.add(A);
-            }
-        }
-        catch (SQLException sql) {
-            // TODO(jon): Handle error
-            System.err.println(sql.getMessage());
-        }
+        this.appts = FXCollections.observableArrayList(JDBC.loadAppointments());
     }
 
     public void onLoginAction(ActionEvent actionEvent) {

@@ -1,15 +1,14 @@
 package database;
 
 import javafx.collections.FXCollections;
-import model.Contact;
-import model.Country;
-import model.Customer;
-import model.User;
+import javafx.collections.ObservableList;
+import model.*;
 import util.TimeConversion;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class JDBC {
     private static final String protocol = "jdbc";
@@ -56,6 +55,43 @@ public abstract class JDBC {
             System.err.println(npe.getMessage());
             return null;
         }
+    }
+
+    public static List<Customer> loadCustomers(List<Division> divisions) {
+        final List<Customer> customers = new ArrayList<>();
+
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.customers "
+                +"LEFT JOIN client_schedule.first_level_divisions ON customers.Division_ID = first_level_divisions.Division_ID")) {
+            while (R.next()) {
+                Customer C = new Customer(R.getInt("Customer_ID"));
+                C.setName(R.getString("Customer_Name"));
+                C.setAddress(R.getString("Address"));
+                C.setPostalCode(R.getString("Postal_Code"));
+                C.setPhone(R.getString("Phone"));
+
+                Timestamp created = R.getTimestamp("Create_Date");
+                C.setCreateDate(TimeConversion.toLocalTime(created));
+                C.setCreatedBy(R.getString("Created_By"));
+
+                Timestamp updated = R.getTimestamp("Last_Update");
+                C.setLastUpdate(TimeConversion.toLocalTime(updated));
+                C.setLastUpdatedBy(R.getString("Last_Updated_By"));
+
+                final String divName = R.getString("Division");
+                Division D = divisions.stream()
+                        .filter(div -> div.getDivision().equals(divName))
+                        .collect(Collectors.toList()).get(0);
+                C.setDivision(D);
+
+                customers.add(C);
+            }
+        }
+        catch (SQLException sql) {
+            // TODO(jon): Handle error
+            System.err.println(sql.getMessage());
+        }
+
+        return customers;
     }
 
     public static void insertCustomer(User user, Customer customer) throws SQLException {
@@ -106,6 +142,61 @@ public abstract class JDBC {
         }
     }
 
+    public static List<Country> loadCountries() {
+        List<Country> countries = new ArrayList<>();
+
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.countries")) {
+            while (R.next()) {
+                Country C = new Country(R.getInt("Country_ID"));
+                C.setCountry(R.getString("Country"));
+
+                Timestamp created = R.getTimestamp("Create_Date");
+                C.setCreateDate(TimeConversion.toLocalTime(created));
+                C.setCreatedBy(R.getString("Created_By"));
+
+                Timestamp updated = R.getTimestamp("Last_Update");
+                C.setLastUpdate(TimeConversion.toLocalTime(updated));
+                C.setLastUpdatedBy(R.getString("Last_Updated_By"));
+
+                countries.add(C);
+            }
+        }
+        catch (SQLException sql) {
+            // TODO
+            System.err.println(sql.getMessage());
+        }
+
+        return countries;
+    }
+    public static List<Division> loadDivisions() {
+        List<Division> divisions = new ArrayList<>();
+
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.first_level_divisions")) {
+            while (R.next()) {
+                Division D = new Division(R.getInt("Division_ID"));
+                D.setDivision(R.getString("Division"));
+
+                Timestamp created = R.getTimestamp("Create_Date");
+                D.setCreateDate(TimeConversion.toLocalTime(created));
+                D.setCreatedBy(R.getString("Created_By"));
+
+                Timestamp updated = R.getTimestamp("Last_Update");
+                D.setLastUpdate(TimeConversion.toLocalTime(updated));
+                D.setLastUpdatedBy(R.getString("Last_Updated_By"));
+
+                D.setCountryId(R.getInt("Country_ID"));
+
+                divisions.add(D);
+            }
+        }
+        catch (SQLException sql) {
+            // TODO
+            System.err.println(sql.getMessage());
+        }
+
+        return divisions;
+    }
+
     public static List<Contact> loadContacts() {
         List<Contact> contacts = new ArrayList<>();
 
@@ -124,5 +215,47 @@ public abstract class JDBC {
         }
 
         return contacts;
+    }
+
+    public static List<Appointment> loadAppointments() {
+        List<Appointment> appointments = new ArrayList<>();
+
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.appointments "
+                +"LEFT JOIN client_schedule.contacts ON appointments.Contact_ID = contacts.Contact_ID;")) {
+            while (R.next()) {
+                Appointment A = new Appointment(R.getInt("Appointment_ID"));
+                A.setTitle(R.getString("Title"));
+                A.setDesc(R.getString("Description"));
+                A.setLocation(R.getString("Location"));
+                A.setType(R.getString("Type"));
+
+                Timestamp start = R.getTimestamp("Start");
+                A.setStart(TimeConversion.toLocalTime(start));
+
+                Timestamp end = R.getTimestamp("End");
+                A.setEnd(TimeConversion.toLocalTime(end));
+
+                Timestamp created = R.getTimestamp("Create_Date");
+                A.setCreateDate(TimeConversion.toLocalTime(created));
+                A.setCreatedBy(R.getString("Created_By"));
+
+                Timestamp updated = R.getTimestamp("Last_Update");
+                A.setLastUpdate(TimeConversion.toLocalTime(updated));
+                A.setLastUpdatedBy(R.getString("Last_Updated_By"));
+
+                A.setCustomerId(R.getInt("Customer_ID"));
+                A.setUserId(R.getInt("User_ID"));
+                A.setContactId(R.getInt("Contact_ID"));
+                A.setContact(R.getString("Contact_Name"));
+
+                appointments.add(A);
+            }
+        }
+        catch (SQLException sql) {
+            // TODO(jon): Handle error
+            System.err.println(sql.getMessage());
+        }
+
+        return appointments;
     }
 }
