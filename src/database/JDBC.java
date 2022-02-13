@@ -256,4 +256,61 @@ public abstract class JDBC {
 
         return appointments;
     }
+
+    public static void insertAppointment(User user, Appointment appt) throws SQLException {
+        final String newAppointment = "INSERT INTO client_schedule.appointments "
+                +"(Title, Description, Location, Type, Start, End, "
+                +"Create_Date, Created_By, Last_Update, Last_Updated_By, "
+                +"Customer_ID, User_ID, Contact_ID) "
+                +"VALUES (?,?,?,?,?,?,NOW(),?,NOW(),?,?,?,?)";
+        try (PreparedStatement insert = connection.prepareStatement(newAppointment)) {
+            insert.setString(1, appt.getTitle());
+            insert.setString(2, appt.getDesc());
+            insert.setString(3, appt.getLocation());
+            insert.setString(4, appt.getType());
+            insert.setDate(5, java.sql.Date.valueOf(Time.toUTC(appt.getStart()).toLocalDate()));
+            insert.setDate(6, java.sql.Date.valueOf(Time.toUTC(appt.getEnd()).toLocalDate()));
+            insert.setString(7, user.getUserName());
+            insert.setString(8, user.getUserName());
+            insert.setInt(9, appt.getCustomerId());
+            insert.setInt(10, appt.getUserId());
+            insert.setInt(11, appt.getContactId());
+
+            insert.executeUpdate();
+        }
+    }
+
+    public static void updateAppointment(User user, Appointment appt) throws SQLException {
+        final String editAppointment = "UPDATE client_schedule.appointments "
+                +"SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Last_Update = NOW(), Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? "
+                +"WHERE Appointment_ID = ?";
+        try (PreparedStatement update = connection.prepareStatement(editAppointment)) {
+            update.setString(1, appt.getTitle());
+            update.setString(2, appt.getDesc());
+            update.setString(3, appt.getLocation());
+            update.setString(4, appt.getType());
+            update.setDate(5, java.sql.Date.valueOf(Time.toUTC(appt.getStart()).toLocalDate()));
+            update.setDate(6, java.sql.Date.valueOf(Time.toUTC(appt.getEnd()).toLocalDate()));
+            update.setString(7, user.getUserName());
+            update.setInt(8, appt.getCustomerId());
+            update.setInt(9, appt.getUserId());
+            update.setInt(10, appt.getContactId());
+
+            update.executeUpdate();
+        }
+    }
+
+    public static void deleteAppointment(Appointment appt) throws SQLException {
+        final String deleteAppointments = "DELETE FROM client_schedule.appointments WHERE Appointment_ID=?";
+        try (PreparedStatement delete = connection.prepareStatement(deleteAppointments)) {
+            delete.setInt(1, appt.getApptId());
+            delete.executeUpdate();
+        }
+
+        final String deleteAppointment = "DELETE FROM client_schedule.customers WHERE Appointment_ID=?";
+        try (PreparedStatement delete = connection.prepareStatement(deleteAppointment)) {
+            delete.setInt(1, appt.getApptId());
+            delete.executeUpdate();
+        }
+    }
 }

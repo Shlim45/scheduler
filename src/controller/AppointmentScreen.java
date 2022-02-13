@@ -19,6 +19,7 @@ import util.Time;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -95,16 +96,6 @@ public class AppointmentScreen implements Initializable {
                 ContactCombo.getSelectionModel().select(C);
             }
         }
-    }
-
-    // TODO(jon): SchedulingConflictException
-    private boolean noSchedulingConflicts(Appointment appt) {
-        // check for appointment overlaps
-        if (this.customerAppts != null && this.customerAppts.size() != 0) {
-
-        }
-
-        return true;
     }
 
     private Appointment createAppointmentObject() {
@@ -232,7 +223,17 @@ public class AppointmentScreen implements Initializable {
         final boolean confirm = Dialogs.promptUser("Submit changes?",
                 "Are you sure you want to submit the appointment?");
         if (confirm) {
-            // TODO(jon): update database
+            // TODO(jon): Start and End times are WRONG! had 8-9, ended with 19:00 for both
+            try {
+                if (this.appointment == null)
+                    JDBC.insertAppointment(this.user, appt);
+                else
+                    JDBC.updateAppointment(this.user, appt);
+            }
+            catch (SQLException sqle) {
+                System.err.println(sqle.getSQLState() + sqle.getMessage());
+                return;
+            }
             ((Node) actionEvent.getSource()).getScene().getWindow().hide();
             showMainWindow();
         }
