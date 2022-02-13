@@ -1,7 +1,7 @@
 package database;
 
 import model.*;
-import util.TimeConversion;
+import util.Time;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -68,11 +68,11 @@ public abstract class JDBC {
                 C.setPhone(R.getString("Phone"));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                C.setCreateDate(TimeConversion.toLocalTime(created));
+                C.setCreateDate(Time.toLocalTime(created));
                 C.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                C.setLastUpdate(TimeConversion.toLocalTime(updated));
+                C.setLastUpdate(Time.toLocalTime(updated));
                 C.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 final String divName = R.getString("Division");
@@ -149,11 +149,11 @@ public abstract class JDBC {
                 C.setCountry(R.getString("Country"));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                C.setCreateDate(TimeConversion.toLocalTime(created));
+                C.setCreateDate(Time.toLocalTime(created));
                 C.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                C.setLastUpdate(TimeConversion.toLocalTime(updated));
+                C.setLastUpdate(Time.toLocalTime(updated));
                 C.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 countries.add(C);
@@ -175,11 +175,11 @@ public abstract class JDBC {
                 D.setDivision(R.getString("Division"));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                D.setCreateDate(TimeConversion.toLocalTime(created));
+                D.setCreateDate(Time.toLocalTime(created));
                 D.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                D.setLastUpdate(TimeConversion.toLocalTime(updated));
+                D.setLastUpdate(Time.toLocalTime(updated));
                 D.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 D.setCountryId(R.getInt("Country_ID"));
@@ -228,17 +228,17 @@ public abstract class JDBC {
                 A.setType(R.getString("Type"));
 
                 Timestamp start = R.getTimestamp("Start");
-                A.setStart(TimeConversion.toLocalTime(start));
+                A.setStart(Time.toLocalTime(start));
 
                 Timestamp end = R.getTimestamp("End");
-                A.setEnd(TimeConversion.toLocalTime(end));
+                A.setEnd(Time.toLocalTime(end));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                A.setCreateDate(TimeConversion.toLocalTime(created));
+                A.setCreateDate(Time.toLocalTime(created));
                 A.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                A.setLastUpdate(TimeConversion.toLocalTime(updated));
+                A.setLastUpdate(Time.toLocalTime(updated));
                 A.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 A.setCustomerId(R.getInt("Customer_ID"));

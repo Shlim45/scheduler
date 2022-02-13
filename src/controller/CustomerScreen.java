@@ -185,7 +185,7 @@ public class CustomerScreen implements Initializable {
         }
 
         ((Node) actionEvent.getSource()).getScene().getWindow().hide();
-        showAppointmentsWindow();
+        showMainWindow();
     }
 
     public void onCancelAction(ActionEvent actionEvent) {
@@ -193,11 +193,11 @@ public class CustomerScreen implements Initializable {
                 "Are you sure you want to cancel and lose all changes?");
         if (confirm) {
             ((Node) actionEvent.getSource()).getScene().getWindow().hide();
-            showAppointmentsWindow();
+            showMainWindow();
         }
     }
 
-    private void showAppointmentsWindow() {
+    private void showMainWindow() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainScreen.fxml"));
 

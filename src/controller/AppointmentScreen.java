@@ -15,33 +15,33 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.*;
 import util.Dialogs;
+import util.Time;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ResourceBundle;
 
 public class AppointmentScreen implements Initializable {
-    public TextField ApptId;
-    public TextField ApptTitle;
-    public TextField ApptDesc;
-    public TextField ApptLocation;
-    public ComboBox ContactCombo;
-    public TextField ApptType;
+    public TextField  ApptId;
+    public TextField  ApptTitle;
+    public TextField  ApptDesc;
+    public TextField  ApptLocation;
+    public ComboBox   ContactCombo;
+    public TextField  ApptType;
     public DatePicker StartDate;
-    public TextField StartTime;
+    public TextField  StartTime;
     public DatePicker EndDate;
-    public TextField EndTime;
-    public TextField ApptCustomerId;
-    public TextField ApptUserId;
+    public TextField  EndTime;
+    public TextField  ApptCustomerId;
+    public TextField  ApptUserId;
 
-    private User user;
-    private Customer customer;
-    private Appointment appointment;
-    private ObservableList<Contact> contacts;
+    private User                        user;
+    private Customer                    customer;
+    private Appointment                 appointment;
+    private ObservableList<Appointment> allAppointments;
+    private ObservableList<Contact>     contacts;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -49,6 +49,7 @@ public class AppointmentScreen implements Initializable {
     }
 
     public void setUser(User user) { this.user = user; }
+
     public void setCustomer(Customer customer) {
         this.customer = customer;
         populateFields();
@@ -90,48 +91,37 @@ public class AppointmentScreen implements Initializable {
     }
 
     public void onEnterAction(ActionEvent actionEvent) {
-        final String title    = ApptTitle.getText();
-        final String desc     = ApptDesc.getText();
-        final String location = ApptLocation.getText();
-        final String type     = ApptType.getText();
-        final Contact contact = (Contact) ContactCombo.getSelectionModel().getSelectedItem();
-        final ZonedDateTime start;
-        final ZonedDateTime end;
-        final int custId;
-        final int userId;
-
-        if (title.length() == 0)
+        if (ApptTitle.getText().length() == 0) {
             ApptTitle.requestFocus();
-        else if (desc.length() == 0)
+            return;
+        } else if (ApptDesc.getText().length() == 0) {
             ApptDesc.requestFocus();
-        else if (location.length() == 0)
+            return;
+        } else if (ApptLocation.getText().length() == 0) {
             ApptLocation.requestFocus();
-        else if (contact == null)
+            return;
+        } else if (ContactCombo.getSelectionModel().getSelectedItem() == null) {
             ContactCombo.requestFocus();
-        else if (type.length() == 0)
+            return;
+        } else if (ApptType.getText().length() == 0) {
             ApptType.requestFocus();
-        else {
-            final ZoneId local = ZoneId.systemDefault();
-
-            try {
-                start = ZonedDateTime.of(StartDate.getValue(), LocalTime.parse(StartTime.getText()), local);
-            }
-            catch (DateTimeParseException dtpe) {
-                StartTime.requestFocus();
-                return;
-            }
-
-            try {
-                end = ZonedDateTime.of(EndDate.getValue(), LocalTime.parse(EndTime.getText()), local);
-            }
-            catch (DateTimeParseException dtpe) {
-                EndTime.requestFocus();
-                return;
-            }
-
+            return;
+        } else if (StartDate.getValue() == null) {
+            StartDate.requestFocus();
+            return;
+        } else if (StartTime.getText().length() == 0) {
+            StartTime.requestFocus();
+            return;
+        } else if (EndDate.getValue() == null) {
+            EndDate.requestFocus();
+            return;
+        } else if (EndTime.getText().length() == 0) {
+            EndTime.requestFocus();
+            return;
+        } else {
             // TODO(jon): customer and user ID validation?
             try {
-                custId = Integer.parseInt(ApptCustomerId.getText());
+                Integer.parseInt(ApptCustomerId.getText());
             } catch(NumberFormatException nfe) {
                 Dialogs.alertUser(Alert.AlertType.ERROR, "Invalid Customer ID", "Invalid Customer ID", "Customer ID must be an integer.");
                 ApptCustomerId.requestFocus();
@@ -139,15 +129,38 @@ public class AppointmentScreen implements Initializable {
             }
 
             try {
-                userId = Integer.parseInt(ApptUserId.getText());
+                Integer.parseInt(ApptUserId.getText());
             } catch(NumberFormatException nfe) {
                 Dialogs.alertUser(Alert.AlertType.ERROR, "Invalid User ID", "Invalid User ID", "User ID must be an integer.");
                 ApptUserId.requestFocus();
                 return;
             }
-
-            onSubmitAction(actionEvent);
         }
+
+        if (StartTime.getText().length() > 0) {
+            try {
+                final String formatted = Time.timeFormatting(StartTime.getText());
+                StartTime.setText(formatted);
+                LocalTime.parse(formatted);
+            }
+            catch (DateTimeParseException dtpe) {
+                StartTime.requestFocus();
+                return;
+            }
+        }
+        else if (EndTime.getText().length() > 0) {
+            try {
+                final String formatted = Time.timeFormatting(EndTime.getText());
+                EndTime.setText(formatted);
+                LocalTime.parse(formatted);
+            }
+            catch (DateTimeParseException dtpe) {
+                EndTime.requestFocus();
+                return;
+            }
+        }
+
+        onSubmitAction(actionEvent);
     }
 
     public void onSubmitAction(ActionEvent actionEvent) {
@@ -155,7 +168,7 @@ public class AppointmentScreen implements Initializable {
                 "Are you sure you want to submit the appointment?");
         if (confirm) {
             ((Node) actionEvent.getSource()).getScene().getWindow().hide();
-            showAppointmentsWindow();
+            showMainWindow();
         }
     }
 
@@ -164,11 +177,11 @@ public class AppointmentScreen implements Initializable {
                 "Are you sure you want to cancel and lose all changes?");
         if (confirm) {
             ((Node) actionEvent.getSource()).getScene().getWindow().hide();
-            showAppointmentsWindow();
+            showMainWindow();
         }
     }
 
-    private void showAppointmentsWindow() {
+    private void showMainWindow() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainScreen.fxml"));
 
@@ -195,30 +208,11 @@ public class AppointmentScreen implements Initializable {
             EndTime.requestFocus();
     }
 
-    private String timeFormatting(String time) {
-        if (time.indexOf(':') == -1)
-            time = time + ":00";
-        String hr = time.substring(0, time.indexOf(':'));
-        String min = time.substring(time.indexOf(':')+1);
-        try {
-            if (Integer.parseInt(hr) < 10 && hr.charAt(0) != '0')
-                hr = '0' + hr;
-            if (Integer.parseInt(min) < 10 && min.charAt(0) != '0')
-                min = '0' + min;
-        }
-        catch (NumberFormatException nfe) {
-            // TODO(jon): alert user to error...
-            return "";
-        }
-
-       return hr + ':' + min;
-    }
-
     public void onTimeAction(ActionEvent actionEvent) {
         if (actionEvent.getSource() == StartTime)
-            StartTime.setText(timeFormatting(StartTime.getText()));
+            StartTime.setText(Time.timeFormatting(StartTime.getText()));
         else if (actionEvent.getSource() == EndTime)
-            EndTime.setText(timeFormatting(EndTime.getText()));
+            EndTime.setText(Time.timeFormatting(EndTime.getText()));
 
         onEnterAction(actionEvent);
     }
