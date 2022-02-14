@@ -1,8 +1,13 @@
 package util;
 
+import model.Appointment;
+
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 public abstract class Time {
     public static ZonedDateTime toUTC(ZonedDateTime localTime) {
@@ -35,5 +40,34 @@ public abstract class Time {
         }
 
         return hr + ':' + min;
+    }
+
+    public static boolean isWithinBusinessHours(ZonedDateTime toCheck) {
+        toCheck = ZonedDateTime.ofInstant(toCheck.toInstant(), ZoneId.of("America/New_York"));
+        return (toCheck.getHour() >= 8 && toCheck.getHour() <= 22);
+    }
+
+    public static boolean timeOverlaps(Appointment a, Appointment b) {
+        // ensure both are in local time
+        ZonedDateTime aStart = toLocalTime(a.getStart());
+        ZonedDateTime aEnd   = toLocalTime(a.getEnd());
+        ZonedDateTime bStart = toLocalTime(b.getStart());
+        ZonedDateTime bEnd   = toLocalTime(b.getEnd());
+
+
+        if (aStart.isBefore(bStart) && aEnd.isAfter(bStart)) {
+            // a runs into b
+            return true;
+        }
+        else if (bStart.isBefore(aStart) && bEnd.isAfter(aStart)) {
+            // b runs into a
+            return true;
+        }
+        else if (aStart.isEqual(bStart)) {
+            // a and b occur at same time
+            return true;
+        }
+
+        return false;
     }
 }

@@ -20,8 +20,11 @@ import util.Time;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AppointmentScreen implements Initializable {
     public TextField  ApptId;
@@ -40,7 +43,7 @@ public class AppointmentScreen implements Initializable {
     private User                        user;
     private Customer                    customer;
     private Appointment                 appointment;
-    private ObservableList<Appointment> allAppointments;
+    private ObservableList<Appointment> customerAppts;
     private ObservableList<Contact>     contacts;
 
     @Override
@@ -53,6 +56,10 @@ public class AppointmentScreen implements Initializable {
     public void setCustomer(Customer customer) {
         this.customer = customer;
         populateFields();
+    }
+
+    public void setCustomerAppointments(ObservableList<Appointment> appts) {
+        this.customerAppts = appts;
     }
 
     public void setAppointment(Appointment appt) {
@@ -88,6 +95,32 @@ public class AppointmentScreen implements Initializable {
                 ContactCombo.getSelectionModel().select(C);
             }
         }
+    }
+
+    // TODO(jon): SchedulingConflictException
+    private boolean noSchedulingConflicts(Appointment appt) {
+        // check for appointment overlaps
+        if (this.customerAppts != null && this.customerAppts.size() != 0) {
+
+        }
+
+        return true;
+    }
+
+    private Appointment createAppointmentObject() {
+        Appointment appt = new Appointment();
+        appt.setTitle(ApptTitle.getText());
+        appt.setDesc(ApptDesc.getText());
+        appt.setLocation(ApptLocation.getText());
+        appt.setType(ApptType.getText());
+        appt.setStart(ZonedDateTime.of(StartDate.getValue(), LocalTime.parse(StartTime.getText()), ZoneId.systemDefault()));
+        appt.setEnd(ZonedDateTime.of(EndDate.getValue(), LocalTime.parse(EndTime.getText()), ZoneId.systemDefault()));
+        appt.setCustomerId(Integer.parseInt(ApptCustomerId.getText()));
+        appt.setUserId(Integer.parseInt(ApptUserId.getText()));
+        Contact contact = (Contact) ContactCombo.getSelectionModel().getSelectedItem();
+        appt.setContactId(contact.getContactId());
+        appt.setContact(contact.getName());
+        return appt;
     }
 
     public void onEnterAction(ActionEvent actionEvent) {
@@ -164,9 +197,42 @@ public class AppointmentScreen implements Initializable {
     }
 
     public void onSubmitAction(ActionEvent actionEvent) {
+        final Appointment appt = createAppointmentObject();
+
+        if (appt.getStart().isAfter(appt.getEnd())) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Start Time before End Time",
+                    "This appointment's start time must be before its end time.");
+            return;
+        }
+        else if (!Time.isWithinBusinessHours(appt.getStart())) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Outside of Business Hours",
+                    "This appointment's start time is outside of business hours (8:00 a.m. - 10:00 p.m. EST).");
+            return;
+        }
+        else if (!Time.isWithinBusinessHours(appt.getEnd())) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Outside of Business Hours",
+                    "This appointment's end time is outside of business hours (8:00 a.m. - 10:00 p.m. EST).");
+            return;
+        }
+
+        // check all customer appointments for overlap
+        AtomicBoolean overlap = new AtomicBoolean(false);
+        this.customerAppts.forEach(a -> {
+            if (Time.timeOverlaps(a, appt)) {
+                Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Scheduling Conflict",
+                        "This appointment's time overlaps with an existing appointment.");
+                overlap.set(true);
+                return;
+            }
+        });
+
+        if (overlap.get())
+            return;
+
         final boolean confirm = Dialogs.promptUser("Submit changes?",
                 "Are you sure you want to submit the appointment?");
         if (confirm) {
+            // TODO(jon): update database
             ((Node) actionEvent.getSource()).getScene().getWindow().hide();
             showMainWindow();
         }
@@ -201,17 +267,21 @@ public class AppointmentScreen implements Initializable {
     }
 
     public void onDateAction(ActionEvent actionEvent) {
-        // TODO(jon): Ensure end time is after start time, duration makes sense, etc.
-        if (actionEvent.getSource() == StartDate)
+        if (actionEvent.getSource() == StartDate) {
+            if (EndDate.getValue() == null)
+                EndDate.setValue(StartDate.getValue());
             StartTime.requestFocus();
-        else if (actionEvent.getSource() == EndDate)
+        } else if (actionEvent.getSource() == EndDate) {
+            if (StartDate.getValue() == null)
+                StartDate.setValue(EndDate.getValue());
             EndTime.requestFocus();
+        }
     }
 
     public void onTimeAction(ActionEvent actionEvent) {
-        if (actionEvent.getSource() == StartTime)
+        if (actionEvent.getSource() == StartTime) {
             StartTime.setText(Time.timeFormatting(StartTime.getText()));
-        else if (actionEvent.getSource() == EndTime)
+        } else if (actionEvent.getSource() == EndTime)
             EndTime.setText(Time.timeFormatting(EndTime.getText()));
 
         onEnterAction(actionEvent);

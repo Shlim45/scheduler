@@ -19,6 +19,10 @@ public class Appointment {
     private int contactId;
     private String contact;
 
+    public Appointment() {
+        super();
+    }
+
     public Appointment(int id) {
         super();
         this.apptId = id;

@@ -232,6 +232,8 @@ public class MainScreen implements Initializable {
         CustomerTable.setItems(this.customers);
     }
 
+    // Customer Actions
+
     public void showCustomerScreen(Customer customer) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CustomerScreen.fxml"));
@@ -241,36 +243,6 @@ public class MainScreen implements Initializable {
             controller.setUser(this.user);
             controller.passCountriesAndDivisions(this.countries, this.divisions);
             controller.setCustomer(customer);
-            stage.show();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void showAppointmentScreen(Customer customer) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AppointmentScreen.fxml"));
-            Stage stage = new Stage(StageStyle.UNDECORATED);
-            stage.setScene(new Scene(loader.load()));
-            AppointmentScreen controller = loader.getController();
-            controller.setUser(this.user);
-            controller.setCustomer(customer);
-            stage.show();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void showAppointmentScreen(Appointment appointment) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AppointmentScreen.fxml"));
-            Stage stage = new Stage(StageStyle.UNDECORATED);
-            stage.setScene(new Scene(loader.load()));
-            AppointmentScreen controller = loader.getController();
-            controller.setUser(this.user);
-            controller.setAppointment(appointment);
             stage.show();
         }
         catch (IOException e) {
@@ -336,6 +308,30 @@ public class MainScreen implements Initializable {
         }
     }
 
+    // Appointment Actions
+
+    public void showAppointmentScreen(Customer customer, Appointment appointment) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AppointmentScreen.fxml"));
+            Stage stage = new Stage(StageStyle.UNDECORATED);
+            stage.setScene(new Scene(loader.load()));
+            AppointmentScreen controller = loader.getController();
+            controller.setUser(this.user);
+            if (customer != null) {
+                controller.setCustomer(customer);
+                controller.setCustomerAppointments(this.appts.filtered(appt -> appt.getCustomerId() == customer.getCustomerId()));
+            }
+            if (appointment != null) {
+                controller.setAppointment(appointment);
+                controller.setCustomerAppointments(this.appts.filtered(appt -> appt.getCustomerId() == appointment.getCustomerId()));
+            }
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void onAddApptAction(ActionEvent actionEvent) {
         Customer customer = (Customer) CustomerTable.getSelectionModel().getSelectedItem();
         if (customer == null) {
@@ -347,7 +343,7 @@ public class MainScreen implements Initializable {
             return;
         }
         ((Node) actionEvent.getSource()).getScene().getWindow().hide();
-        showAppointmentScreen(customer);
+        showAppointmentScreen(customer, null);
     }
 
     public void onEditApptAction(ActionEvent actionEvent) {
@@ -361,7 +357,7 @@ public class MainScreen implements Initializable {
             return;
         }
         ((Node) actionEvent.getSource()).getScene().getWindow().hide();
-        showAppointmentScreen(toEdit);
+        showAppointmentScreen(null, toEdit);
     }
 
     public void onDeleteApptAction(ActionEvent actionEvent) {
