@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainScreen">
+<AnchorPane prefHeight="760.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainScreen">
    <children>
       <Label layoutX="585.0" layoutY="30.0" text="Appointment Scheduler" textFill="#0614b2">
          <font>
@@ -16,50 +16,78 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Button fx:id="LoginButton" layoutX="1524.0" layoutY="21.0" mnemonicParsing="false" onAction="#onLoginAction" text="Log In">
+      <Button fx:id="LoginButton" defaultButton="true" layoutX="1524.0" layoutY="21.0" mnemonicParsing="false" onAction="#onLoginAction" text="Log In">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <TableView fx:id="AppTable" layoutX="785.0" layoutY="131.0" prefHeight="369.0" prefWidth="800.0">
-        <columns>
-          <TableColumn fx:id="ID" prefWidth="20.0" text="ID" />
-          <TableColumn fx:id="Title" prefWidth="85.0" text="Title" />
-            <TableColumn fx:id="Desc" prefWidth="105.0" text="Desc" />
-            <TableColumn fx:id="Location" prefWidth="75.0" text="Location" />
-            <TableColumn fx:id="Contact" prefWidth="80.0" text="Contact" />
-            <TableColumn fx:id="Type" prefWidth="105.0" text="Type" />
-            <TableColumn fx:id="Start" prefWidth="105.0" text="Start" />
-            <TableColumn fx:id="End" prefWidth="105.0" text="End" />
-            <TableColumn fx:id="CustomerID" prefWidth="70.0" text="Customer ID" />
-            <TableColumn fx:id="UserID" prefWidth="50.0" text="User ID" />
-        </columns>
-      </TableView>
-      <RadioButton fx:id="Weekly" layoutX="806.0" layoutY="103.0" mnemonicParsing="false" text="Current Week" />
-      <RadioButton fx:id="Monthly" layoutX="911.0" layoutY="103.0" mnemonicParsing="false" text="Current Month" />
-      <RadioButton fx:id="AllAppts" layoutX="1021.0" layoutY="103.0" mnemonicParsing="false" selected="true" text="All" />
-      <TableView fx:id="CustomerTable" layoutX="17.0" layoutY="131.0" prefHeight="369.0" prefWidth="700.0">
-        <columns>
-          <TableColumn fx:id="CustID" minWidth="10.0" prefWidth="20.0" text="ID" />
-          <TableColumn fx:id="CustName" prefWidth="115.0" text="Name" />
-            <TableColumn fx:id="CustAddress" prefWidth="125.0" text="Address" />
-            <TableColumn fx:id="CustPostal" prefWidth="45.0" text="Postal Code" />
-            <TableColumn fx:id="CustPhone" prefWidth="80.0" text="Phone" />
-            <TableColumn fx:id="CustDivision" prefWidth="95.0" text="Division" />
-            <TableColumn fx:id="CustCreatedOn" prefWidth="105.0" text="Created On" />
-            <TableColumn fx:id="CustCreatedBy" prefWidth="40.0" text="Created By" />
-            <TableColumn fx:id="CustLastUpdate" prefWidth="105.0" text="Last Update" />
-            <TableColumn fx:id="CustLastUpdatedBy" prefWidth="40.0" text="Last Updated By" />
-        </columns>
-      </TableView>
-      <ComboBox fx:id="CountryCombo" layoutX="57.0" layoutY="91.0" prefWidth="150.0" promptText="Filter by country" />
-      <ComboBox fx:id="DivisionCombo" layoutX="231.0" layoutY="91.0" prefWidth="150.0" promptText="Filter by division" />
-      <Button layoutX="403.0" layoutY="91.0" mnemonicParsing="false" onAction="#onClearFiltersAction" text="Clear" />
-      <Button layoutX="77.0" layoutY="520.0" mnemonicParsing="false" onAction="#onNewCustomerAction" text="New Customer" />
-      <Button layoutX="192.0" layoutY="520.0" mnemonicParsing="false" onAction="#onEditCustomerAction" text="Edit Customer" />
-      <Button layoutX="303.0" layoutY="520.0" mnemonicParsing="false" onAction="#onDeleteCustomerAction" text="Delete Customer" />
-      <Button layoutX="827.0" layoutY="520.0" mnemonicParsing="false" onAction="#onAddApptAction" text="Add Appt" />
-      <Button layoutX="915.0" layoutY="520.0" mnemonicParsing="false" onAction="#onEditApptAction" text="Edit Appt" />
-      <Button layoutX="1001.0" layoutY="520.0" mnemonicParsing="false" onAction="#onDeleteApptAction" text="Delete Appt" />
+      <TitledPane animated="false" collapsible="false" layoutX="14.0" layoutY="81.0" prefHeight="485.0" prefWidth="745.0" text="Customers">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="743.0">
+               <children>
+                  <TableView fx:id="CustomerTable" layoutX="9.0" layoutY="45.0" prefHeight="370.0" prefWidth="725.0">
+                    <columns>
+                      <TableColumn fx:id="CustID" prefWidth="20.0" text="ID" />
+                      <TableColumn fx:id="CustName" prefWidth="115.0" text="Name" />
+                        <TableColumn fx:id="CustAddress" prefWidth="125.0" text="Address" />
+                        <TableColumn fx:id="CustPostal" prefWidth="45.0" text="Postal Code" />
+                        <TableColumn fx:id="CustPhone" prefWidth="80.0" text="Phone" />
+                        <TableColumn fx:id="CustDivision" prefWidth="95.0" text="Division" />
+                        <TableColumn fx:id="CustCreatedOn" prefWidth="71.0" text="Created On" />
+                        <TableColumn fx:id="CustCreatedBy" prefWidth="81.0" text="Created By" />
+                        <TableColumn fx:id="CustLastUpdate" prefWidth="74.0" text="Last Update" />
+                        <TableColumn fx:id="CustLastUpdatedBy" prefWidth="64.0" text="Last Updated By" />
+                    </columns>
+                  </TableView>
+                  <ComboBox fx:id="CountryCombo" layoutX="20.0" layoutY="10.0" prefWidth="150.0" promptText="Filter by country" />
+                  <ComboBox fx:id="DivisionCombo" layoutX="180.0" layoutY="10.0" prefWidth="150.0" promptText="Filter by division" />
+                  <Button layoutX="338.0" layoutY="10.0" mnemonicParsing="false" onAction="#onClearFiltersAction" text="Clear" />
+                  <Button layoutX="20.0" layoutY="424.0" mnemonicParsing="false" onAction="#onNewCustomerAction" text="New Customer" />
+                  <Button layoutX="125.0" layoutY="424.0" mnemonicParsing="false" onAction="#onEditCustomerAction" text="Edit Customer" />
+                  <Button layoutX="226.0" layoutY="424.0" mnemonicParsing="false" onAction="#onDeleteCustomerAction" text="Delete Customer" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+      <TitledPane layoutX="590.0" layoutY="584.0" prefHeight="150.0" prefWidth="350.0" text="Reports">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <RadioButton fx:id="ReportAppts" layoutX="33.0" layoutY="20.0" mnemonicParsing="false" text="appointments by type/month" />
+                  <RadioButton fx:id="ReportContacts" layoutX="33.0" layoutY="51.0" mnemonicParsing="false" text="contact schedules" />
+                  <RadioButton fx:id="ReportAdditional" layoutX="33.0" layoutY="80.0" mnemonicParsing="false" text="additional report" />
+                  <Button layoutX="251.0" layoutY="47.0" mnemonicParsing="false" onAction="#onGenerateReportAction" text="Generate" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+      <TitledPane animated="false" collapsible="false" layoutX="765.0" layoutY="80.0" prefHeight="485.0" prefWidth="820.0" text="Appointments">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="AppTable" layoutX="9.0" layoutY="45.0" prefHeight="370.0" prefWidth="800.0">
+                    <columns>
+                      <TableColumn fx:id="ID" prefWidth="20.0" text="ID" />
+                      <TableColumn fx:id="Title" prefWidth="85.0" text="Title" />
+                        <TableColumn fx:id="Desc" prefWidth="105.0" text="Desc" />
+                        <TableColumn fx:id="Location" prefWidth="75.0" text="Location" />
+                        <TableColumn fx:id="Contact" prefWidth="80.0" text="Contact" />
+                        <TableColumn fx:id="Type" prefWidth="105.0" text="Type" />
+                        <TableColumn fx:id="Start" prefWidth="105.0" text="Start" />
+                        <TableColumn fx:id="End" prefWidth="105.0" text="End" />
+                        <TableColumn fx:id="CustomerID" prefWidth="70.0" text="Customer ID" />
+                        <TableColumn fx:id="UserID" prefWidth="50.0" text="User ID" />
+                    </columns>
+                  </TableView>
+                  <RadioButton fx:id="Weekly" layoutX="20.0" layoutY="17.0" mnemonicParsing="false" text="Current Week" />
+                  <RadioButton fx:id="Monthly" layoutX="124.0" layoutY="17.0" mnemonicParsing="false" text="Current Month" />
+                  <RadioButton fx:id="AllAppts" layoutX="235.0" layoutY="17.0" mnemonicParsing="false" selected="true" text="All" />
+                  <Button layoutX="18.0" layoutY="424.0" mnemonicParsing="false" onAction="#onAddApptAction" text="Add Appt" />
+                  <Button layoutX="96.0" layoutY="424.0" mnemonicParsing="false" onAction="#onEditApptAction" text="Edit Appt" />
+                  <Button layoutX="172.0" layoutY="424.0" mnemonicParsing="false" onAction="#onDeleteApptAction" text="Delete Appt" />
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
    </children>
 </AnchorPane>

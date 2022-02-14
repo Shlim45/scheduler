@@ -10,6 +10,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
@@ -68,6 +70,11 @@ public class MainScreen implements Initializable {
     public TableColumn CustLastUpdatedBy;
     public TableColumn CustDivision;
 
+    // Reports
+    public RadioButton ReportAppts;
+    public RadioButton ReportContacts;
+    public RadioButton ReportAdditional;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.countries = FXCollections.observableArrayList(JDBC.loadCountries());
@@ -75,11 +82,11 @@ public class MainScreen implements Initializable {
         this.customers = FXCollections.observableArrayList(JDBC.loadCustomers(this.divisions));
         this.appts = FXCollections.observableArrayList(JDBC.loadAppointments());
 
-        final ToggleGroup radios = new ToggleGroup();
-        Weekly.setToggleGroup(radios);
-        Monthly.setToggleGroup(radios);
-        AllAppts.setToggleGroup(radios);
-        radios.selectedToggleProperty().addListener((ov, t, newToggle) -> {
+        final ToggleGroup apptRadios = new ToggleGroup();
+        Weekly.setToggleGroup(apptRadios);
+        Monthly.setToggleGroup(apptRadios);
+        AllAppts.setToggleGroup(apptRadios);
+        apptRadios.selectedToggleProperty().addListener((ov, t, newToggle) -> {
             if (newToggle == Weekly)
                 AppTable.setItems(Filtering.filterAppointmentsThisWeek(this.appts));
             else if (newToggle == Monthly)
@@ -164,6 +171,11 @@ public class MainScreen implements Initializable {
         });
         CustLastUpdatedBy.setCellValueFactory(new PropertyValueFactory<Customer,String>("lastUpdatedBy"));
         CustDivision.setCellValueFactory(new PropertyValueFactory<Customer,String>("division"));
+
+        final ToggleGroup reportRadios = new ToggleGroup();
+        ReportAppts.setToggleGroup(reportRadios);
+        ReportContacts.setToggleGroup(reportRadios);
+        ReportAdditional.setToggleGroup(reportRadios);
     }
 
     public void initUser(User user) {
@@ -420,5 +432,75 @@ public class MainScreen implements Initializable {
                     "Delete Appointment",
                     "There was an error when trying to delete the appointment.");
         }
+    }
+
+    public void showReportWindow(String title, String report) {
+        TextArea reportOutput = new TextArea();
+        reportOutput.setEditable(false);
+        reportOutput.setText(report);
+        reportOutput.setWrapText(true);
+        reportOutput.setLayoutX(10);
+        reportOutput.setLayoutY(10);
+        reportOutput.setPrefWidth(780);
+        reportOutput.setMinWidth(400);
+        reportOutput.setPrefHeight(580);
+        reportOutput.setMinHeight(400);
+
+        StackPane reportLayout = new StackPane();
+        reportLayout.getChildren().add(reportOutput);
+
+        Scene reportScene = new Scene(reportLayout, 800, 600);
+        Stage reportWindow = new Stage();
+        reportWindow.setTitle(title);
+        reportWindow.setScene(reportScene);
+        reportWindow.setMinWidth(420);
+        reportWindow.setMinHeight(450);
+
+        reportWindow.show();
+    }
+
+    private String generateApptReport() {
+        final StringBuilder report = new StringBuilder();
+        report.append("Total number of customer appointments by time and month.\n");
+        report.append("Testing multiline.\n");
+        report.append("And another test.\n");
+        report.append("Now I am testing word wrapping, and checking to be sure that the text area's width is what I want it to be.  I would like 10 pixels of padding around the entire text area.");
+        return report.toString();
+    }
+
+    private String generateContactsReport() {
+        final StringBuilder report = new StringBuilder();
+        report.append("A schedule for each contact in the organization that includes appointment ID, title, type, and description, start/end date/time, and customer ID.");
+        return report.toString();
+    }
+
+    private String generateCustomReport() {
+        final StringBuilder report = new StringBuilder();
+        report.append("Placeholder for a custom additional report.");
+        return report.toString();
+    }
+
+    public void onGenerateReportAction(ActionEvent actionEvent) {
+        final String windowTitle;
+        final String report;
+        if (ReportAppts.isSelected()) {
+            windowTitle = "Total of Customer Appointments";
+            report = generateApptReport();
+        }
+        else if (ReportContacts.isSelected()) {
+            windowTitle = "Schedule for each Contact";
+            report = generateContactsReport();
+
+        }
+        else if (ReportAdditional.isSelected()) {
+            windowTitle = "Additional Report";
+            report = generateCustomReport();
+        }
+        else {
+            Dialogs.alertUser(Alert.AlertType.WARNING, "Generate Report", "Select report type",
+                    "You must first choose a type of report to generate.");
+            return;
+        }
+        showReportWindow(windowTitle, report);
     }
 }
