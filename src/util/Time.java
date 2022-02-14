@@ -6,6 +6,7 @@ import model.Appointment;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -22,6 +23,9 @@ public abstract class Time {
         ZonedDateTime utcZTD = utcTime.toLocalDateTime().atZone(ZoneId.of("UTC"));
         return ZonedDateTime.ofInstant(utcZTD.toInstant(), ZoneId.systemDefault());
     }
+
+    public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
 
     public static String timeFormatting(String time) {
         if (time.indexOf(':') == -1)

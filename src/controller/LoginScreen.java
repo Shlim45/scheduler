@@ -82,6 +82,7 @@ public class LoginScreen implements Initializable {
         controller.initUser(user);
 
         stage.show();
+        controller.checkForUpcomingAppts();
     }
 
     public void onLoginAction(ActionEvent actionEvent) {

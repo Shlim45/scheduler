@@ -16,12 +16,15 @@ import javafx.util.StringConverter;
 import model.*;
 import util.Dialogs;
 import util.Filtering;
+import util.Time;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class MainScreen implements Initializable {
@@ -95,8 +98,6 @@ public class MainScreen implements Initializable {
         DivisionCombo.valueProperty().addListener(
                 (ov, t, newSelection) -> CustomerTable.setItems(Filtering.filterCustomersByDivision(this.customers, (Division) newSelection)));
 
-        final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
         ID.setCellValueFactory(new PropertyValueFactory<Appointment,Integer>("apptId"));
         Title.setCellValueFactory(new PropertyValueFactory<Appointment,String>("title"));
         Desc.setCellValueFactory(new PropertyValueFactory<Appointment,String>("desc"));
@@ -112,7 +113,7 @@ public class MainScreen implements Initializable {
                 if (item == null || empty)
                     setText(null);
                 else
-                    setText(dateFormatter.format(item));
+                    setText(Time.dateFormatter.format(item));
             }
         });
         End.setCellValueFactory(new PropertyValueFactory<Appointment, ZonedDateTime>("end"));
@@ -124,7 +125,7 @@ public class MainScreen implements Initializable {
                 if (item == null || empty)
                     setText(null);
                 else
-                    setText(dateFormatter.format(item));
+                    setText(Time.dateFormatter.format(item));
             }
         });
         CustomerID.setCellValueFactory(new PropertyValueFactory<Appointment,Integer>("customerId"));
@@ -144,7 +145,7 @@ public class MainScreen implements Initializable {
                 if (item == null || empty)
                     setText(null);
                 else
-                    setText(dateFormatter.format(item));
+                    setText(Time.dateFormatter.format(item));
             }
         });
         CustCreatedBy.setCellValueFactory(new PropertyValueFactory<Customer,String>("createdBy"));
@@ -158,7 +159,7 @@ public class MainScreen implements Initializable {
                 if (item == null || empty)
                     setText(null);
                 else
-                    setText(dateFormatter.format(item));
+                    setText(Time.dateFormatter.format(item));
             }
         });
         CustLastUpdatedBy.setCellValueFactory(new PropertyValueFactory<Customer,String>("lastUpdatedBy"));
@@ -169,7 +170,7 @@ public class MainScreen implements Initializable {
         this.user = user;
         LoginButton.setVisible(false);
         UserLabel.setVisible(true);
-        UserLabel.setText("Logged in as " + user.getUserName());
+        UserLabel.setText(String.format("Logged in as %s.", user.getUserName()));
 
         CountryCombo.setItems(this.countries);
         CountryCombo.setConverter(new StringConverter<Country>() {
@@ -208,6 +209,34 @@ public class MainScreen implements Initializable {
         AppTable.setItems(this.appts);
 
         CustomerTable.setItems(this.customers);
+    }
+
+    public void checkForUpcomingAppts() {
+        if (this.user != null && this.appts != null && this.appts.size() > 0) {
+            final ZonedDateTime now       = ZonedDateTime.now();
+            final ZonedDateTime timeFrame = now.plusMinutes(15);
+            String alertOutput = "You do not have any upcoming appointments within the next 15 minutes.";
+
+            for (final Appointment A : this.appts) {
+                if (A.getUserId() != this.user.getUserId())
+                    continue;
+                if ((A.getStart().isAfter(now) || A.getStart().isEqual(now))
+                        && A.getStart().isBefore(timeFrame)) {
+                    alertOutput = String.format("Customer ID %d has an appointment starting at %s on %s, %s.",
+                            A.getCustomerId(),
+                            A.getStart().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                            A.getStart().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                            A.getStart().toLocalDate().format(DateTimeFormatter.ofPattern("MM-dd-yyyy")));
+                    break;
+                }
+            }
+
+            Dialogs.alertUser(
+                    Alert.AlertType.INFORMATION,
+                    "Upcoming Appointments",
+                    "Upcoming Appointments",
+                    alertOutput);
+        }
     }
 
     public void onLoginAction(ActionEvent actionEvent) {
