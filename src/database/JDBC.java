@@ -328,4 +328,42 @@ public abstract class JDBC {
 
         return report.toString();
     }
+
+    public static String generateContactsReport() throws SQLException {
+        final StringBuilder report = new StringBuilder();
+        report.append("Schedules for each Contact:\n\n");
+
+        final String outputFormat = "%-20s %-8s %-20s %-20s %-20s %-20s %-20s %s";
+        report.append(String.format(outputFormat, "Contact", "Appt. ID", "Title", "Type", "Description", "Start (Local Time)", "End (Local Time)", "Customer ID\n"));
+        report.append("**************************************************************************************************************************************************\n");
+        try(ResultSet R = JDBC.queryConnection("SELECT contacts.Contact_ID, Contact_Name, Appointment_ID, Title, Type, Description, Start, End, Customer_ID FROM appointments "
+                +"RIGHT JOIN contacts ON contacts.Contact_ID = appointments.Contact_ID "
+                +"ORDER BY Contact_Name, Start")) {
+            int prevContactId = -1;
+            while (R.next()) {
+                final int contactId = R.getInt("Contact_ID");
+                boolean sameContact = prevContactId == contactId;
+                if (!sameContact)
+                    report.append('\n');
+                report.append(String.format(outputFormat,
+                        sameContact ? "" : R.getString("Contact_Name"),
+                        R.getInt("Appointment_ID"),
+                        R.getString("Title"),
+                        R.getString("Type"),
+                        R.getString("Description"),
+                        Time.toLocalTime(R.getTimestamp("Start")).format(Time.dateFormatter),
+                        Time.toLocalTime(R.getTimestamp("End")).format(Time.dateFormatter),
+                        R.getInt("Customer_ID"))).append('\n');
+                prevContactId = contactId;
+            }
+        }
+
+        return report.toString();
+    }
+
+    public static String generateCustomReport() {
+        final StringBuilder report = new StringBuilder();
+        report.append("Placeholder for a custom additional report.");
+        return report.toString();
+    }
 }

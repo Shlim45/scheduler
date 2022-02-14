@@ -436,23 +436,23 @@ public class MainScreen implements Initializable {
         }
     }
 
-    public void showReportWindow(String title, String report) {
+    public void showReportWindow(String title, String report, int width, int height) {
         TextArea reportOutput = new TextArea();
         reportOutput.setEditable(false);
         reportOutput.setText(report);
         reportOutput.setWrapText(true);
         reportOutput.setLayoutX(10);
         reportOutput.setLayoutY(10);
-        reportOutput.setPrefWidth(780);
+        reportOutput.setPrefWidth(width-20);
         reportOutput.setMinWidth(400);
-        reportOutput.setPrefHeight(580);
+        reportOutput.setPrefHeight(height-20);
         reportOutput.setMinHeight(400);
         reportOutput.setFont(Font.font("Monospaced", 16));
 
         StackPane reportLayout = new StackPane();
         reportLayout.getChildren().add(reportOutput);
 
-        Scene reportScene = new Scene(reportLayout, 800, 600);
+        Scene reportScene = new Scene(reportLayout, width, height);
         Stage reportWindow = new Stage();
         reportWindow.setTitle(title);
         reportWindow.setScene(reportScene);
@@ -462,25 +462,15 @@ public class MainScreen implements Initializable {
         reportWindow.show();
     }
 
-    private String generateContactsReport() {
-        final StringBuilder report = new StringBuilder();
-        report.append("A schedule for each contact in the organization that includes appointment ID, title, type, and description, start/end date/time, and customer ID.");
-        return report.toString();
-    }
-
-    private String generateCustomReport() {
-        final StringBuilder report = new StringBuilder();
-        report.append("Placeholder for a custom additional report.");
-        return report.toString();
-    }
-
     public void onGenerateReportAction(ActionEvent actionEvent) {
-        final String windowTitle;
-        final String report;
+        final String windowTitle, report;
+        final int width, height;
         if (ReportAppts.isSelected()) {
             windowTitle = "Total of Customer Appointments";
             try {
                 report = JDBC.generateApptReport();
+                width = 800;
+                height = 600;
             } catch (SQLException sqle) {
                 Dialogs.alertUser(Alert.AlertType.ERROR, "Error Generating Report", "Error Generating Report", "There was an error in generating the requested report.");
                 return;
@@ -488,18 +478,26 @@ public class MainScreen implements Initializable {
         }
         else if (ReportContacts.isSelected()) {
             windowTitle = "Schedule for each Contact";
-            report = generateContactsReport();
-
+            try {
+                report = JDBC.generateContactsReport();
+                width = 1500;
+                height = 600;
+            } catch (SQLException sqle) {
+                Dialogs.alertUser(Alert.AlertType.ERROR, "Error Generating Report", "Error Generating Report", "There was an error in generating the requested report.");
+                return;
+            }
         }
         else if (ReportAdditional.isSelected()) {
             windowTitle = "Additional Report";
-            report = generateCustomReport();
+            report = JDBC.generateCustomReport();
+            width = 800;
+            height = 600;
         }
         else {
             Dialogs.alertUser(Alert.AlertType.WARNING, "Generate Report", "Select report type",
                     "You must first choose a type of report to generate.");
             return;
         }
-        showReportWindow(windowTitle, report);
+        showReportWindow(windowTitle, report, width, height);
     }
 }
