@@ -288,7 +288,7 @@ public class MainScreen implements Initializable {
 
         // delete customer and associated appointments
         try {
-            JDBC.deleteCustomer(toDelete);
+            JDBC.deleteCustomerAndAppointments(toDelete);
             customers.remove(toDelete);
             appts = appts.filtered(z -> z.getCustomerId() != toDelete.getCustomerId());
             // TODO(jon): Is a popup appropriate?
@@ -361,5 +361,26 @@ public class MainScreen implements Initializable {
     }
 
     public void onDeleteApptAction(ActionEvent actionEvent) {
+        Appointment toDelete = (Appointment) AppTable.getSelectionModel().getSelectedItem();
+        if (toDelete == null) {
+            Dialogs.alertUser(
+                    Alert.AlertType.ERROR,
+                    "Delete Appointment",
+                    "Delete Appointment",
+                    "You must select an appointment to delete.");
+            return;
+        }
+        try {
+            JDBC.deleteAppointment(toDelete);
+            this.appts.remove(toDelete);
+        }
+        catch (SQLException sqle) {
+            System.err.println(sqle.getMessage());
+            Dialogs.alertUser(
+                    Alert.AlertType.ERROR,
+                    "Delete Appointment",
+                    "Delete Appointment",
+                    "There was an error when trying to delete the appointment.");
+        }
     }
 }

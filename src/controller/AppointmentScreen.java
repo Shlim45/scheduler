@@ -20,6 +20,7 @@ import util.Time;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -100,6 +101,8 @@ public class AppointmentScreen implements Initializable {
 
     private Appointment createAppointmentObject() {
         Appointment appt = new Appointment();
+        if (this.appointment != null)
+            appt.setApptId(this.appointment.getApptId());
         appt.setTitle(ApptTitle.getText());
         appt.setDesc(ApptDesc.getText());
         appt.setLocation(ApptLocation.getText());
@@ -190,40 +193,13 @@ public class AppointmentScreen implements Initializable {
     public void onSubmitAction(ActionEvent actionEvent) {
         final Appointment appt = createAppointmentObject();
 
-        if (appt.getStart().isAfter(appt.getEnd())) {
-            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Start Time before End Time",
-                    "This appointment's start time must be before its end time.");
-            return;
-        }
-        else if (!Time.isWithinBusinessHours(appt.getStart())) {
-            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Outside of Business Hours",
-                    "This appointment's start time is outside of business hours (8:00 a.m. - 10:00 p.m. EST).");
-            return;
-        }
-        else if (!Time.isWithinBusinessHours(appt.getEnd())) {
-            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Outside of Business Hours",
-                    "This appointment's end time is outside of business hours (8:00 a.m. - 10:00 p.m. EST).");
-            return;
-        }
-
-        // check all customer appointments for overlap
-        AtomicBoolean overlap = new AtomicBoolean(false);
-        this.customerAppts.forEach(a -> {
-            if (Time.timeOverlaps(a, appt)) {
-                Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Scheduling Conflict",
-                        "This appointment's time overlaps with an existing appointment.");
-                overlap.set(true);
-                return;
-            }
-        });
-
-        if (overlap.get())
+        if (Time.hasSchedulingErrors(appt, this.customerAppts))
             return;
 
         final boolean confirm = Dialogs.promptUser("Submit changes?",
                 "Are you sure you want to submit the appointment?");
         if (confirm) {
-            // TODO(jon): Start and End times are WRONG! had 8-9, ended with 19:00 for both
+            // TODO(jon): Start and End times are WRONG! had 8-9, inserted as 00 (improper time formatting)
             try {
                 if (this.appointment == null)
                     JDBC.insertAppointment(this.user, appt);
@@ -269,11 +245,13 @@ public class AppointmentScreen implements Initializable {
 
     public void onDateAction(ActionEvent actionEvent) {
         if (actionEvent.getSource() == StartDate) {
-            if (EndDate.getValue() == null)
+            if (EndDate.getValue() == null
+                    || (StartDate.getValue() != null && EndDate.getValue().isBefore(StartDate.getValue())))
                 EndDate.setValue(StartDate.getValue());
             StartTime.requestFocus();
         } else if (actionEvent.getSource() == EndDate) {
-            if (StartDate.getValue() == null)
+            if (StartDate.getValue() == null
+                    || (EndDate.getValue() != null && StartDate.getValue().isAfter(EndDate.getValue())))
                 StartDate.setValue(EndDate.getValue());
             EndTime.requestFocus();
         }
@@ -281,9 +259,30 @@ public class AppointmentScreen implements Initializable {
 
     public void onTimeAction(ActionEvent actionEvent) {
         if (actionEvent.getSource() == StartTime) {
-            StartTime.setText(Time.timeFormatting(StartTime.getText()));
-        } else if (actionEvent.getSource() == EndTime)
-            EndTime.setText(Time.timeFormatting(EndTime.getText()));
+            try {
+                StartTime.setText(Time.timeFormatting(StartTime.getText()));
+                LocalTime.parse(StartTime.getText());
+            }
+            catch (DateTimeException dte) {
+                Dialogs.alertUser(Alert.AlertType.ERROR, "Time Format Error", "Invalid Start Time",
+                        "This appointment's start time must be in the 24-hour format of hh:mm (i.e. 18:30).");
+                StartTime.requestFocus();
+                StartTime.selectAll();
+                return;
+            }
+        } else if (actionEvent.getSource() == EndTime) {
+            try {
+                EndTime.setText(Time.timeFormatting(EndTime.getText()));
+                LocalTime.parse(EndTime.getText());
+            }
+            catch (DateTimeException dte) {
+                Dialogs.alertUser(Alert.AlertType.ERROR, "Time Format Error", "Invalid End Time",
+                        "This appointment's end time must be in the 24-hour format of hh:mm (i.e. 18:30).");
+                EndTime.requestFocus();
+                EndTime.selectAll();
+                return;
+            }
+        }
 
         onEnterAction(actionEvent);
     }

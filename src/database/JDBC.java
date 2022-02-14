@@ -4,6 +4,8 @@ import model.*;
 import util.Time;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -126,7 +128,7 @@ public abstract class JDBC {
         }
     }
 
-    public static void deleteCustomer(Customer customer) throws SQLException {
+    public static void deleteCustomerAndAppointments(Customer customer) throws SQLException {
         final String deleteAppointments = "DELETE FROM client_schedule.appointments WHERE Customer_ID=?";
         try (PreparedStatement delete = connection.prepareStatement(deleteAppointments)) {
             delete.setInt(1, customer.getCustomerId());
@@ -268,8 +270,8 @@ public abstract class JDBC {
             insert.setString(2, appt.getDesc());
             insert.setString(3, appt.getLocation());
             insert.setString(4, appt.getType());
-            insert.setDate(5, java.sql.Date.valueOf(Time.toUTC(appt.getStart()).toLocalDate()));
-            insert.setDate(6, java.sql.Date.valueOf(Time.toUTC(appt.getEnd()).toLocalDate()));
+            insert.setTimestamp(5, Timestamp.valueOf(Time.toUTC(appt.getStart()).toLocalDateTime()));
+            insert.setTimestamp(6, Timestamp.valueOf(Time.toUTC(appt.getEnd()).toLocalDateTime()));
             insert.setString(7, user.getUserName());
             insert.setString(8, user.getUserName());
             insert.setInt(9, appt.getCustomerId());
@@ -289,25 +291,20 @@ public abstract class JDBC {
             update.setString(2, appt.getDesc());
             update.setString(3, appt.getLocation());
             update.setString(4, appt.getType());
-            update.setDate(5, java.sql.Date.valueOf(Time.toUTC(appt.getStart()).toLocalDate()));
-            update.setDate(6, java.sql.Date.valueOf(Time.toUTC(appt.getEnd()).toLocalDate()));
+            update.setTimestamp(5, Timestamp.valueOf(Time.toUTC(appt.getStart()).toLocalDateTime()));
+            update.setTimestamp(6, Timestamp.valueOf(Time.toUTC(appt.getEnd()).toLocalDateTime()));
             update.setString(7, user.getUserName());
             update.setInt(8, appt.getCustomerId());
             update.setInt(9, appt.getUserId());
             update.setInt(10, appt.getContactId());
+            update.setInt(11, appt.getApptId());
 
             update.executeUpdate();
         }
     }
 
     public static void deleteAppointment(Appointment appt) throws SQLException {
-        final String deleteAppointments = "DELETE FROM client_schedule.appointments WHERE Appointment_ID=?";
-        try (PreparedStatement delete = connection.prepareStatement(deleteAppointments)) {
-            delete.setInt(1, appt.getApptId());
-            delete.executeUpdate();
-        }
-
-        final String deleteAppointment = "DELETE FROM client_schedule.customers WHERE Appointment_ID=?";
+        final String deleteAppointment = "DELETE FROM client_schedule.appointments WHERE Appointment_ID=?";
         try (PreparedStatement delete = connection.prepareStatement(deleteAppointment)) {
             delete.setInt(1, appt.getApptId());
             delete.executeUpdate();
