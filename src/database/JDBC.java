@@ -310,4 +310,22 @@ public abstract class JDBC {
             delete.executeUpdate();
         }
     }
+
+    // reports
+
+    public static String generateApptReport() throws SQLException {
+        final StringBuilder report = new StringBuilder();
+        report.append("Total number of customer appointments by Type and Month:\n\n");
+
+        try(ResultSet R = JDBC.queryConnection("SELECT COUNT(*) AS Count, Type, MONTHNAME(Start) AS Month FROM appointments GROUP BY Type, Month")) {
+            while (R.next()) {
+                final int count = R.getInt("Count");
+                final String type = R.getString("Type");
+                final String month = R.getString("Month");
+                report.append(String.format("There %s %d %s appointment%s in %s.\n\n", count == 1 ? "is" : "are",count, type, count==1?"":"s", month));
+            }
+        }
+
+        return report.toString();
+    }
 }

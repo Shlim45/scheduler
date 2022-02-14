@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
@@ -22,6 +23,7 @@ import util.Time;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -445,6 +447,7 @@ public class MainScreen implements Initializable {
         reportOutput.setMinWidth(400);
         reportOutput.setPrefHeight(580);
         reportOutput.setMinHeight(400);
+        reportOutput.setFont(Font.font("Monospaced", 16));
 
         StackPane reportLayout = new StackPane();
         reportLayout.getChildren().add(reportOutput);
@@ -457,15 +460,6 @@ public class MainScreen implements Initializable {
         reportWindow.setMinHeight(450);
 
         reportWindow.show();
-    }
-
-    private String generateApptReport() {
-        final StringBuilder report = new StringBuilder();
-        report.append("Total number of customer appointments by time and month.\n");
-        report.append("Testing multiline.\n");
-        report.append("And another test.\n");
-        report.append("Now I am testing word wrapping, and checking to be sure that the text area's width is what I want it to be.  I would like 10 pixels of padding around the entire text area.");
-        return report.toString();
     }
 
     private String generateContactsReport() {
@@ -485,7 +479,12 @@ public class MainScreen implements Initializable {
         final String report;
         if (ReportAppts.isSelected()) {
             windowTitle = "Total of Customer Appointments";
-            report = generateApptReport();
+            try {
+                report = JDBC.generateApptReport();
+            } catch (SQLException sqle) {
+                Dialogs.alertUser(Alert.AlertType.ERROR, "Error Generating Report", "Error Generating Report", "There was an error in generating the requested report.");
+                return;
+            }
         }
         else if (ReportContacts.isSelected()) {
             windowTitle = "Schedule for each Contact";
