@@ -26,7 +26,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AppointmentScreen implements Initializable {
     public TextField  ApptId;
@@ -196,10 +195,9 @@ public class AppointmentScreen implements Initializable {
         if (Time.hasSchedulingErrors(appt, this.customerAppts))
             return;
 
-        final boolean confirm = Dialogs.promptUser("Submit changes?",
+        final boolean confirm = Dialogs.promptUser("Submit appointment?",
                 "Are you sure you want to submit the appointment?");
         if (confirm) {
-            // TODO(jon): Start and End times are WRONG! had 8-9, inserted as 00 (improper time formatting)
             try {
                 if (this.appointment == null)
                     JDBC.insertAppointment(this.user, appt);

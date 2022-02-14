@@ -369,10 +369,19 @@ public class MainScreen implements Initializable {
                     "Delete Appointment",
                     "You must select an appointment to delete.");
             return;
+        } else {
+            final boolean confirm = Dialogs.promptUser("Delete Appointment", String.format("Are you sure you want to delete the appointment with ID %d?", toDelete.getApptId()));
+            if (!confirm)
+                return;
         }
         try {
             JDBC.deleteAppointment(toDelete);
             this.appts.remove(toDelete);
+            Dialogs.alertUser(
+                    Alert.AlertType.INFORMATION,
+                    "Appointment Cancelled",
+                    "Appointment Cancelled",
+                            String.format("The following appointment has been cancelled:\nID: %d Type: %s", toDelete.getApptId(), toDelete.getType()));
         }
         catch (SQLException sqle) {
             System.err.println(sqle.getMessage());
