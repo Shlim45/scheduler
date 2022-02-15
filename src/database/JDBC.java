@@ -4,12 +4,17 @@ import model.*;
 import util.Time;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Contains methods for accessing the database.
+ * The JDBC class contains methods for database operations such as
+ * opening and closing a connection, querying, and specific results.
+ *
+ * @author Jonathan Hawranko
+ */
 public abstract class JDBC {
     private static final String protocol = "jdbc";
     private static final String vendor = ":mysql:";
@@ -21,6 +26,9 @@ public abstract class JDBC {
     private static String password = "Passw0rd!"; // Password
     public static Connection connection;  // Connection Interface
 
+    /**
+     * Opens a connection to the database.
+     */
     public static void openConnection()
     {
         try {
@@ -34,6 +42,9 @@ public abstract class JDBC {
         }
     }
 
+    /**
+     * Closes the open connection to the database.
+     */
     public static void closeConnection() {
         try {
             connection.close();
@@ -45,6 +56,13 @@ public abstract class JDBC {
         }
     }
 
+    /**
+     * Creates a <b>Statement</b> object, queries the database, and returns the <b>ResultSet</b>.
+     *
+     * @param query The SQL statement for the desired database query.
+     * @return a <b>ResultSet</b> with the results of the query
+     * @throws SQLException on SQL syntax error
+     */
     public static ResultSet queryConnection(String query) throws SQLException {
         try {
             Statement S = connection.createStatement();
@@ -57,11 +75,17 @@ public abstract class JDBC {
         }
     }
 
+    /**
+     * Loads all Customers from the database.
+     *
+     * @param divisions A list of all <b>Division</b>s
+     * @return A List of <b>Customer</b> objects
+     */
     public static List<Customer> loadCustomers(List<Division> divisions) {
         final List<Customer> customers = new ArrayList<>();
 
-        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.customers "
-                +"LEFT JOIN client_schedule.first_level_divisions ON customers.Division_ID = first_level_divisions.Division_ID")) {
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM customers "
+                +"LEFT JOIN first_level_divisions ON customers.Division_ID = first_level_divisions.Division_ID")) {
             while (R.next()) {
                 Customer C = new Customer(R.getInt("Customer_ID"));
                 C.setName(R.getString("Customer_Name"));
@@ -94,8 +118,15 @@ public abstract class JDBC {
         return customers;
     }
 
+    /**
+     * Adds a new Customer to the database.
+     *
+     * @param user The User creating the new Customer
+     * @param customer The new Customer
+     * @throws SQLException on SQL syntax error
+     */
     public static void insertCustomer(User user, Customer customer) throws SQLException {
-        final String newCustomer = "INSERT INTO client_schedule.customers "
+        final String newCustomer = "INSERT INTO customers "
                 +"(Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By, Last_Update, Last_Updated_By, Division_ID) "
                 +"VALUES (?,?,?,?,NOW(),?,NOW(),?,?)";
         try (PreparedStatement insert = connection.prepareStatement(newCustomer)) {
@@ -111,8 +142,15 @@ public abstract class JDBC {
         }
     }
 
+    /**
+     * Updates a customer in the database.
+     *
+     * @param user The User updating the Customer
+     * @param customer The Customer to update
+     * @throws SQLException on SQL syntax error
+     */
     public static void updateCustomer(User user, Customer customer) throws SQLException {
-        final String editCustomer = "UPDATE client_schedule.customers "
+        final String editCustomer = "UPDATE customers "
                 +"SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Last_Update = NOW(), Last_Updated_By = ?, Division_ID = ? "
                 +"WHERE Customer_ID = ?";
         try (PreparedStatement update = connection.prepareStatement(editCustomer)) {
@@ -128,24 +166,35 @@ public abstract class JDBC {
         }
     }
 
+    /**
+     * Deletes a customer and any associated appointments.
+     *
+     * @param customer The Customer to delete
+     * @throws SQLException On SQL syntax error
+     */
     public static void deleteCustomerAndAppointments(Customer customer) throws SQLException {
-        final String deleteAppointments = "DELETE FROM client_schedule.appointments WHERE Customer_ID=?";
+        final String deleteAppointments = "DELETE FROM appointments WHERE Customer_ID=?";
         try (PreparedStatement delete = connection.prepareStatement(deleteAppointments)) {
             delete.setInt(1, customer.getCustomerId());
             delete.executeUpdate();
         }
 
-        final String deleteCustomer = "DELETE FROM client_schedule.customers WHERE Customer_ID=?";
+        final String deleteCustomer = "DELETE FROM customers WHERE Customer_ID=?";
         try (PreparedStatement delete = connection.prepareStatement(deleteCustomer)) {
             delete.setInt(1, customer.getCustomerId());
             delete.executeUpdate();
         }
     }
 
+    /**
+     * Loads all Countries from the database.
+     *
+     * @return A List of <b>Country</b> objects
+     */
     public static List<Country> loadCountries() {
         List<Country> countries = new ArrayList<>();
 
-        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.countries")) {
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM countries")) {
             while (R.next()) {
                 Country C = new Country(R.getInt("Country_ID"));
                 C.setCountry(R.getString("Country"));
@@ -168,10 +217,16 @@ public abstract class JDBC {
 
         return countries;
     }
+
+    /**
+     * Loads all Divisions from the database.
+     *
+     * @return A List of <b>Division</b> objects
+     */
     public static List<Division> loadDivisions() {
         List<Division> divisions = new ArrayList<>();
 
-        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.first_level_divisions")) {
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM first_level_divisions")) {
             while (R.next()) {
                 Division D = new Division(R.getInt("Division_ID"));
                 D.setDivision(R.getString("Division"));
@@ -197,10 +252,15 @@ public abstract class JDBC {
         return divisions;
     }
 
+    /**
+     * Loads all Contacts from the database.
+     *
+     * @return A List of <b>Contact</b> objects
+     */
     public static List<Contact> loadContacts() {
         List<Contact> contacts = new ArrayList<>();
 
-        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.contacts")) {
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM contacts")) {
             while (R.next()) {
                 Contact C = new Contact(R.getInt("Contact_ID"));
                 C.setName(R.getString("Contact_Name"));
@@ -217,11 +277,16 @@ public abstract class JDBC {
         return contacts;
     }
 
+    /**
+     * Loads all Appointments from the database.
+     *
+     * @return A List of <b>Appointment</b> objects
+     */
     public static List<Appointment> loadAppointments() {
         List<Appointment> appointments = new ArrayList<>();
 
-        try(ResultSet R = JDBC.queryConnection("SELECT * FROM client_schedule.appointments "
-                +"LEFT JOIN client_schedule.contacts ON appointments.Contact_ID = contacts.Contact_ID;")) {
+        try(ResultSet R = JDBC.queryConnection("SELECT * FROM appointments "
+                +"LEFT JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID;")) {
             while (R.next()) {
                 Appointment A = new Appointment(R.getInt("Appointment_ID"));
                 A.setTitle(R.getString("Title"));
@@ -259,8 +324,15 @@ public abstract class JDBC {
         return appointments;
     }
 
+    /**
+     * Adds a new appointment to the database.
+     *
+     * @param user The user creating the new Appointment
+     * @param appt The new Appointment
+     * @throws SQLException On SQL syntax error
+     */
     public static void insertAppointment(User user, Appointment appt) throws SQLException {
-        final String newAppointment = "INSERT INTO client_schedule.appointments "
+        final String newAppointment = "INSERT INTO appointments "
                 +"(Title, Description, Location, Type, Start, End, "
                 +"Create_Date, Created_By, Last_Update, Last_Updated_By, "
                 +"Customer_ID, User_ID, Contact_ID) "
@@ -282,8 +354,15 @@ public abstract class JDBC {
         }
     }
 
+    /**
+     * Updates an appointment in the database.
+     *
+     * @param user The User updating the Appointment
+     * @param appt The Appointment to update
+     * @throws SQLException On SQL syntax error
+     */
     public static void updateAppointment(User user, Appointment appt) throws SQLException {
-        final String editAppointment = "UPDATE client_schedule.appointments "
+        final String editAppointment = "UPDATE appointments "
                 +"SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Last_Update = NOW(), Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? "
                 +"WHERE Appointment_ID = ?";
         try (PreparedStatement update = connection.prepareStatement(editAppointment)) {
@@ -303,8 +382,14 @@ public abstract class JDBC {
         }
     }
 
+    /**
+     * Deletes an appointment from the database.
+     *
+     * @param appt The Appointment to delete
+     * @throws SQLException On SQL syntax error
+     */
     public static void deleteAppointment(Appointment appt) throws SQLException {
-        final String deleteAppointment = "DELETE FROM client_schedule.appointments WHERE Appointment_ID=?";
+        final String deleteAppointment = "DELETE FROM appointments WHERE Appointment_ID=?";
         try (PreparedStatement delete = connection.prepareStatement(deleteAppointment)) {
             delete.setInt(1, appt.getApptId());
             delete.executeUpdate();
@@ -313,6 +398,12 @@ public abstract class JDBC {
 
     // reports
 
+    /**
+     * Generates a report with the Count, Type, and Month of all appointments.
+     *
+     * @return The report output
+     * @throws SQLException On SQL syntax error
+     */
     public static String generateApptReport() throws SQLException {
         final StringBuilder report = new StringBuilder();
         report.append("Total number of customer appointments by Type and Month:\n\n");
@@ -329,6 +420,12 @@ public abstract class JDBC {
         return report.toString();
     }
 
+    /**
+     * Generates a report with each Contact's appointments.
+     *
+     * @return The report output
+     * @throws SQLException On SQL syntax error
+     */
     public static String generateContactsReport() throws SQLException {
         final StringBuilder report = new StringBuilder();
         report.append("Schedules for each Contact:\n\n");
@@ -361,6 +458,11 @@ public abstract class JDBC {
         return report.toString();
     }
 
+    /**
+     * Generates a custom report.
+     *
+     * @return The report output
+     */
     public static String generateCustomReport() {
         final StringBuilder report = new StringBuilder();
         report.append("Placeholder for a custom additional report.");

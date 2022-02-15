@@ -10,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -23,7 +22,6 @@ import util.Time;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +29,11 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * The controller class for the MainScreen view.
+ *
+ * @author Jonathan Hawranko
+ */
 public class MainScreen implements Initializable {
     private User       user;
     private ObservableList<Appointment> appts;
@@ -77,6 +80,13 @@ public class MainScreen implements Initializable {
     public RadioButton ReportContacts;
     public RadioButton ReportAdditional;
 
+    /**
+     * Initializes the Main Screen.
+     * Loads all countries, divisions, customers, and appointments, and sets up the Combo Boxes and Tables.
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.countries = FXCollections.observableArrayList(JDBC.loadCountries());
@@ -180,6 +190,12 @@ public class MainScreen implements Initializable {
         ReportAdditional.setToggleGroup(reportRadios);
     }
 
+    /**
+     * Sets the active user. This method hides the Login button, displays the current
+     * username, and populates the Combo Boxes and Tables.
+     *
+     * @param user The logged-in user
+     */
     public void initUser(User user) {
         this.user = user;
         LoginButton.setVisible(false);
@@ -225,6 +241,9 @@ public class MainScreen implements Initializable {
         CustomerTable.setItems(this.customers);
     }
 
+    /**
+     * Checks for upcoming appointments. Checks the logged-in user's appointments for an appointment beginning within 15 minutes.
+     */
     public void checkForUpcomingAppts() {
         if (this.user != null && this.appts != null && this.appts.size() > 0) {
             final ZonedDateTime now       = ZonedDateTime.now();
@@ -253,6 +272,11 @@ public class MainScreen implements Initializable {
         }
     }
 
+    /**
+     * Shows the Login Screen.
+     *
+     * @param actionEvent
+     */
     public void onLoginAction(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoginScreen.fxml"));
@@ -267,6 +291,11 @@ public class MainScreen implements Initializable {
         }
     }
 
+    /**
+     * Clears any filters applied to the Customer Table.
+     *
+     * @param actionEvent
+     */
     public void onClearFiltersAction(ActionEvent actionEvent) {
         CountryCombo.getSelectionModel().clearSelection();
         DivisionCombo.getSelectionModel().clearSelection();
@@ -277,6 +306,13 @@ public class MainScreen implements Initializable {
 
     // Customer Actions
 
+    /**
+     * Shows the Customer Screen.
+     * If <b>customer</b> is null, user can create a new Customer.
+     * Otherwise, the form is populated with the customer's data for editing.
+     *
+     * @param customer The customer to edit, or null
+     */
     public void showCustomerScreen(Customer customer) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CustomerScreen.fxml"));
@@ -293,11 +329,23 @@ public class MainScreen implements Initializable {
         }
     }
 
+    /**
+     * Handles the <b>New</b> customer button action.
+     *
+     * @see #showCustomerScreen(Customer)
+     * @param actionEvent
+     */
     public void onNewCustomerAction(ActionEvent actionEvent) {
         ((Node) actionEvent.getSource()).getScene().getWindow().hide();
         showCustomerScreen(null);
     }
 
+    /**
+     * Handles the <b>Edit</b> customer button action.
+     *
+     * @see #showCustomerScreen(Customer)
+     * @param actionEvent
+     */
     public void onEditCustomerAction(ActionEvent actionEvent) {
         Customer toEdit = (Customer) CustomerTable.getSelectionModel().getSelectedItem();
         if (toEdit == null) {
@@ -312,6 +360,12 @@ public class MainScreen implements Initializable {
         showCustomerScreen(toEdit);
     }
 
+    /**
+     * Handles the <b>Delete</b> customer button action.
+     * Deletes a customer and appointments.
+     *
+     * @param actionEvent
+     */
     public void onDeleteCustomerAction(ActionEvent actionEvent) {
         Customer toDelete = (Customer) CustomerTable.getSelectionModel().getSelectedItem();
         if (toDelete == null) {
@@ -353,6 +407,14 @@ public class MainScreen implements Initializable {
 
     // Appointment Actions
 
+    /**
+     * Shows the Appointment Screen.
+     * If <b>appointment</b> is null, user can create a new appointment for the given customer.
+     * Otherwise, the form is populated with the customer's appointment data for editing.
+     *
+     * @param customer The customer with the appointment
+     * @param appointment The appointment to edit, or null
+     */
     public void showAppointmentScreen(Customer customer, Appointment appointment) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AppointmentScreen.fxml"));
@@ -375,6 +437,12 @@ public class MainScreen implements Initializable {
         }
     }
 
+    /**
+     * Handles the <b>Add</b> appointment button action.
+     *
+     * @see #showAppointmentScreen(Customer, Appointment)
+     * @param actionEvent
+     */
     public void onAddApptAction(ActionEvent actionEvent) {
         Customer customer = (Customer) CustomerTable.getSelectionModel().getSelectedItem();
         if (customer == null) {
@@ -389,6 +457,12 @@ public class MainScreen implements Initializable {
         showAppointmentScreen(customer, null);
     }
 
+    /**
+     * Handles the <b>Edit</b> appointment button action.
+     * 
+     * @see #showAppointmentScreen(Customer, Appointment)
+     * @param actionEvent
+     */
     public void onEditApptAction(ActionEvent actionEvent) {
         Appointment toEdit = (Appointment) AppTable.getSelectionModel().getSelectedItem();
         if (toEdit == null) {
@@ -403,6 +477,12 @@ public class MainScreen implements Initializable {
         showAppointmentScreen(null, toEdit);
     }
 
+    /**
+     * Handles the <b>Delete</b> appointment button action.
+     * Deletes a customer's appointment.
+     *
+     * @param actionEvent
+     */
     public void onDeleteApptAction(ActionEvent actionEvent) {
         Appointment toDelete = (Appointment) AppTable.getSelectionModel().getSelectedItem();
         if (toDelete == null) {
@@ -436,6 +516,14 @@ public class MainScreen implements Initializable {
         }
     }
 
+    /**
+     * Shows a modal window containing a generated report's output.
+     * 
+     * @param title The title of the modal window
+     * @param report The report to display
+     * @param width The width, in pixels, of the modal window
+     * @param height The height, in pixels, of the modal window
+     */
     public void showReportWindow(String title, String report, int width, int height) {
         TextArea reportOutput = new TextArea();
         reportOutput.setEditable(false);
@@ -462,6 +550,13 @@ public class MainScreen implements Initializable {
         reportWindow.show();
     }
 
+    /**
+     * Handles generating a report based on the selected radio button,
+     * and displaying it in a modal window.
+     * 
+     * @see #showReportWindow(String, String, int, int) 
+     * @param actionEvent
+     */
     public void onGenerateReportAction(ActionEvent actionEvent) {
         final String windowTitle, report;
         final int width, height;
