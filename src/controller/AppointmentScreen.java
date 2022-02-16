@@ -27,6 +27,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ResourceBundle;
 
+/**
+ * The controller class for the AppointmentScreen view.
+ *
+ * @author Jonathan Hawranko
+ */
 public class AppointmentScreen implements Initializable {
     public TextField  ApptId;
     public TextField  ApptTitle;
@@ -47,22 +52,53 @@ public class AppointmentScreen implements Initializable {
     private ObservableList<Appointment> customerAppts;
     private ObservableList<Contact>     contacts;
 
+    /**
+     * Initializes the Appointment Screen.
+     * If creating a new appointment, the customer ID field is populated.  If modifying
+     * an existing appointment, all fields are populated.
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contacts = FXCollections.observableArrayList(JDBC.loadContacts());
     }
 
+    /**
+     * Sets the active user. This is the user who will be tied to the creation or
+     * modification of the appointment.
+     *
+     * @param user The logged-in user
+     */
     public void setUser(User user) { this.user = user; }
 
+    /**
+     * Sets the customer to whom this appointment pertains.
+     *
+     * @param customer The appointment's customer
+     */
     public void setCustomer(Customer customer) {
         this.customer = customer;
         populateFields();
     }
 
+    /**
+     * Sets the list of existing appointments for the customer. This is used in
+     * checking for scheduling conflicts.
+     *
+     * @param appts The customer's existing appointments
+     */
     public void setCustomerAppointments(ObservableList<Appointment> appts) {
         this.customerAppts = appts;
     }
 
+    /**
+     * Sets the appointment to modify.  Pre-populates all fields on the form
+     * with data.
+     *
+     * @param appt
+     */
     public void setAppointment(Appointment appt) {
         this.appointment = appt;
         populateFields();
@@ -116,6 +152,15 @@ public class AppointmentScreen implements Initializable {
         return appt;
     }
 
+    /**
+     * Called when user presses ENTER key on the form.  Checks for next empty
+     * value and requests focus on that textbox.  Performs input validation
+     * on ID and time fields.  
+     * Submits form if all fields filled.
+     *
+     * @see #onSubmitAction(ActionEvent) 
+     * @param actionEvent
+     */
     public void onEnterAction(ActionEvent actionEvent) {
         if (ApptTitle.getText().length() == 0) {
             ApptTitle.requestFocus();
@@ -189,6 +234,11 @@ public class AppointmentScreen implements Initializable {
         onSubmitAction(actionEvent);
     }
 
+    /**
+     * Submits the appointment to the database. Prompts the user for confirmation.
+     *
+     * @param actionEvent
+     */
     public void onSubmitAction(ActionEvent actionEvent) {
         final Appointment appt = createAppointmentObject();
 
@@ -213,6 +263,11 @@ public class AppointmentScreen implements Initializable {
         }
     }
 
+    /**
+     * Cancels operation and closes window.  Prompts the user for confirmation.
+     *
+     * @param actionEvent
+     */
     public void onCancelAction(ActionEvent actionEvent) {
         final boolean confirm = Dialogs.promptUser("Lose all changes?",
                 "Are you sure you want to cancel and lose all changes?");
@@ -241,6 +296,14 @@ public class AppointmentScreen implements Initializable {
 
     }
 
+    /**
+     * Called when a Start/End date is changed. If an entered start date
+     * is after an end date, the end date is changed to the start date.
+     * If an entered end date is before a start date, the start date is
+     * changed to the end date.
+     *
+     * @param actionEvent
+     */
     public void onDateAction(ActionEvent actionEvent) {
         if (actionEvent.getSource() == StartDate) {
             if (EndDate.getValue() == null
@@ -255,6 +318,12 @@ public class AppointmentScreen implements Initializable {
         }
     }
 
+    /**
+     * Called when a Start/End time is changed. Checks for and applies
+     * proper formatting.  Alerts user if format cannot be implied.
+     *
+     * @param actionEvent
+     */
     public void onTimeAction(ActionEvent actionEvent) {
         if (actionEvent.getSource() == StartTime) {
             try {
