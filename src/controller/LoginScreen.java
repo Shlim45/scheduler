@@ -21,6 +21,11 @@ import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.*;
 
+/**
+ * The controller for the LoginScreen view.
+ *
+ * @author Jonathan Hawranko
+ */
 public class LoginScreen implements Initializable {
     public Label     Header;
     public Label     User;
@@ -32,6 +37,15 @@ public class LoginScreen implements Initializable {
     public Label     Information;
     private ResourceBundle rb;
 
+    /**
+     * Initializes the Login Screen.
+     * Determines the users ZoneId and Locale, loads the appropriate
+     * resource files, changes the language of all labels and
+     * displays the users Time Zone.
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -51,6 +65,15 @@ public class LoginScreen implements Initializable {
 
     }
 
+    /**
+     * Called when user presses ENTER key on the form.  Displays a warning
+     * to the user if a username or password is not entered.
+     *
+     * Submits form if all fields filled.
+     *
+     * @see #onLoginAction(ActionEvent)
+     * @param actionEvent
+     */
     public void onEnterAction(ActionEvent actionEvent) {
         Information.setText("");
         final Object aSource = actionEvent.getSource();
@@ -86,6 +109,13 @@ public class LoginScreen implements Initializable {
         controller.checkForUpcomingAppts();
     }
 
+    /**
+     * Checks the database for the username/password combination.  If found,
+     * creates a new User object, passes it to the Main Screen and closes
+     * the Login Screen.
+     *
+     * @param actionEvent
+     */
     public void onLoginAction(ActionEvent actionEvent) {
         Information.setText("");
         final String uName = Username.getText();

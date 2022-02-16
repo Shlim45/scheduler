@@ -24,6 +24,11 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ * The controller class for the CustomerScreen view.
+ *
+ * @author Jonathan Hawranko
+ */
 public class CustomerScreen implements Initializable {
     public TextField CustomerID;
     public TextField Name;
@@ -39,21 +44,45 @@ public class CustomerScreen implements Initializable {
     private ObservableList<Country>  countries;
     private ObservableList<Division> divisions;
 
+    /**
+     * Initializes the Customer Screen.  Applies an action listener to
+     * the Countries combo box, filtering divisions when a Country is
+     * selected.
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         CountryCombo.valueProperty().addListener(
                 (ov, prevSelection, newSelection) -> DivisionCombo.setItems(Filtering.filterDivisionsByCountry(divisions, (Country) newSelection)));
     }
 
+    /**
+     * Sets the customer to modify.  Pre-populates all fields with Customer data.
+     * @param customer
+     */
     public void setCustomer(Customer customer) {
         this.customer = customer;
         populateFields();
     }
 
+    /**
+     * Sets the active user.  This is the user who will be tied to the creation or
+     * modification of the customer.
+     *
+     * @param user The logged-in user
+     */
     public void setUser(User user) {
         this.user = user;
     }
 
+    /**
+     * Sets the available countries and top-level divisions.
+     *
+     * @param C The list of Countries
+     * @param D The list of Top-Level Divisions
+     */
     public void passCountriesAndDivisions(ObservableList<Country> C, ObservableList<Division> D) {
         this.countries = C;
         this.divisions = D;
@@ -121,6 +150,14 @@ public class CustomerScreen implements Initializable {
         }
     }
 
+    /**
+     * Called when user presses ENTER key on the form.  Checks for next empty
+     * value and requests focus on that textbox.  
+     * Submits form if all fields filled.
+     *
+     * @see #onSubmitAction(ActionEvent) 
+     * @param actionEvent
+     */
     public void onEnterAction(ActionEvent actionEvent) {
         final String name       = Name.getText();
         final String address    = Address.getText();
@@ -145,6 +182,11 @@ public class CustomerScreen implements Initializable {
             onSubmitAction(actionEvent);
     }
 
+    /**
+     * Submits the customer to the database.  Prompts the user for confirmation.
+     *
+     * @param actionEvent
+     */
     public void onSubmitAction(ActionEvent actionEvent) {
         final boolean newCustomer = this.customer == null;
         final String header = newCustomer ? "Create new customer?" : "Submit changes to customer?";
@@ -188,6 +230,11 @@ public class CustomerScreen implements Initializable {
         showMainWindow();
     }
 
+    /**
+     * Cancels operation and closes window.  Prompts the user for confirmation.
+     *
+     * @param actionEvent
+     */
     public void onCancelAction(ActionEvent actionEvent) {
         final boolean confirm = Dialogs.promptUser("Lose all changes?",
                 "Are you sure you want to cancel and lose all changes?");
