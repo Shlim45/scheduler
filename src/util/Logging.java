@@ -3,9 +3,25 @@ package util;
 import java.io.*;
 import java.time.ZonedDateTime;
 
-public abstract class Tracking {
+/**
+ * Class used for Logging.  Logs all login activity to a file on local storage.
+ *
+ * @author Jonathan Hawranko
+ */
+public abstract class Logging {
+    /**
+     * Name of file to store log activity locally.
+     */
     public static final String filename = "login_activity.txt";
 
+    /**
+     * Writes to a file on local storage who attempted to log in,
+     * and whether it was successful or not.
+     *
+     * @see #filename
+     * @param username username of User
+     * @param success true if successful login, false otherwise
+     */
     public static void logUserLoginAttempt(String username, boolean success) {
         final String output = String.format("%s login attempt for user '%s' at %s\r\n",
                 success ? "Successful" : "Failed",

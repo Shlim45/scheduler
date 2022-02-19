@@ -10,23 +10,55 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Class for working with Time.
+ *
+ * @author Jonathan Hawranko
+ */
 public abstract class Time {
+    /**
+     * Converts Time to UTC.
+     *
+     * @param localTime time to convert
+     * @return utc time
+     */
     public static ZonedDateTime toUTC(ZonedDateTime localTime) {
         return ZonedDateTime.ofInstant(localTime.toInstant(), ZoneId.of("UTC"));
     }
 
+    /**
+     * Converts Time to local.
+     *
+     * @param utcTime time to convert
+     * @return local time
+     */
     public static ZonedDateTime toLocalTime(ZonedDateTime utcTime) {
         return ZonedDateTime.ofInstant(utcTime.toInstant(), ZoneId.systemDefault());
     }
 
+    /**
+     * Converts Time to local.
+     *
+     * @param utcTime timestamp to convert
+     * @return local time
+     */
     public static ZonedDateTime toLocalTime(Timestamp utcTime) {
         ZonedDateTime utcZTD = utcTime.toLocalDateTime().atZone(ZoneId.of("UTC"));
         return ZonedDateTime.ofInstant(utcZTD.toInstant(), ZoneId.systemDefault());
     }
 
+    /**
+     * Returns the proper date formatter used for the project.
+     */
     public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-
+    /**
+     * Formats a String object representing Time.  Will enforce the format
+     * of HH:mm, in 24-hour format.
+     *
+     * @param time String representation of time
+     * @return formatted time
+     */
     public static String timeFormatting(String time) {
         if (time.indexOf(':') == -1)
             time = time + ":00";
@@ -46,11 +78,24 @@ public abstract class Time {
         return hr + ':' + min;
     }
 
+    /**
+     * Checks if a Time is within the business hours of 8AM - 10PM EST.
+     *
+     * @param toCheck time to check
+     * @return true if within business hours, false otherwise
+     */
     public static boolean isWithinBusinessHours(ZonedDateTime toCheck) {
         toCheck = ZonedDateTime.ofInstant(toCheck.toInstant(), ZoneId.of("America/New_York"));
         return (toCheck.getHour() >= 8 && toCheck.getHour() <= 22);
     }
 
+    /**
+     * Checks if 2 appointments have any overlap in their Start and End times.
+     *
+     * @param a appointment to check for
+     * @param b appointment to check against
+     * @return true if overlap, false otherwise
+     */
     public static boolean timeOverlaps(Appointment a, Appointment b) {
         // ensure both are in local time
         ZonedDateTime aStart = toLocalTime(a.getStart());
@@ -75,6 +120,17 @@ public abstract class Time {
         return false;
     }
 
+    /**
+     * Checks if an Appointment has any scheduling errors.  Scheduling Errors include
+     * Start time not before End time, invalid dates that already passed, outside of 
+     * business hours, and appointment overlaps for the same customer.
+     * 
+     * @see #isWithinBusinessHours(ZonedDateTime)
+     * @see #timeOverlaps(Appointment, Appointment) 
+     * @param toCheck the appointment to check
+     * @param custAppts a list of the customers appointments
+     * @return
+     */
     public static boolean hasSchedulingErrors(Appointment toCheck, List<Appointment> custAppts) {
         if (toCheck.getStart().isAfter(toCheck.getEnd())) {
             Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Start Time before End Time",

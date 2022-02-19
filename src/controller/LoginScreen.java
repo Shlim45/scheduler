@@ -12,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.User;
-import util.Tracking;
+import util.Logging;
 
 import java.io.IOException;
 import java.net.URL;
@@ -147,11 +147,11 @@ public class LoginScreen implements Initializable {
         }
         catch (LoginException le) {
             Information.setText(le.getMessage());
-            Tracking.logUserLoginAttempt(uName, false);
+            Logging.logUserLoginAttempt(uName, false);
         }
         finally {
             if (user != null) {
-                Tracking.logUserLoginAttempt(uName, true);
+                Logging.logUserLoginAttempt(uName, true);
                 try {
                     showMainWindow(user);
                     ((Node) actionEvent.getSource()).getScene().getWindow().hide();
