@@ -83,6 +83,15 @@ public class MainScreen implements Initializable {
     /**
      * Initializes the Main Screen.
      * Loads all countries, divisions, customers, and appointments, and sets up the Combo Boxes and Tables.
+     * <br /><br />
+     * Uses a lambda function to add a change listener to the radio button ToggleGroups.
+     * The lambda used for <i>apptRadios</i> determines which radio button has been selected,
+     * and filters the appointments by current week or month.<br />
+     * The lambda used for <i>CountryCombo</i> determines selected Country,
+     * and filters <i>DivisionCombo</i> and <i>CustomerTable</i> by the selected Country.<br />
+     * The lambda used for <i>DivisionCombo</i> determines selected Division,
+     * and filters <i>CustomerTable</i> by selected Division.<br />
+     * The lambdas used for <i>setCellFactory</i> handle formatting the data shown in that <i>TableCell</i>.<br />
      *
      * @param url
      * @param resourceBundle
@@ -363,6 +372,8 @@ public class MainScreen implements Initializable {
     /**
      * Handles the <b>Delete</b> customer button action.
      * Deletes a customer and appointments.
+     * <br /><br />
+     * A lambda function is used to filter appointments by <i>customerId</i>.<br />
      *
      * @param actionEvent
      */
