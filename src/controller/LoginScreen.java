@@ -12,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.User;
-import util.Logging;
+import util.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -127,6 +127,8 @@ public class LoginScreen implements Initializable {
             return;
         }
 
+        Logger logger = new Logger();
+
         User user = null;
         try(ResultSet R = JDBC.queryConnection("SELECT User_ID, User_Name, Password " // , Create_Date, Created_By, Last_Update, Last_Updated_By
                 + "FROM client_schedule.users WHERE User_Name='" + uName + "' AND Password='" + pass + "';")) {
@@ -147,11 +149,11 @@ public class LoginScreen implements Initializable {
         }
         catch (LoginException le) {
             Information.setText(le.getMessage());
-            Logging.logUserLoginAttempt(uName, false);
+            logger.logUserLoginAttempt(uName, false);
         }
         finally {
             if (user != null) {
-                Logging.logUserLoginAttempt(uName, true);
+                logger.logUserLoginAttempt(uName, true);
                 try {
                     showMainWindow(user);
                     ((Node) actionEvent.getSource()).getScene().getWindow().hide();
