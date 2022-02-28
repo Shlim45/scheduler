@@ -29,9 +29,10 @@ public class Logger implements Logging {
      */
     @Override
     public void logUserLoginAttempt(String username, boolean success) {
-        final String output = String.format("%s login attempt for user '%s' at %s\r\n",
+        final String output = String.format("%s login attempt for username '%s' at %d (%s)\r\n",
                 success ? "Successful" : "Failed",
                 username,
+                System.currentTimeMillis(),
                 ZonedDateTime.now().format(Time.dateFormatter));
 
         // open file
