@@ -124,6 +124,11 @@ public abstract class Time {
      * Checks if an Appointment has any scheduling errors.  Scheduling Errors include
      * Start time not before End time, invalid dates that already passed, outside of 
      * business hours, and appointment overlaps for the same customer.
+     *
+     * <br /><br />
+     * A lambda function is used to iterate over <b>custAppts</b>, checking for
+     * appointments with overlapping times with the appointment <b>toCheck</b>.  If
+     * an overlap is found, an <i>AtomicBoolean</i> is set true.<br />
      * 
      * @see #isWithinBusinessHours(ZonedDateTime)
      * @see #timeOverlaps(Appointment, Appointment) 

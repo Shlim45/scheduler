@@ -77,6 +77,11 @@ public abstract class JDBC {
 
     /**
      * Loads all Customers from the database.
+     * <br /><br />
+     * A lambda function is used to filter the list of <i>Divisions</i>
+     * by the currently loaded Customer's Division.  The filtered result
+     * is stored in a <i>Collector</i>, and used to assign the <i>division</i>
+     * field on the <i>Customer</i>.<br />
      *
      * @param divisions A list of all <b>Division</b>s
      * @return A List of <b>Customer</b> objects
