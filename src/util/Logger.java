@@ -14,10 +14,10 @@ public class Logger implements Logging {
     /**
      * Name of file to store log activity locally.
      */
-    public static final String filename = "login_activity.txt";
+    private String filename = "login_activity.txt";
 
     public Logger() { super(); }
-    public Logger(String filename) {}
+    public Logger(String filename) { this.filename = filename; }
 
     /**
      * Writes to a file on local storage who attempted to log in,
