@@ -146,8 +146,14 @@ public class AppointmentScreen implements Initializable {
         appt.setDesc(ApptDesc.getText());
         appt.setLocation(ApptLocation.getText());
         appt.setType(ApptType.getText());
-        appt.setStart(ZonedDateTime.of(StartDate.getValue(), LocalTime.parse(StartTime.getText()), ZoneId.systemDefault()));
-        appt.setEnd(ZonedDateTime.of(EndDate.getValue(), LocalTime.parse(EndTime.getText()), ZoneId.systemDefault()));
+        try {
+            appt.setStart(ZonedDateTime.of(StartDate.getValue(), LocalTime.parse(StartTime.getText()), ZoneId.systemDefault()));
+            appt.setEnd(ZonedDateTime.of(EndDate.getValue(), LocalTime.parse(EndTime.getText()), ZoneId.systemDefault()));
+        }
+        catch (DateTimeParseException dtpe) {
+            appt.setStart(ZonedDateTime.of(StartDate.getValue(), LocalTime.parse(Time.timeFormatting(StartTime.getText())), ZoneId.systemDefault()));
+            appt.setEnd(ZonedDateTime.of(EndDate.getValue(), LocalTime.parse(Time.timeFormatting(EndTime.getText())), ZoneId.systemDefault()));
+        }
         appt.setCustomerId(Integer.parseInt(ApptCustomerId.getText()));
         appt.setUserId(Integer.parseInt(ApptUserId.getText()));
         Contact contact = (Contact) ContactCombo.getSelectionModel().getSelectedItem();
@@ -264,7 +270,7 @@ public class AppointmentScreen implements Initializable {
                     JDBC.updateAppointment(this.user, appt);
             }
             catch (SQLException sqle) {
-                System.err.println(sqle.getMessage());
+                Dialogs.alertUser(Alert.AlertType.ERROR, "SQL Error", "SQL Error", sqle.getMessage());
                 return;
             }
             ((Node) actionEvent.getSource()).getScene().getWindow().hide();
@@ -300,7 +306,8 @@ public class AppointmentScreen implements Initializable {
             stage.show();
         }
         catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error loading view", "Failed to Load View", ioe.getMessage());
+            System.exit(2);
         }
 
     }

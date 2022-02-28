@@ -1,5 +1,7 @@
 package util;
 
+import javafx.scene.control.Alert;
+
 import java.io.*;
 import java.time.ZonedDateTime;
 
@@ -42,7 +44,7 @@ public class Logger implements Logging {
                 pw = new PrintWriter(fw);
             }
             catch (IOException ioe) {
-                System.err.println("Unable to open file " + filename);
+                Dialogs.alertUser(Alert.AlertType.ERROR, "I/O Error", "Unable to open file '" + filename + "'", ioe.getMessage());
                 return;
             }
         } else {
@@ -52,7 +54,7 @@ public class Logger implements Logging {
                 pw = new PrintWriter(fw);
             }
             catch (IOException ioe) {
-                System.err.println("Unable to create file " + filename);
+                Dialogs.alertUser(Alert.AlertType.ERROR, "I/O Error", "Unable to create file '" + filename + "'", ioe.getMessage());
                 return;
             }
         }

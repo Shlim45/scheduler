@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -231,7 +232,7 @@ public class CustomerScreen implements Initializable {
                 JDBC.updateCustomer(this.user, this.customer);
         }
         catch (SQLException sqle) {
-            System.err.println(sqle.getMessage());
+            Dialogs.alertUser(Alert.AlertType.ERROR, "SQL Error", "SQL Error", sqle.getMessage());
             return;
         }
 
@@ -267,7 +268,8 @@ public class CustomerScreen implements Initializable {
             stage.show();
         }
         catch (IOException ioe) {
-            System.err.println(ioe.getMessage());
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error loading view", "Failed to Load View", ioe.getMessage());
+            System.exit(2);
         }
 
     }

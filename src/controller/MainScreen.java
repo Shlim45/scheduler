@@ -26,6 +26,8 @@ import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -98,10 +100,16 @@ public class MainScreen implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.countries = FXCollections.observableArrayList(JDBC.loadCountries());
-        this.divisions = FXCollections.observableArrayList(JDBC.loadDivisions());
-        this.customers = FXCollections.observableArrayList(JDBC.loadCustomers(this.divisions));
-        this.appts = FXCollections.observableArrayList(JDBC.loadAppointments());
+        try {
+            this.countries = FXCollections.observableArrayList(JDBC.loadCountries());
+            this.divisions = FXCollections.observableArrayList(JDBC.loadDivisions());
+            this.customers = FXCollections.observableArrayList(JDBC.loadCustomers(this.divisions));
+            this.appts = FXCollections.observableArrayList(JDBC.loadAppointments());
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+            System.exit(1);
+        }
 
         final ToggleGroup apptRadios = new ToggleGroup();
         Weekly.setToggleGroup(apptRadios);
@@ -373,7 +381,10 @@ public class MainScreen implements Initializable {
      * Handles the <b>Delete</b> customer button action.
      * Deletes a customer and appointments.
      * <br /><br />
-     * A lambda function is used to filter appointments by <i>customerId</i>.<br />
+     * A lambda function is used to add each appointment to delete
+     * to a new <b>ArrayList</b>.<br />
+     * A second lambda function is used to remove those appointments
+     * from the <i>appts</i> list.<br />
      *
      * @param actionEvent
      */
@@ -398,8 +409,16 @@ public class MainScreen implements Initializable {
         try {
             JDBC.deleteCustomerAndAppointments(toDelete);
             customers.remove(toDelete);
-            appts = appts.filtered(z -> z.getCustomerId() != toDelete.getCustomerId());
-            // TODO(jon): Is a popup appropriate?
+
+            List<Appointment> deleteAppts = new ArrayList<>();
+            appts.forEach(appt -> {
+                if (appt.getCustomerId() == toDelete.getCustomerId())
+                    deleteAppts.add(appt);
+            });
+            deleteAppts.forEach(appt -> {
+                appts.remove(appt);
+            });
+
             Dialogs.alertUser(
                     Alert.AlertType.INFORMATION,
                     "Customer Deleted",
@@ -407,12 +426,7 @@ public class MainScreen implements Initializable {
                     toDelete.getName() + " and their associated appointments have been deleted.");
         }
         catch (SQLException sqle) {
-            System.err.println(sqle.getMessage());
-            Dialogs.alertUser(
-                    Alert.AlertType.ERROR,
-                    "Delete Customer",
-                    "Delete Customer",
-                    "There was an error when trying to delete the customer.");
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Delete Customer", "Delete Customer", sqle.getMessage());
         }
     }
 
@@ -422,6 +436,8 @@ public class MainScreen implements Initializable {
      * Shows the Appointment Screen.
      * If <b>appointment</b> is null, user can create a new appointment for the given customer.
      * Otherwise, the form is populated with the customer's appointment data for editing.
+     *
+     * A lambda function is used to create a <b>Predicate</b> by which a new <b>FilteredList</b> of appointments is generated.
      *
      * @param customer The customer with the appointment
      * @param appointment The appointment to edit, or null
@@ -515,15 +531,10 @@ public class MainScreen implements Initializable {
                     Alert.AlertType.INFORMATION,
                     "Appointment Cancelled",
                     "Appointment Cancelled",
-                            String.format("The following appointment has been cancelled:\nID: %d Type: %s", toDelete.getApptId(), toDelete.getType()));
+                            String.format("The following appointment has been cancelled:\nID: %d \tType: %s", toDelete.getApptId(), toDelete.getType()));
         }
         catch (SQLException sqle) {
-            System.err.println(sqle.getMessage());
-            Dialogs.alertUser(
-                    Alert.AlertType.ERROR,
-                    "Delete Appointment",
-                    "Delete Appointment",
-                    "There was an error when trying to delete the appointment.");
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Delete Appointment", "Delete Appointment", sqle.getMessage());
         }
     }
 

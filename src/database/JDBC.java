@@ -1,6 +1,8 @@
 package database;
 
+import javafx.scene.control.Alert;
 import model.*;
+import util.Dialogs;
 import util.Time;
 
 import java.sql.*;
@@ -34,11 +36,13 @@ public abstract class JDBC {
         try {
             Class.forName(driver); // Locate Driver
             connection = DriverManager.getConnection(jdbcUrl, userName, password); // Reference Connection object
-            System.out.println("Database connection successful!");
         }
         catch(Exception e)
         {
-            System.err.println("Error:" + e.getMessage());
+            String errMsg = String.format("DB connection error, driver: '%s' host: '%s' db-name: '%s' username: '%s' password: '%s'\n",
+                    driver, location, databaseName, userName, password);
+            System.err.println(errMsg + e.getMessage());
+            System.exit(1);
         }
     }
 
@@ -48,11 +52,10 @@ public abstract class JDBC {
     public static void closeConnection() {
         try {
             connection.close();
-            System.out.println("Database connection closed!");
         }
         catch(Exception e)
         {
-            System.err.println("Error:" + e.getMessage());
+            System.err.println("Close Database Connection Error " + e.getMessage());
         }
     }
 
@@ -70,7 +73,7 @@ public abstract class JDBC {
             return R;
         }
         catch (NullPointerException npe) {
-            System.err.println(npe.getMessage());
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
             return null;
         }
     }
@@ -115,9 +118,12 @@ public abstract class JDBC {
                 customers.add(C);
             }
         }
-        catch (SQLException sql) {
-            // TODO(jon): Handle error
-            System.err.println(sql.getMessage());
+        catch (SQLException sqle) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "SQL Error", "SQL Error", sqle.getMessage());
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+            return null;
         }
 
         return customers;
@@ -145,6 +151,9 @@ public abstract class JDBC {
 
             insert.executeUpdate();
         }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+        }
     }
 
     /**
@@ -169,6 +178,9 @@ public abstract class JDBC {
 
             update.executeUpdate();
         }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+        }
     }
 
     /**
@@ -188,6 +200,9 @@ public abstract class JDBC {
         try (PreparedStatement delete = connection.prepareStatement(deleteCustomer)) {
             delete.setInt(1, customer.getCustomerId());
             delete.executeUpdate();
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
         }
     }
 
@@ -215,9 +230,12 @@ public abstract class JDBC {
                 countries.add(C);
             }
         }
-        catch (SQLException sql) {
-            // TODO
-            System.err.println(sql.getMessage());
+        catch (SQLException sqle) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "SQL Error", "SQL Error", sqle.getMessage());
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+            return null;
         }
 
         return countries;
@@ -249,9 +267,12 @@ public abstract class JDBC {
                 divisions.add(D);
             }
         }
-        catch (SQLException sql) {
-            // TODO
-            System.err.println(sql.getMessage());
+        catch (SQLException sqle) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "SQL Error", "SQL Error", sqle.getMessage());
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+            return null;
         }
 
         return divisions;
@@ -274,9 +295,12 @@ public abstract class JDBC {
                 contacts.add(C);
             }
         }
-        catch (SQLException sql) {
-            // TODO
-            System.err.println(sql.getMessage());
+        catch (SQLException sqle) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "SQL Error", "SQL Error", sqle.getMessage());
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+            return null;
         }
 
         return contacts;
@@ -321,9 +345,12 @@ public abstract class JDBC {
                 appointments.add(A);
             }
         }
-        catch (SQLException sql) {
-            // TODO(jon): Handle error
-            System.err.println(sql.getMessage());
+        catch (SQLException sqle) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "SQL Error", "SQL Error", sqle.getMessage());
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+            return null;
         }
 
         return appointments;
@@ -357,6 +384,9 @@ public abstract class JDBC {
 
             insert.executeUpdate();
         }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+        }
     }
 
     /**
@@ -385,6 +415,9 @@ public abstract class JDBC {
 
             update.executeUpdate();
         }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+        }
     }
 
     /**
@@ -398,6 +431,9 @@ public abstract class JDBC {
         try (PreparedStatement delete = connection.prepareStatement(deleteAppointment)) {
             delete.setInt(1, appt.getApptId());
             delete.executeUpdate();
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
         }
     }
 
@@ -420,6 +456,10 @@ public abstract class JDBC {
                 final String month = R.getString("Month");
                 report.append(String.format("There %s %d %s appointment%s in %s.\n\n", count == 1 ? "is" : "are",count, type, count==1?"":"s", month));
             }
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+            return null;
         }
 
         return report.toString();
@@ -458,6 +498,10 @@ public abstract class JDBC {
                         R.getInt("Customer_ID"))).append('\n');
                 prevContactId = contactId;
             }
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+            return null;
         }
 
         return report.toString();

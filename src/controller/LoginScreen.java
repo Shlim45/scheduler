@@ -7,11 +7,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.User;
+import util.Dialogs;
 import util.Logger;
 
 import java.io.IOException;
@@ -60,7 +62,7 @@ public class LoginScreen implements Initializable {
             Location.setText(rb.getString("location") + zoneId.getId().replaceAll("_"," "));
         }
         catch (MissingResourceException mre) {
-            System.err.println(mre.getMessage());
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "Missing Resource", mre.getMessage());
         }
 
     }
@@ -131,7 +133,7 @@ public class LoginScreen implements Initializable {
 
         User user = null;
         try(ResultSet R = JDBC.queryConnection("SELECT User_ID, User_Name, Password " // , Create_Date, Created_By, Last_Update, Last_Updated_By
-                + "FROM client_schedule.users WHERE User_Name='" + uName + "' AND Password='" + pass + "';")) {
+                + "FROM users WHERE User_Name='" + uName + "' AND Password='" + pass + "';")) {
             if (R.next()) {
                 int    userId        = R.getInt("User_ID");
                 String username      = R.getString("User_Name");
@@ -143,13 +145,16 @@ public class LoginScreen implements Initializable {
                 throw new LoginException(rb.getString("invalid"));
             }
         }
-        catch (SQLException sql) {
-            // TODO(jon): Handle error
-            System.err.println(sql.getMessage());
+        catch (SQLException sqle) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "SQL Error", "SQL Error", sqle.getMessage());
         }
         catch (LoginException le) {
             Information.setText(le.getMessage());
             logger.logUserLoginAttempt(uName, false);
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+            System.exit(1);
         }
         finally {
             if (user != null) {
@@ -159,7 +164,8 @@ public class LoginScreen implements Initializable {
                     ((Node) actionEvent.getSource()).getScene().getWindow().hide();
                 }
                 catch (IOException ioe) {
-                    System.err.println(ioe.getMessage());
+                    Dialogs.alertUser(Alert.AlertType.ERROR, "Error loading view", "Failed to Load View", ioe.getMessage());
+                    System.exit(2);
                 }
             }
         }
