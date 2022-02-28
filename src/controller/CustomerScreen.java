@@ -231,7 +231,7 @@ public class CustomerScreen implements Initializable {
                 JDBC.updateCustomer(this.user, this.customer);
         }
         catch (SQLException sqle) {
-            System.err.println(sqle.getSQLState() + sqle.getMessage());
+            System.err.println(sqle.getMessage());
             return;
         }
 

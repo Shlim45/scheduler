@@ -1,5 +1,6 @@
 package util;
 
+import exceptions.SchedulingException;
 import javafx.scene.control.Alert;
 import model.Appointment;
 
@@ -123,7 +124,8 @@ public abstract class Time {
     /**
      * Checks if an Appointment has any scheduling errors.  Scheduling Errors include
      * Start time not before End time, invalid dates that already passed, outside of 
-     * business hours, and appointment overlaps for the same customer.
+     * business hours, and appointment overlaps for the same customer.  If a
+     * scheduling conflict exists, a <b>SchedulingException</b> is thrown.
      *
      * <br /><br />
      * A lambda function is used to iterate over <b>custAppts</b>, checking for
@@ -131,48 +133,35 @@ public abstract class Time {
      * an overlap is found, an <i>AtomicBoolean</i> is set true.<br />
      * 
      * @see #isWithinBusinessHours(ZonedDateTime)
-     * @see #timeOverlaps(Appointment, Appointment) 
+     * @see #timeOverlaps(Appointment, Appointment)
      * @param toCheck the appointment to check
      * @param custAppts a list of the customers appointments
-     * @return
+     * @throws SchedulingException if there is a scheduling conflict
      */
-    public static boolean hasSchedulingErrors(Appointment toCheck, List<Appointment> custAppts) {
-        if (toCheck.getStart().isAfter(toCheck.getEnd())) {
-            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Start Time before End Time",
-                    "This appointment's start time must be before its end time.");
-            return true;
-        }
-        else if (toCheck.getStart().isEqual(toCheck.getEnd())) {
-            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Start Time same as End Time",
-                    "This appointment's end time must be after its start time.");
-            return true;
-        }
-        else if (toCheck.getStart().isBefore(ZonedDateTime.now())) {
-            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Invalid Start Date",
-                    "This appointment's start date has already passed.");
-            return true;
-        }
-        else if (!Time.isWithinBusinessHours(toCheck.getStart())) {
-            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Outside of Business Hours",
-                    "This appointment's start time is outside of business hours (8:00 a.m. - 10:00 p.m. EST).");
-            return true;
-        }
-        else if (!Time.isWithinBusinessHours(toCheck.getEnd())) {
-            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Outside of Business Hours",
-                    "This appointment's end time is outside of business hours (8:00 a.m. - 10:00 p.m. EST).");
-            return true;
-        }
+    public static void checkForSchedulingErrors(Appointment toCheck, List<Appointment> custAppts)  throws SchedulingException {
+        if (toCheck.getStart().isAfter(toCheck.getEnd()))
+            throw new SchedulingException("This appointment's start time must be before its end time.","Start Time before End Time");
+
+        else if (toCheck.getStart().isEqual(toCheck.getEnd()))
+            throw new SchedulingException("This appointment's end time must be after its start time.","Start Time same as End Time");
+
+        else if (toCheck.getStart().isBefore(ZonedDateTime.now()))
+            throw new SchedulingException("This appointment's start date has already passed.","Invalid Start Date");
+
+        else if (!Time.isWithinBusinessHours(toCheck.getStart()))
+            throw new SchedulingException("This appointment's start time is outside of business hours (8:00 a.m. - 10:00 p.m. EST).","Outside of Business Hours");
+
+        else if (!Time.isWithinBusinessHours(toCheck.getEnd()))
+            throw new SchedulingException("This appointment's end time is outside of business hours (8:00 a.m. - 10:00 p.m. EST).","Outside of Business Hours");
 
         // check all customer appointments for overlap
         AtomicBoolean overlap = new AtomicBoolean(false);
         custAppts.forEach(a -> {
-            if (a.getApptId() != toCheck.getApptId() && Time.timeOverlaps(a, toCheck)) {
-                Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", "Scheduling Conflict",
-                        "This appointment's time overlaps with an existing appointment.");
+            if (a.getApptId() != toCheck.getApptId() && Time.timeOverlaps(a, toCheck))
                 overlap.set(true);
-            }
         });
 
-        return overlap.get();
+        if (overlap.get())
+            throw new SchedulingException("This appointment's time overlaps with an existing appointment.","Scheduling Conflict");
     }
 }

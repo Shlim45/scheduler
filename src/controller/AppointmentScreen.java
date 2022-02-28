@@ -1,6 +1,7 @@
 package controller;
 
 import database.JDBC;
+import exceptions.SchedulingException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -245,8 +246,13 @@ public class AppointmentScreen implements Initializable {
     public void onSubmitAction(ActionEvent actionEvent) {
         final Appointment appt = createAppointmentObject();
 
-        if (Time.hasSchedulingErrors(appt, this.customerAppts))
+        try {
+            Time.checkForSchedulingErrors(appt, this.customerAppts);
+        }
+        catch (SchedulingException se) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Scheduling Error", se.getReason(), se.getMessage());
             return;
+        }
 
         final boolean confirm = Dialogs.promptUser("Submit appointment?",
                 "Are you sure you want to submit the appointment?");
@@ -258,7 +264,7 @@ public class AppointmentScreen implements Initializable {
                     JDBC.updateAppointment(this.user, appt);
             }
             catch (SQLException sqle) {
-                System.err.println(sqle.getSQLState() + sqle.getMessage());
+                System.err.println(sqle.getMessage());
                 return;
             }
             ((Node) actionEvent.getSource()).getScene().getWindow().hide();
