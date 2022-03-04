@@ -14,7 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.User;
 import util.Dialogs;
-import util.Logger;
+import util.Logging;
 
 import java.io.IOException;
 import java.net.URL;
@@ -129,8 +129,6 @@ public class LoginScreen implements Initializable {
             return;
         }
 
-        Logger logger = new Logger();
-
         User user = null;
         try(ResultSet R = JDBC.queryConnection("SELECT User_ID, User_Name, Password " // , Create_Date, Created_By, Last_Update, Last_Updated_By
                 + "FROM users WHERE User_Name='" + uName + "' AND Password='" + pass + "';")) {
@@ -150,7 +148,7 @@ public class LoginScreen implements Initializable {
         }
         catch (LoginException le) {
             Information.setText(le.getMessage());
-            logger.logUserLoginAttempt(uName, false);
+            Logging.logUserLoginAttempt(uName, false);
         }
         catch (NullPointerException npe) {
             Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
@@ -158,7 +156,7 @@ public class LoginScreen implements Initializable {
         }
         finally {
             if (user != null) {
-                logger.logUserLoginAttempt(uName, true);
+                Logging.logUserLoginAttempt(uName, true);
                 try {
                     showMainWindow(user);
                     ((Node) actionEvent.getSource()).getScene().getWindow().hide();

@@ -604,6 +604,7 @@ public class MainScreen implements Initializable {
                 return;
             }
         }
+        // TODO(jon): A custom report
         else if (ReportAdditional.isSelected()) {
             windowTitle = "Additional Report";
             report = JDBC.generateCustomReport();
