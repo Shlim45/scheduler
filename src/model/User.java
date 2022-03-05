@@ -26,6 +26,17 @@ public class User {
         this.password = password;
     }
 
+    public User(int userId) {
+        super();
+        this.userId = userId;
+    }
+
+    public User(int userId, String userName) {
+        super();
+        this.userId = userId;
+        this.userName = userName;
+    }
+
     /**
      * Returns the user's unique ID used by the database.
      *

@@ -80,20 +80,20 @@ public class MainScreen implements Initializable {
     // Reports
     public RadioButton ReportAppts;
     public RadioButton ReportContacts;
-    public RadioButton ReportAdditional;
+    public RadioButton ReportUsers;
 
     /**
      * Initializes the Main Screen.
      * Loads all countries, divisions, customers, and appointments, and sets up the Combo Boxes and Tables.
-     * <br /><br />
+     * <br><br>
      * Uses a lambda function to add a change listener to the radio button ToggleGroups.
      * The lambda used for <i>apptRadios</i> determines which radio button has been selected,
-     * and filters the appointments by current week or month.<br />
+     * and filters the appointments by current week or month.<br>
      * The lambda used for <i>CountryCombo</i> determines selected Country,
-     * and filters <i>DivisionCombo</i> and <i>CustomerTable</i> by the selected Country.<br />
+     * and filters <i>DivisionCombo</i> and <i>CustomerTable</i> by the selected Country.<br>
      * The lambda used for <i>DivisionCombo</i> determines selected Division,
-     * and filters <i>CustomerTable</i> by selected Division.<br />
-     * The lambdas used for <i>setCellFactory</i> handle formatting the data shown in that <i>TableCell</i>.<br />
+     * and filters <i>CustomerTable</i> by selected Division.<br>
+     * The lambdas used for <i>setCellFactory</i> handle formatting the data shown in that <i>TableCell</i>.<br>
      *
      * @param url
      * @param resourceBundle
@@ -204,7 +204,7 @@ public class MainScreen implements Initializable {
         final ToggleGroup reportRadios = new ToggleGroup();
         ReportAppts.setToggleGroup(reportRadios);
         ReportContacts.setToggleGroup(reportRadios);
-        ReportAdditional.setToggleGroup(reportRadios);
+        ReportUsers.setToggleGroup(reportRadios);
     }
 
     /**
@@ -380,11 +380,11 @@ public class MainScreen implements Initializable {
     /**
      * Handles the <b>Delete</b> customer button action.
      * Deletes a customer and appointments.
-     * <br /><br />
+     * <br><br>
      * A lambda function is used to add each appointment to delete
-     * to a new <b>ArrayList</b>.<br />
+     * to a new <b>ArrayList</b>.<br>
      * A second lambda function is used to remove those appointments
-     * from the <i>appts</i> list.<br />
+     * from the <i>appts</i> list.<br>
      *
      * @param actionEvent
      */
@@ -605,11 +605,17 @@ public class MainScreen implements Initializable {
             }
         }
         // TODO(jon): A custom report
-        else if (ReportAdditional.isSelected()) {
-            windowTitle = "Additional Report";
-            report = JDBC.generateCustomReport();
-            width = 800;
-            height = 600;
+        else if (ReportUsers.isSelected()) {
+            windowTitle = "User Activity Report";
+            try {
+                report = JDBC.generateUserReport();
+                width = 800;
+                height = 600;
+            } catch (SQLException sqle) {
+                Dialogs.alertUser(Alert.AlertType.ERROR, "Error Generating Report", "Error Generating Report", "There was an error in generating the requested report.");
+                System.err.println(sqle.getMessage());
+                return;
+            }
         }
         else {
             Dialogs.alertUser(Alert.AlertType.WARNING, "Generate Report", "Select report type",

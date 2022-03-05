@@ -127,10 +127,10 @@ public abstract class Time {
      * business hours, and appointment overlaps for the same customer.  If a
      * scheduling conflict exists, a <b>SchedulingException</b> is thrown.
      *
-     * <br /><br />
+     * <br><br>
      * A lambda function is used to iterate over <b>custAppts</b>, checking for
      * appointments with overlapping times with the appointment <b>toCheck</b>.  If
-     * an overlap is found, an <i>AtomicBoolean</i> is set true.<br />
+     * an overlap is found, an <i>AtomicBoolean</i> is set true.<br>
      * 
      * @see #isWithinBusinessHours(ZonedDateTime)
      * @see #timeOverlaps(Appointment, Appointment)

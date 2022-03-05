@@ -49,9 +49,9 @@ public class CustomerScreen implements Initializable {
      * Initializes the Customer Screen.  Applies an action listener to
      * the Countries combo box, filtering divisions when a Country is
      * selected.
-     * <br /><br />
+     * <br><br>
      * A lambda function is used to add a change listener to <i>CountryCombo</i>,
-     * which handles filtering <i>DivisionCombo</i> choices by the selected Country.<br />
+     * which handles filtering <i>DivisionCombo</i> choices by the selected Country.<br>
      *
      * @param url
      * @param resourceBundle
@@ -94,9 +94,9 @@ public class CustomerScreen implements Initializable {
 
     /**
      * Populates all fields on the form with the Customer's data.
-     * <br /><br />
+     * <br><br>
      * A lambda function is used to filter <i>countries</i> List to the customer's
-     * country, and pre-select that country in <i>CountryCombo</i>.<br />
+     * country, and pre-select that country in <i>CountryCombo</i>.<br>
      */
     private void populateFields() {
         if (customer != null) {

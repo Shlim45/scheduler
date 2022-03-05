@@ -7,7 +7,9 @@ import util.Time;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -80,11 +82,11 @@ public abstract class JDBC {
 
     /**
      * Loads all Customers from the database.
-     * <br /><br />
+     * <br><br>
      * A lambda function is used to filter the list of <i>Divisions</i>
      * by the currently loaded Customer's Division.  The filtered result
      * is stored in a <i>Collector</i>, and used to assign the <i>division</i>
-     * field on the <i>Customer</i>.<br />
+     * field on the <i>Customer</i>.<br>
      *
      * @param divisions A list of all <b>Division</b>s
      * @return A List of <b>Customer</b> objects
@@ -477,7 +479,7 @@ public abstract class JDBC {
 
         final String outputFormat = "%-20s %-8s %-20s %-20s %-20s %-20s %-20s %s";
         report.append(String.format(outputFormat, "Contact", "Appt. ID", "Title", "Type", "Description", "Start (Local Time)", "End (Local Time)", "Customer ID\n"));
-        report.append("**************************************************************************************************************************************************\n");
+        report.append(String.format(outputFormat, "-------", "--------", "-----", "----", "-----------", "------------------", "----------------", "-----------\n"));
         try(ResultSet R = JDBC.queryConnection("SELECT contacts.Contact_ID, Contact_Name, Appointment_ID, Title, Type, Description, Start, End, Customer_ID FROM appointments "
                 +"RIGHT JOIN contacts ON contacts.Contact_ID = appointments.Contact_ID "
                 +"ORDER BY Contact_Name, Start")) {
@@ -508,14 +510,50 @@ public abstract class JDBC {
     }
 
     /**
-     * Generates a custom report.
+     * Generates a report with data regarding when each user created and updated any appointments.
      *
      * @return The report output
      */
-    public static String generateCustomReport() {
+    public static String generateUserReport() throws SQLException {
         final StringBuilder report = new StringBuilder();
-        // TODO(jon): Generate a report of each User's Customers, with some detail of appointments or location.
-        report.append("Placeholder for a custom additional report.");
+
+        report.append("User Activity Log:\n");
+        final String outputFormat = "%18s %18s %8s %10s %10s";
+        try(ResultSet R = JDBC.queryConnection("SELECT users.User_ID AS UserID, User_Name AS UserName, users.Create_Date, users.Created_By, "
+                +" Appointment_ID AS ApptID, appointments.Create_Date AS Created, appointments.Last_Update AS Updated, Customer_ID AS CustID, Contact_ID AS ContID FROM users "
+                +"RIGHT JOIN appointments ON appointments.User_ID = users.User_ID "
+                +"ORDER BY UserID, Updated")) {
+            int prevUserID = -1;
+            while (R.next()) {
+                final int userId = R.getInt("UserID");
+                boolean sameUser = prevUserID == userId;
+                if (!sameUser)
+                {
+                    report.append(String.format("\nUser ID %d, '%s', created by '%s' on %s\n",
+                            userId,
+                            R.getString("UserName"),
+                            R.getString("Created_By"),
+                            Time.toLocalTime(R.getTimestamp("users.Create_Date")).format(Time.dateFormatter)));
+                    report.append("Appointment Activity:\n");
+                    report.append(String.format(outputFormat, "DATE CREATED", "DATE UPDATED", "APPT ID", "CUST ID", "CONTACT ID\n"));
+                    report.append(String.format(outputFormat, "------------", "------------", "-------", "-------", "----------\n"));
+                }
+
+                report.append(String.format(outputFormat,
+                        Time.toLocalTime(R.getTimestamp("Created")).format(Time.dateFormatter),
+                        Time.toLocalTime(R.getTimestamp("Updated")).format(Time.dateFormatter),
+                        R.getInt("ApptID"),
+                        R.getInt("CustID"),
+                        R.getInt("ContID"))).append('\n');
+
+                prevUserID = userId;
+            }
+        }
+        catch (NullPointerException npe) {
+            Dialogs.alertUser(Alert.AlertType.ERROR, "Error", "No Database Connection", npe.getMessage());
+            return null;
+        }
+
         return report.toString();
     }
 }

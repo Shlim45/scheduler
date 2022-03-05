@@ -55,7 +55,7 @@
                <children>
                   <RadioButton fx:id="ReportAppts" layoutX="33.0" layoutY="20.0" mnemonicParsing="false" text="appointments by type/month" />
                   <RadioButton fx:id="ReportContacts" layoutX="33.0" layoutY="51.0" mnemonicParsing="false" text="contact schedules" />
-                  <RadioButton fx:id="ReportAdditional" layoutX="33.0" layoutY="80.0" mnemonicParsing="false" text="additional report" />
+                  <RadioButton fx:id="ReportUsers" layoutX="33.0" layoutY="80.0" mnemonicParsing="false" text="user activity" />
                   <Button layoutX="251.0" layoutY="47.0" mnemonicParsing="false" onAction="#onGenerateReportAction" text="Generate" />
                </children>
             </AnchorPane>

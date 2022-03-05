@@ -97,9 +97,9 @@ public class AppointmentScreen implements Initializable {
     /**
      * Sets the appointment to modify.  Pre-populates all fields on the form
      * with data.
-     * <br /><br />
+     * <br><br>
      * A lambda function is used to filter <i>contacts</i> List to the appointment's
-     * customer, and pre-select that contact in <i>ContactCombo</i>.<br />
+     * customer, and pre-select that contact in <i>ContactCombo</i>.<br>
      *
      * @param appt
      */
