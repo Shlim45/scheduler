@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
  *
  * @author Jonathan Hawranko
  */
-public class Logging {
+public abstract class Logging {
     /**
      * Name of file to store log activity locally.
      */

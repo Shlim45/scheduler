@@ -51,7 +51,7 @@ public abstract class Time {
     /**
      * Returns the proper date formatter used for the project.
      */
-    public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * Formats a String object representing Time.  Will enforce the format

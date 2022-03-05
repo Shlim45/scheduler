@@ -130,7 +130,7 @@ public class LoginScreen implements Initializable {
         }
 
         User user = null;
-        try(ResultSet R = JDBC.queryConnection("SELECT User_ID, User_Name, Password " // , Create_Date, Created_By, Last_Update, Last_Updated_By
+        try(ResultSet R = JDBC.queryConnection("SELECT User_ID, User_Name, Password "
                 + "FROM users WHERE User_Name='" + uName + "' AND Password='" + pass + "';")) {
             if (R.next()) {
                 int    userId        = R.getInt("User_ID");

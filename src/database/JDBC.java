@@ -514,6 +514,7 @@ public abstract class JDBC {
      */
     public static String generateCustomReport() {
         final StringBuilder report = new StringBuilder();
+        // TODO(jon): Generate a report of each User's Customers, with some detail of appointments or location.
         report.append("Placeholder for a custom additional report.");
         return report.toString();
     }
