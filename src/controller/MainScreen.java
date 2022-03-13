@@ -294,14 +294,15 @@ public class MainScreen implements Initializable {
      *
      * @param actionEvent
      */
-    public void onLoginAction(ActionEvent actionEvent) {
+    public void showLoginScreen(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoginScreen.fxml"));
             Stage stage = new Stage(StageStyle.UNDECORATED);
             stage.setScene(new Scene(loader.load()));
             stage.show();
 
-            ((Node) actionEvent.getSource()).getScene().getWindow().hide();
+            if (actionEvent != null)
+                ((Node) actionEvent.getSource()).getScene().getWindow().hide();
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -576,7 +577,7 @@ public class MainScreen implements Initializable {
      * Handles generating a report based on the selected radio button,
      * and displaying it in a modal window.
      * 
-     * @see #showReportWindow(String, String, int, int) 
+     * @see #showReportWindow(String, String, int, int)
      * @param actionEvent
      */
     public void onGenerateReportAction(ActionEvent actionEvent) {

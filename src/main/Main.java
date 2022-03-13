@@ -15,8 +15,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/MainScreen.fxml"));
-        primaryStage.setTitle("Appointment Scheduler");
+        Parent root = FXMLLoader.load(getClass().getResource("/view/LoginScreen.fxml"));
+        primaryStage.setTitle("Please Login");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

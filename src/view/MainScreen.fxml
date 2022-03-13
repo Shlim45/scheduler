@@ -16,7 +16,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Button fx:id="LoginButton" defaultButton="true" layoutX="1524.0" layoutY="21.0" mnemonicParsing="false" onAction="#onLoginAction" text="Log In">
+      <Button fx:id="LoginButton" defaultButton="true" layoutX="1524.0" layoutY="21.0" mnemonicParsing="false" onAction="#showLoginScreen" text="Log In">
          <font>
             <Font size="14.0" />
          </font>
