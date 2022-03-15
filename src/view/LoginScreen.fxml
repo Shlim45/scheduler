@@ -6,17 +6,17 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginScreen">
    <children>
-      <Label fx:id="Header" layoutX="214.5" layoutY="50.0" prefWidth="171.0" text="Enter user credentials">
+      <Label fx:id="Header" layoutX="215.0" layoutY="50.0" prefHeight="27.0" prefWidth="200.0" text="Enter user credentials">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="User" layoutX="201.0" layoutY="112.0" text="Username:">
+      <Label fx:id="User" layoutX="187.0" layoutY="112.0" prefHeight="20.0" prefWidth="80.0" text="Username:">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="Pass" layoutX="201.0" layoutY="144.0" text="Password:">
+      <Label fx:id="Pass" layoutX="189.0" layoutY="144.0" prefHeight="20.0" prefWidth="74.0" text="Password:">
          <font>
             <Font size="14.0" />
          </font>
