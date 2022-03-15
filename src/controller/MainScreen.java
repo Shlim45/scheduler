@@ -86,14 +86,25 @@ public class MainScreen implements Initializable {
      * Initializes the Main Screen.
      * Loads all countries, divisions, customers, and appointments, and sets up the Combo Boxes and Tables.
      * <br><br>
-     * Uses a lambda function to add a change listener to the radio button ToggleGroups.
-     * The lambda used for <i>apptRadios</i> determines which radio button has been selected,
-     * and filters the appointments by current week or month.<br>
-     * The lambda used for <i>CountryCombo</i> determines selected Country,
-     * and filters <i>DivisionCombo</i> and <i>CustomerTable</i> by the selected Country.<br>
-     * The lambda used for <i>DivisionCombo</i> determines selected Division,
-     * and filters <i>CustomerTable</i> by selected Division.<br>
-     * The lambdas used for <i>setCellFactory</i> handle formatting the data shown in that <i>TableCell</i>.<br>
+     *
+     * A lambda function is used to add a <i>ChangeListener</i> to <b>ToggleGroup</b> <i>apptRadios</i>,
+     * and <b>ComboBox</b> <i>CountryCombo</i> and <i>DivisionCombo</i>.
+     * <br>
+     * The .addListener lambda function takes a <i>ChangeListener</i>, which is
+     * created and passed anonymously using () -> syntax.  This will fire any
+     * time the selected value of the <b>ToggleGroup</b> or <i>ComboBox</i> changes.
+     * <br><br>
+     *
+     * A lambda function is used to handle list filtering for <i>apptRadios</i>, <i>DivisionCombo</i>, and <i>CustomerTable</i>.
+     * <br>
+     * The .filtered lambda function takes a <i>Predicate</i>, which is
+     * created and passed anonymously using () -> syntax.  Each item in the
+     * list is compared using the predicate, and added to a <i>FilteredList</i>.
+     * <br><br>
+     *
+     * The lambdas used for <i>setCellFactory</i> handle formatting the data shown in that <i>TableCell</i>.
+     * <br>
+     * The .setCellFactory lambda function takes a <i>CallBack</i> function, which is run any time the value of a <i>TableCell</i> changes, and requires re-rendering.
      *
      * @param url
      * @param resourceBundle

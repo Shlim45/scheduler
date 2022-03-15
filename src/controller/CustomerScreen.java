@@ -52,6 +52,9 @@ public class CustomerScreen implements Initializable {
      * <br><br>
      * A lambda function is used to add a change listener to <i>CountryCombo</i>,
      * which handles filtering <i>DivisionCombo</i> choices by the selected Country.<br>
+     * The .addListener lambda function takes a <i>ChangeListener</i>, which is
+     * created and passed anonymously using () -> syntax.  This will fire any
+     * time the selected value of the <i>ComboBox</i> changes.
      *
      * @param url
      * @param resourceBundle
@@ -97,6 +100,10 @@ public class CustomerScreen implements Initializable {
      * <br><br>
      * A lambda function is used to filter <i>countries</i> List to the customer's
      * country, and pre-select that country in <i>CountryCombo</i>.<br>
+     * The .filtered lambda function takes a <i>Predicate</i>, which is
+     * created and passed anonymously using () -> syntax.  Each item in the
+     * list is compared using the predicate, and added to a <i>FilteredList</i>.
+     *
      */
     private void populateFields() {
         if (customer != null) {

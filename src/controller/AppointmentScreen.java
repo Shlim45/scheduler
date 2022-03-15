@@ -100,6 +100,9 @@ public class AppointmentScreen implements Initializable {
      * <br><br>
      * A lambda function is used to filter <i>contacts</i> List to the appointment's
      * customer, and pre-select that contact in <i>ContactCombo</i>.<br>
+     * The .filtered lambda function takes a <i>Predicate</i>, which is
+     * created and passed anonymously using () -> syntax.  Each item in the
+     * list is compared using the predicate, and added to a <i>FilteredList</i>.
      *
      * @param appt
      */
