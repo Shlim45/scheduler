@@ -51,7 +51,8 @@ public class CustomerScreen implements Initializable {
      * selected.
      * <br><br>
      * A lambda function is used to add a change listener to <i>CountryCombo</i>,
-     * which handles filtering <i>DivisionCombo</i> choices by the selected Country.<br>
+     * which handles filtering <i>DivisionCombo</i> choices by the selected Country.
+     * <br>
      * The .addListener function takes a <i>ChangeListener</i>, which is
      * created and passed anonymously using a lambda.  This will fire any
      * time the selected value of the <i>ComboBox</i> changes.
@@ -99,7 +100,8 @@ public class CustomerScreen implements Initializable {
      * Populates all fields on the form with the Customer's data.
      * <br><br>
      * A lambda function is used to filter <i>countries</i> List to the customer's
-     * country, and pre-select that country in <i>CountryCombo</i>.<br>
+     * country, and pre-select that country in <i>CountryCombo</i>.
+     * <br>
      * The .filtered function takes a <i>Predicate</i>, which is
      * created and passed anonymously using a lambda.  Each item in the
      * list is compared using the predicate, and added to a <i>FilteredList</i>.

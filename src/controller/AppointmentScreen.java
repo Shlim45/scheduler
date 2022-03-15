@@ -97,20 +97,23 @@ public class AppointmentScreen implements Initializable {
     /**
      * Sets the appointment to modify.  Pre-populates all fields on the form
      * with data.
-     * <br><br>
-     * A lambda function is used to filter <i>contacts</i> List to the appointment's
-     * customer, and pre-select that contact in <i>ContactCombo</i>.<br>
-     * The .filtered function takes a <i>Predicate</i>, which is
-     * created and passed anonymously using a lambda.  Each item in the
-     * list is compared using the predicate, and added to a <i>FilteredList</i>.
      *
-     * @param appt
+     * @param appt the appointment to modify
      */
     public void setAppointment(Appointment appt) {
         this.appointment = appt;
         populateFields();
     }
 
+    /**
+     *
+     * A lambda function is used to filter <i>contacts</i> List to the appointment's
+     * customer, and pre-select that contact in <i>ContactCombo</i>.
+     * <br>
+     * The .filtered function takes a <i>Predicate</i>, which is
+     * created and passed anonymously using a lambda.  Each item in the
+     * list is compared using the predicate, and added to a <i>FilteredList</i>.
+     */
     private void populateFields() {
         if (appointment != null) {
             ApptId.setText(Integer.toString(appointment.getApptId()));

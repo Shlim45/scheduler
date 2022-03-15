@@ -130,7 +130,8 @@ public abstract class Time {
      * <br><br>
      * A lambda function is used to iterate over <b>custAppts</b>, checking for
      * appointments with overlapping times with the appointment <b>toCheck</b>.  If
-     * an overlap is found, an <i>AtomicBoolean</i> is set true.<br>
+     * an overlap is found, an <i>AtomicBoolean</i> is set true.  The <i>.forEach</i> method takes a
+     * <i>Consumer</i>, which is executed against each item in the list.<br>
      * 
      * @see #isWithinBusinessHours(ZonedDateTime)
      * @see #timeOverlaps(Appointment, Appointment)

@@ -394,10 +394,11 @@ public class MainScreen implements Initializable {
      * Handles the <b>Delete</b> customer button action.
      * Deletes a customer and appointments.
      * <br><br>
-     * A lambda function is used to add each appointment to delete
-     * to a new <b>ArrayList</b>.<br>
-     * A second lambda function is used to remove those appointments
-     * from the <i>appts</i> list.<br>
+     *
+     * A lambda function is used in the filtering of list of appointments.
+     * The .filtered function takes a <i>Predicate</i>, which is
+     * created and passed anonymously using a lambda.  Each item in the
+     * list is compared using the predicate, and added to a <i>FilteredList</i>.
      *
      * @param actionEvent
      */
@@ -423,14 +424,16 @@ public class MainScreen implements Initializable {
             JDBC.deleteCustomerAndAppointments(toDelete);
             customers.remove(toDelete);
 
-            List<Appointment> deleteAppts = new ArrayList<>();
+            appts = appts.filtered(appt -> (appt.getCustomerId() != toDelete.getCustomerId()));
+
+            /*List<Appointment> deleteAppts = new ArrayList<>();
             appts.forEach(appt -> {
                 if (appt.getCustomerId() == toDelete.getCustomerId())
                     deleteAppts.add(appt);
             });
             deleteAppts.forEach(appt -> {
                 appts.remove(appt);
-            });
+            });*/
 
             Dialogs.alertUser(
                     Alert.AlertType.INFORMATION,
@@ -450,7 +453,11 @@ public class MainScreen implements Initializable {
      * If <b>appointment</b> is null, user can create a new appointment for the given customer.
      * Otherwise, the form is populated with the customer's appointment data for editing.
      *
-     * A lambda function is used to create a <b>Predicate</b> by which a new <b>FilteredList</b> of appointments is generated.
+     * A lambda function is used to filter appointments.
+     *
+     * The .filtered function takes a <i>Predicate</i>, which is
+     * created and passed anonymously using a lambda.  Each item in the
+     * list is compared using the predicate, and added to a <i>FilteredList</i>.
      *
      * @param customer The customer with the appointment
      * @param appointment The appointment to edit, or null

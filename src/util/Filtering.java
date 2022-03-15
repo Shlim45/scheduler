@@ -20,7 +20,8 @@ public abstract class Filtering {
      * Filters a list of <code>Division</code>s by a specific <code>Country</code>.
      * <br><br>
      * A lambda function is used to iterate over and filter <b>dList</b> by
-     * <b>country</b>'s <i>countryId</i>.<br>
+     * <b>country</b>'s <i>countryId</i>.  The <i>.forEach</i> method takes a
+     * <i>Consumer</i>, which is executed against each item in the list.<br>
      *
      * @param dList list of Divisions
      * @param country Country to filter by
@@ -44,7 +45,8 @@ public abstract class Filtering {
      * Filters a list of <code>Customer</code>s by a specific <code>Country</code>.
      * <br><br>
      * A lambda function is used to iterate over and filter <b>cList</b> by
-     * <b>country</b>'s <i>countryId</i>.<br>
+     * <b>country</b>'s <i>countryId</i>.  The <i>.forEach</i> method takes a
+     * <i>Consumer</i>, which is executed against each item in the list.<br>
      *
      * @param cList list of Customers
      * @param country Country to filter by
@@ -68,7 +70,8 @@ public abstract class Filtering {
      * Filters a list of <code>Customer</code>s by a specific <code>Division</code>.
      * <br><br>
      * A lambda function is used to iterate over and filter <b>dList</b> by
-     * <b>division</b>'s <i>divisionId</i>.<br>
+     * <b>division</b>'s <i>divisionId</i>.  The <i>.forEach</i> method takes a
+     * <i>Consumer</i>, which is executed against each item in the list.<br>
      *
      * @param cList list of Customers
      * @param division Division to filter by
@@ -92,7 +95,8 @@ public abstract class Filtering {
      * Filters a list of <code>Appointment</code>s by appointments starting within the current week.
      * <br><br>
      * A lambda function is used to iterate over and filter <b>appts</b> by
-     * appointments starting this week.<br>
+     * appointments starting this week.  The <i>.forEach</i> method takes a
+     * <i>Consumer</i>, which is executed against each item in the list.<br>
      *
      * @param appts list of Appointments
      * @return Appointments starting in current week
@@ -116,7 +120,8 @@ public abstract class Filtering {
      * Filters a list of <code>Appointment</code>s by appointments starting within the current month.
      * <br><br>
      * A lambda function is used to iterate over and filter <b>appts</b> by
-     * appointments starting this month.<br>
+     * appointments starting this month.  The <i>.forEach</i> method takes a
+     * <i>Consumer</i>, which is executed against each item in the list.<br>
      *
      * @param appts list of Appointments
      * @return Appointments starting in current month
