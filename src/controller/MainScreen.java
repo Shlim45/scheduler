@@ -84,27 +84,28 @@ public class MainScreen implements Initializable {
 
     /**
      * Initializes the Main Screen.
-     * Loads all countries, divisions, customers, and appointments, and sets up the Combo Boxes and Tables.
+     * Loads all countries, divisions, customers, appointments, and sets up the Combo Boxes and Tables.
      * <br><br>
      *
      * A lambda function is used to add a <i>ChangeListener</i> to <b>ToggleGroup</b> <i>apptRadios</i>,
      * and <b>ComboBox</b> <i>CountryCombo</i> and <i>DivisionCombo</i>.
      * <br>
-     * The .addListener lambda function takes a <i>ChangeListener</i>, which is
-     * created and passed anonymously.  This will fire any
+     * The .addListener function takes a <i>ChangeListener</i>, which is
+     * created and passed anonymously using a lambda.  This will fire any
      * time the selected value of the <b>ToggleGroup</b> or <i>ComboBox</i> changes.
      * <br><br>
      *
      * A lambda function is used to handle list filtering for <i>apptRadios</i>, <i>DivisionCombo</i>, and <i>CustomerTable</i>.
      * <br>
-     * The .filtered lambda function takes a <i>Predicate</i>, which is
-     * created and passed anonymously.  Each item in the
+     * The .filtered function takes a <i>Predicate</i>, which is
+     * created and passed anonymously using a lambda.  Each item in the
      * list is compared using the predicate, and added to a <i>FilteredList</i>.
      * <br><br>
      *
      * The lambdas used for <i>setCellFactory</i> handle formatting the data shown in that <i>TableCell</i>.
      * <br>
-     * The .setCellFactory lambda function takes a <i>CallBack</i> function, which is run any time the value of a <i>TableCell</i> changes, and requires re-rendering.
+     * The .setCellFactory function takes a <i>CallBack</i> function, which is created and passed anonymously using a lambda.
+     * This <i>CallBack</i> is run any time the value of a <i>TableCell</i> changes, and requires re-rendering.
      *
      * @param url
      * @param resourceBundle
