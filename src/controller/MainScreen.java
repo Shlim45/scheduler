@@ -91,14 +91,14 @@ public class MainScreen implements Initializable {
      * and <b>ComboBox</b> <i>CountryCombo</i> and <i>DivisionCombo</i>.
      * <br>
      * The .addListener lambda function takes a <i>ChangeListener</i>, which is
-     * created and passed anonymously using () -> syntax.  This will fire any
+     * created and passed anonymously.  This will fire any
      * time the selected value of the <b>ToggleGroup</b> or <i>ComboBox</i> changes.
      * <br><br>
      *
      * A lambda function is used to handle list filtering for <i>apptRadios</i>, <i>DivisionCombo</i>, and <i>CustomerTable</i>.
      * <br>
      * The .filtered lambda function takes a <i>Predicate</i>, which is
-     * created and passed anonymously using () -> syntax.  Each item in the
+     * created and passed anonymously.  Each item in the
      * list is compared using the predicate, and added to a <i>FilteredList</i>.
      * <br><br>
      *

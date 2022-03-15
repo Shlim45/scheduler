@@ -53,7 +53,7 @@ public class CustomerScreen implements Initializable {
      * A lambda function is used to add a change listener to <i>CountryCombo</i>,
      * which handles filtering <i>DivisionCombo</i> choices by the selected Country.<br>
      * The .addListener lambda function takes a <i>ChangeListener</i>, which is
-     * created and passed anonymously using () -> syntax.  This will fire any
+     * created and passed anonymously.  This will fire any
      * time the selected value of the <i>ComboBox</i> changes.
      *
      * @param url
