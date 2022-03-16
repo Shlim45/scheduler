@@ -515,7 +515,7 @@ public abstract class JDBC {
     public static String generateUserReport() throws SQLException {
         final StringBuilder report = new StringBuilder();
 
-        report.append("User Activity Log - Displays all appointments each user has created or updated:\n");
+        report.append("User Activity Report - Displays all appointments each user has created or updated:\n");
         final String outputFormat = "%18s %18s %8s %10s %10s";
         try(ResultSet R = JDBC.queryConnection("SELECT users.User_ID AS UserID, User_Name AS UserName, users.Create_Date, users.Created_By, "
                 +" Appointment_ID AS ApptID, appointments.Create_Date AS Created, appointments.Last_Update AS Updated, Customer_ID AS CustID, Contact_ID AS ContID FROM users "
