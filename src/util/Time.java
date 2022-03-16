@@ -72,7 +72,6 @@ public abstract class Time {
                 min = '0' + min;
         }
         catch (NumberFormatException nfe) {
-            // TODO(jon): alert user to error...
             return "";
         }
 

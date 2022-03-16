@@ -206,7 +206,6 @@ public class AppointmentScreen implements Initializable {
             EndTime.requestFocus();
             return;
         } else {
-            // TODO(jon): customer and user ID validation?
             try {
                 Integer.parseInt(ApptCustomerId.getText());
             } catch(NumberFormatException nfe) {

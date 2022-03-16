@@ -624,7 +624,6 @@ public class MainScreen implements Initializable {
                 return;
             }
         }
-        // TODO(jon): A custom report
         else if (ReportUsers.isSelected()) {
             windowTitle = "User Activity Report";
             try {
