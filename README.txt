@@ -1,10 +1,10 @@
 Appointment Scheduler - a program to create and maintain appointments between a contact and a customer.
 Users can create, update, and delete Customers and Appointments.
 
-Author: ​		Jonathan Hawranko
+Author:			Jonathan Hawranko
 Student ID:		#001339011
 Phone (EST):	412-926-2242
-Email:          jhawran@wgu.edu
+Email:			jhawran@wgu.edu
 App. Version:	1.0
 Date:			March 15, 2022
 
