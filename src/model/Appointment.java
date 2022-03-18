@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 /**
@@ -14,8 +15,8 @@ public class Appointment {
     private String desc;
     private String location;
     private String type;
-    private ZonedDateTime start;
-    private ZonedDateTime end;
+    private LocalDateTime start;
+    private LocalDateTime end;
     private ZonedDateTime createDate;
     private String createdBy;
     private ZonedDateTime lastUpdate;
@@ -139,7 +140,7 @@ public class Appointment {
      *
      * @return The start time of the appointment, in local time
      */
-    public ZonedDateTime getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
@@ -148,7 +149,7 @@ public class Appointment {
      *
      * @param start The start time of the appointment, in local time
      */
-    public void setStart(ZonedDateTime start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
@@ -158,7 +159,7 @@ public class Appointment {
      *
      * @return The end time of the appointment, in local time
      */
-    public ZonedDateTime getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
@@ -167,7 +168,7 @@ public class Appointment {
      *
      * @param end The end time of the appointment, in local time
      */
-    public void setEnd(ZonedDateTime end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
     }
 

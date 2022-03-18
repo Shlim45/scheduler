@@ -23,6 +23,7 @@ import util.Time;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -150,10 +151,10 @@ public class MainScreen implements Initializable {
         Location.setCellValueFactory(new PropertyValueFactory<Appointment,String>("location"));
         Contact.setCellValueFactory(new PropertyValueFactory<Appointment,String>("contact"));
         Type.setCellValueFactory(new PropertyValueFactory<Appointment,String>("type"));
-        Start.setCellValueFactory(new PropertyValueFactory<Appointment, ZonedDateTime>("start"));
-        Start.setCellFactory(tableColumn -> new TableCell<Appointment, ZonedDateTime>() {
+        Start.setCellValueFactory(new PropertyValueFactory<Appointment, LocalDateTime>("start"));
+        Start.setCellFactory(tableColumn -> new TableCell<Appointment, LocalDateTime>() {
             @Override
-            protected void updateItem(ZonedDateTime item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item == null || empty)
@@ -162,10 +163,10 @@ public class MainScreen implements Initializable {
                     setText(Time.dateFormatter.format(item));
             }
         });
-        End.setCellValueFactory(new PropertyValueFactory<Appointment, ZonedDateTime>("end"));
-        End.setCellFactory(tableColumn -> new TableCell<Appointment, ZonedDateTime>() {
+        End.setCellValueFactory(new PropertyValueFactory<Appointment, LocalDateTime>("end"));
+        End.setCellFactory(tableColumn -> new TableCell<Appointment, LocalDateTime>() {
             @Override
-            protected void updateItem(ZonedDateTime item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item == null || empty)
@@ -273,8 +274,8 @@ public class MainScreen implements Initializable {
      */
     public void checkForUpcomingAppts() {
         if (this.user != null && this.appts != null && this.appts.size() > 0) {
-            final ZonedDateTime now       = ZonedDateTime.now();
-            final ZonedDateTime timeFrame = now.plusMinutes(15);
+            final LocalDateTime now       = LocalDateTime.now();
+            final LocalDateTime timeFrame = now.plusMinutes(15);
             String alertOutput = "You do not have any upcoming appointments within the next 15 minutes.";
 
             for (final Appointment A : this.appts) {

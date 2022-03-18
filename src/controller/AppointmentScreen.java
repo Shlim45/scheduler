@@ -21,10 +21,7 @@ import util.Time;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.DateTimeException;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeParseException;
 import java.util.ResourceBundle;
 
@@ -153,12 +150,12 @@ public class AppointmentScreen implements Initializable {
         appt.setLocation(ApptLocation.getText());
         appt.setType(ApptType.getText());
         try {
-            appt.setStart(ZonedDateTime.of(StartDate.getValue(), LocalTime.parse(StartTime.getText()), ZoneId.systemDefault()));
-            appt.setEnd(ZonedDateTime.of(EndDate.getValue(), LocalTime.parse(EndTime.getText()), ZoneId.systemDefault()));
+            appt.setStart(LocalDateTime.of(StartDate.getValue(), LocalTime.parse(StartTime.getText())));
+            appt.setEnd(LocalDateTime.of(EndDate.getValue(), LocalTime.parse(EndTime.getText())));
         }
         catch (DateTimeParseException dtpe) {
-            appt.setStart(ZonedDateTime.of(StartDate.getValue(), LocalTime.parse(Time.timeFormatting(StartTime.getText())), ZoneId.systemDefault()));
-            appt.setEnd(ZonedDateTime.of(EndDate.getValue(), LocalTime.parse(Time.timeFormatting(EndTime.getText())), ZoneId.systemDefault()));
+            appt.setStart(LocalDateTime.of(StartDate.getValue(), LocalTime.parse(Time.timeFormatting(StartTime.getText()))));
+            appt.setEnd(LocalDateTime.of(EndDate.getValue(), LocalTime.parse(Time.timeFormatting(EndTime.getText()))));
         }
         appt.setCustomerId(Integer.parseInt(ApptCustomerId.getText()));
         appt.setUserId(Integer.parseInt(ApptUserId.getText()));

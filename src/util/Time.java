@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import model.Appointment;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,37 +18,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Jonathan Hawranko
  */
 public abstract class Time {
-    /**
-     * Converts Time to UTC.
-     *
-     * @param localTime time to convert
-     * @return utc time
-     */
-    public static ZonedDateTime toUTC(ZonedDateTime localTime) {
-        return ZonedDateTime.ofInstant(localTime.toInstant(), ZoneId.of("UTC"));
-    }
-
-    /**
-     * Converts Time to local.
-     *
-     * @param utcTime time to convert
-     * @return local time
-     */
-    public static ZonedDateTime toLocalTime(ZonedDateTime utcTime) {
-        return ZonedDateTime.ofInstant(utcTime.toInstant(), ZoneId.systemDefault());
-    }
-
-    /**
-     * Converts Time to local.
-     *
-     * @param utcTime timestamp to convert
-     * @return local time
-     */
-    public static ZonedDateTime toLocalTime(Timestamp utcTime) {
-        ZonedDateTime utcZTD = utcTime.toLocalDateTime().atZone(ZoneId.of("UTC"));
-        return ZonedDateTime.ofInstant(utcZTD.toInstant(), ZoneId.systemDefault());
-    }
-
     /**
      * Returns the proper date formatter used for the project.
      */
@@ -84,9 +54,9 @@ public abstract class Time {
      * @param toCheck time to check
      * @return true if within business hours, false otherwise
      */
-    public static boolean isWithinBusinessHours(ZonedDateTime toCheck) {
-        toCheck = ZonedDateTime.ofInstant(toCheck.toInstant(), ZoneId.of("America/New_York"));
-        return (toCheck.getHour() >= 8 && toCheck.getHour() <= 22);
+    public static boolean isWithinBusinessHours(LocalDateTime toCheck) {
+        ZonedDateTime zonedCheck = toCheck.atZone(ZoneId.of("America/New_York"));
+        return (zonedCheck.getHour() >= 8 && zonedCheck.getHour() <= 22);
     }
 
     /**
@@ -98,10 +68,10 @@ public abstract class Time {
      */
     public static boolean timeOverlaps(Appointment a, Appointment b) {
         // ensure both are in local time
-        ZonedDateTime aStart = toLocalTime(a.getStart());
-        ZonedDateTime aEnd   = toLocalTime(a.getEnd());
-        ZonedDateTime bStart = toLocalTime(b.getStart());
-        ZonedDateTime bEnd   = toLocalTime(b.getEnd());
+        ZonedDateTime aStart = a.getStart().atZone(ZoneId.systemDefault());
+        ZonedDateTime aEnd   = a.getEnd().atZone(ZoneId.systemDefault());
+        ZonedDateTime bStart = b.getStart().atZone(ZoneId.systemDefault());
+        ZonedDateTime bEnd   = b.getEnd().atZone(ZoneId.systemDefault());
 
 
         if (aStart.isBefore(bStart) && aEnd.isAfter(bStart)) {
@@ -132,7 +102,7 @@ public abstract class Time {
      * an overlap is found, an <i>AtomicBoolean</i> is set true.  The <i>.forEach</i> method takes a
      * <i>Consumer</i>, which is executed against each item in the list.<br>
      * 
-     * @see #isWithinBusinessHours(ZonedDateTime)
+     * @see #isWithinBusinessHours(LocalDateTime)
      * @see #timeOverlaps(Appointment, Appointment)
      * @param toCheck the appointment to check
      * @param custAppts a list of the customers appointments
@@ -145,7 +115,7 @@ public abstract class Time {
         else if (toCheck.getStart().isEqual(toCheck.getEnd()))
             throw new SchedulingException("This appointment's end time must be after its start time.","Start Time same as End Time");
 
-        else if (toCheck.getStart().isBefore(ZonedDateTime.now()))
+        else if (toCheck.getStart().isBefore(LocalDateTime.now()))
             throw new SchedulingException("This appointment's start date has already passed.","Invalid Start Date");
 
         else if (!Time.isWithinBusinessHours(toCheck.getStart()))
