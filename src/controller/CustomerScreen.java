@@ -107,7 +107,7 @@ public class CustomerScreen implements Initializable {
      * list is compared using the predicate, and added to a <i>FilteredList</i>.
      *
      */
-    private void populateFields() {
+    protected void populateFields() {
         if (customer != null) {
             HeaderLabel.setText("Modify Customer Information");
 

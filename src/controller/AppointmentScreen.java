@@ -111,7 +111,7 @@ public class AppointmentScreen implements Initializable {
      * created and passed anonymously using a lambda.  Each item in the
      * list is compared using the predicate, and added to a <i>FilteredList</i>.
      */
-    private void populateFields() {
+    protected void populateFields() {
         if (appointment != null) {
             ApptId.setText(Integer.toString(appointment.getApptId()));
             ApptTitle.setText(appointment.getTitle());
