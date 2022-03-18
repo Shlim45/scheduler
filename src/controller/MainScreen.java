@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -183,10 +182,10 @@ public class MainScreen implements Initializable {
         CustAddress.setCellValueFactory(new PropertyValueFactory<Customer,String>("address"));
         CustPostal.setCellValueFactory(new PropertyValueFactory<Customer,String>("postalCode"));
         CustPhone.setCellValueFactory(new PropertyValueFactory<Customer,String>("phone"));
-        CustCreatedOn.setCellValueFactory(new PropertyValueFactory<Customer, ZonedDateTime>("createDate"));
-        CustCreatedOn.setCellFactory(tableColumn -> new TableCell<Customer, ZonedDateTime>() {
+        CustCreatedOn.setCellValueFactory(new PropertyValueFactory<Customer, LocalDateTime>("createDate"));
+        CustCreatedOn.setCellFactory(tableColumn -> new TableCell<Customer, LocalDateTime>() {
             @Override
-            protected void updateItem(ZonedDateTime item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item == null || empty)
@@ -197,10 +196,10 @@ public class MainScreen implements Initializable {
         });
         CustCreatedBy.setCellValueFactory(new PropertyValueFactory<Customer,String>("createdBy"));
 
-        CustLastUpdate.setCellValueFactory(new PropertyValueFactory<Customer, ZonedDateTime>("lastUpdate"));
-        CustLastUpdate.setCellFactory(tableColumn -> new TableCell<Customer, ZonedDateTime>() {
+        CustLastUpdate.setCellValueFactory(new PropertyValueFactory<Customer, LocalDateTime>("lastUpdate"));
+        CustLastUpdate.setCellFactory(tableColumn -> new TableCell<Customer, LocalDateTime>() {
             @Override
-            protected void updateItem(ZonedDateTime item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item == null || empty)

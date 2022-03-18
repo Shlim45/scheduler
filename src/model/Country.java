@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 /**
@@ -11,9 +12,9 @@ import java.time.ZonedDateTime;
 public class Country {
     private int countryId;
     private String country;
-    private ZonedDateTime createDate;
+    private LocalDateTime createDate;
     private String createdBy;
-    private ZonedDateTime lastUpdate;
+    private LocalDateTime lastUpdate;
     private String lastUpdatedBy;
 
     /**
@@ -69,7 +70,7 @@ public class Country {
      *
      * @return The date and time country was created
      */
-    public ZonedDateTime getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
@@ -78,7 +79,7 @@ public class Country {
      *
      * @param createDate The date and time country was created, in local time
      */
-    public void setCreateDate(ZonedDateTime createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
@@ -106,7 +107,7 @@ public class Country {
      *
      * @return The date and time country was last updated
      */
-    public ZonedDateTime getLastUpdate() {
+    public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
 
@@ -115,7 +116,7 @@ public class Country {
      *
      * @param lastUpdate The date and time country was last updated
      */
-    public void setLastUpdate(ZonedDateTime lastUpdate) {
+    public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

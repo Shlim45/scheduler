@@ -1,10 +1,8 @@
 package util;
 
 import exceptions.SchedulingException;
-import javafx.scene.control.Alert;
 import model.Appointment;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -55,8 +53,10 @@ public abstract class Time {
      * @return true if within business hours, false otherwise
      */
     public static boolean isWithinBusinessHours(LocalDateTime toCheck) {
-        ZonedDateTime zonedCheck = toCheck.atZone(ZoneId.of("America/New_York"));
-        return (zonedCheck.getHour() >= 8 && zonedCheck.getHour() <= 22);
+        ZonedDateTime localTime = ZonedDateTime.of(toCheck, ZoneId.systemDefault());
+        ZonedDateTime businessTime = localTime.withZoneSameInstant(ZoneId.of("America/New_York"));
+        LocalDateTime hoursCheck = businessTime.toLocalDateTime();
+        return (hoursCheck.getHour() >= 8 && hoursCheck.getHour() <= 22);
     }
 
     /**
@@ -67,22 +67,15 @@ public abstract class Time {
      * @return true if overlap, false otherwise
      */
     public static boolean timeOverlaps(Appointment a, Appointment b) {
-        // ensure both are in local time
-        ZonedDateTime aStart = a.getStart().atZone(ZoneId.systemDefault());
-        ZonedDateTime aEnd   = a.getEnd().atZone(ZoneId.systemDefault());
-        ZonedDateTime bStart = b.getStart().atZone(ZoneId.systemDefault());
-        ZonedDateTime bEnd   = b.getEnd().atZone(ZoneId.systemDefault());
-
-
-        if (aStart.isBefore(bStart) && aEnd.isAfter(bStart)) {
+        if (a.getStart().isBefore(b.getStart()) && a.getEnd().isAfter(b.getStart())) {
             // a runs into b
             return true;
         }
-        else if (bStart.isBefore(aStart) && bEnd.isAfter(aStart)) {
+        else if (b.getStart().isBefore(a.getStart()) && b.getEnd().isAfter(a.getStart())) {
             // b runs into a
             return true;
         }
-        else if (aStart.isEqual(bStart)) {
+        else if (a.getStart().isEqual(b.getStart())) {
             // a and b occur at same time
             return true;
         }

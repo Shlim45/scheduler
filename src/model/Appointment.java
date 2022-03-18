@@ -17,9 +17,9 @@ public class Appointment {
     private String type;
     private LocalDateTime start;
     private LocalDateTime end;
-    private ZonedDateTime createDate;
+    private LocalDateTime createDate;
     private String createdBy;
-    private ZonedDateTime lastUpdate;
+    private LocalDateTime lastUpdate;
     private String lastUpdatedBy;
     private int customerId;
     private int userId;
@@ -178,7 +178,7 @@ public class Appointment {
      *
      * @return The date and time appointment was created
      */
-    public ZonedDateTime getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
@@ -187,7 +187,7 @@ public class Appointment {
      *
      * @param createDate The date and time appointment was created, in local time
      */
-    public void setCreateDate(ZonedDateTime createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
@@ -215,7 +215,7 @@ public class Appointment {
      *
      * @return The date and time appointment was last updated
      */
-    public ZonedDateTime getLastUpdate() {
+    public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
 
@@ -224,7 +224,7 @@ public class Appointment {
      *
      * @param lastUpdate The date and time appointment was last updated
      */
-    public void setLastUpdate(ZonedDateTime lastUpdate) {
+    public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 
