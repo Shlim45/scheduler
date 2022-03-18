@@ -7,7 +7,7 @@ import model.Country;
 import model.Customer;
 import model.Division;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -107,9 +107,14 @@ public abstract class Filtering {
         if (appts == null)
             return filteredAppointments;
 
-        ZonedDateTime lastWeek = ZonedDateTime.now().minusWeeks(1);
+        final LocalDate NOW       = LocalDate.now();
+        final int dayOfWeek       = NOW.getDayOfWeek().getValue();
+        LocalDate lastWeekEnds    = NOW.minusDays(dayOfWeek+1);
+        LocalDate nextWeekStarts  = lastWeekEnds.plusDays(8);
+
         appts.forEach(appt -> {
-            if (appt.getStart().isAfter(lastWeek))
+            LocalDate localizedStart = appt.getStart().toLocalDate();
+            if (localizedStart.isAfter(lastWeekEnds) && localizedStart.isBefore(nextWeekStarts))
                 filteredAppointments.add(appt);
         });
 
@@ -132,9 +137,11 @@ public abstract class Filtering {
         if (appts == null)
             return filteredAppointments;
 
-        ZonedDateTime lastMonth = ZonedDateTime.now().minusMonths(1);
+        final int currentMonth = LocalDate.now().getMonthValue();
+
         appts.forEach(appt -> {
-            if (appt.getStart().isAfter(lastMonth))
+            LocalDate localizedStart = appt.getStart().toLocalDate();
+            if (localizedStart.getMonthValue() == currentMonth)
                 filteredAppointments.add(appt);
         });
 
