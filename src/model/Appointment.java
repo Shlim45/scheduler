@@ -1,7 +1,6 @@
 package model;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 /**
  * Class representing an Appointment. An appointment is held by a User, and

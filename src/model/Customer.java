@@ -1,7 +1,6 @@
 package model;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 /**
  * Class representing a Customer.  A customer can attend
