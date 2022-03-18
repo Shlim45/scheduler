@@ -22,7 +22,7 @@ public abstract class JDBC {
     private static final String vendor = ":mysql:";
     private static final String location = "//localhost/";
     private static final String databaseName = "client_schedule";
-    private static final String jdbcUrl = protocol + vendor + location + databaseName + "?connectionTimeZone = SERVER"; // LOCAL
+    private static final String jdbcUrl = protocol + vendor + location + databaseName + "?connectionTimeZone=SERVER"; // LOCAL
     private static final String driver = "com.mysql.cj.jdbc.Driver"; // Driver reference
     private static final String userName = "sqlUser"; // Username
     private static String password = "Passw0rd!"; // Password
@@ -68,8 +68,8 @@ public abstract class JDBC {
      */
     public static ResultSet queryConnection(String query) throws SQLException {
         try {
-            Statement S = connection.createStatement();
-            ResultSet R = S.executeQuery(query);
+            PreparedStatement S = connection.prepareStatement(query);
+            ResultSet R = S.executeQuery();
             return R;
         }
         catch (NullPointerException npe) {
@@ -102,11 +102,11 @@ public abstract class JDBC {
                 C.setPhone(R.getString("Phone"));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                C.setCreateDate(Time.toLocalTime(created));
+                C.setCreateDate(created.toLocalDateTime());
                 C.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                C.setLastUpdate(Time.toLocalTime(updated));
+                C.setLastUpdate(updated.toLocalDateTime());
                 C.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 final String divName = R.getString("Division");
@@ -220,11 +220,11 @@ public abstract class JDBC {
                 C.setCountry(R.getString("Country"));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                C.setCreateDate(Time.toLocalTime(created));
+                C.setCreateDate(created.toLocalDateTime());
                 C.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                C.setLastUpdate(Time.toLocalTime(updated));
+                C.setLastUpdate(updated.toLocalDateTime());
                 C.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 countries.add(C);
@@ -255,11 +255,11 @@ public abstract class JDBC {
                 D.setDivision(R.getString("Division"));
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                D.setCreateDate(Time.toLocalTime(created));
+                D.setCreateDate(created.toLocalDateTime());
                 D.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                D.setLastUpdate(Time.toLocalTime(updated));
+                D.setLastUpdate(updated.toLocalDateTime());
                 D.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 D.setCountryId(R.getInt("Country_ID"));
@@ -324,17 +324,17 @@ public abstract class JDBC {
                 A.setType(R.getString("Type"));
 
                 Timestamp start = R.getTimestamp("Start");
-                A.setStart(Time.toLocalTime(start));
+                A.setStart(start.toLocalDateTime());
 
                 Timestamp end = R.getTimestamp("End");
-                A.setEnd(Time.toLocalTime(end));
+                A.setEnd(end.toLocalDateTime());
 
                 Timestamp created = R.getTimestamp("Create_Date");
-                A.setCreateDate(Time.toLocalTime(created));
+                A.setCreateDate(created.toLocalDateTime());
                 A.setCreatedBy(R.getString("Created_By"));
 
                 Timestamp updated = R.getTimestamp("Last_Update");
-                A.setLastUpdate(Time.toLocalTime(updated));
+                A.setLastUpdate(updated.toLocalDateTime());
                 A.setLastUpdatedBy(R.getString("Last_Updated_By"));
 
                 A.setCustomerId(R.getInt("Customer_ID"));
@@ -374,8 +374,8 @@ public abstract class JDBC {
             insert.setString(2, appt.getDesc());
             insert.setString(3, appt.getLocation());
             insert.setString(4, appt.getType());
-            insert.setTimestamp(5, Timestamp.valueOf(Time.toUTC(appt.getStart()).toLocalDateTime()));
-            insert.setTimestamp(6, Timestamp.valueOf(Time.toUTC(appt.getEnd()).toLocalDateTime()));
+            insert.setTimestamp(5, Timestamp.valueOf(appt.getStart()));
+            insert.setTimestamp(6, Timestamp.valueOf(appt.getEnd()));
             insert.setString(7, user.getUserName());
             insert.setString(8, user.getUserName());
             insert.setInt(9, appt.getCustomerId());
@@ -405,8 +405,8 @@ public abstract class JDBC {
             update.setString(2, appt.getDesc());
             update.setString(3, appt.getLocation());
             update.setString(4, appt.getType());
-            update.setTimestamp(5, Timestamp.valueOf(Time.toUTC(appt.getStart()).toLocalDateTime()));
-            update.setTimestamp(6, Timestamp.valueOf(Time.toUTC(appt.getEnd()).toLocalDateTime()));
+            update.setTimestamp(5, Timestamp.valueOf(appt.getStart()));
+            update.setTimestamp(6, Timestamp.valueOf(appt.getEnd()));
             update.setString(7, user.getUserName());
             update.setInt(8, appt.getCustomerId());
             update.setInt(9, appt.getUserId());
@@ -493,8 +493,8 @@ public abstract class JDBC {
                         R.getString("Title"),
                         R.getString("Type"),
                         R.getString("Description"),
-                        Time.toLocalTime(R.getTimestamp("Start")).format(Time.dateFormatter),
-                        Time.toLocalTime(R.getTimestamp("End")).format(Time.dateFormatter),
+                        R.getTimestamp("Start").toLocalDateTime().format(Time.dateFormatter),
+                        R.getTimestamp("End").toLocalDateTime().format(Time.dateFormatter),
                         R.getInt("Customer_ID"))).append('\n');
                 prevContactId = contactId;
             }
@@ -531,15 +531,15 @@ public abstract class JDBC {
                             userId,
                             R.getString("UserName"),
                             R.getString("Created_By"),
-                            Time.toLocalTime(R.getTimestamp("users.Create_Date")).format(Time.dateFormatter)));
+                            R.getTimestamp("users.Create_Date").toLocalDateTime().format(Time.dateFormatter)));
                     report.append("Appointment Activity:\n");
                     report.append(String.format(outputFormat, "DATE CREATED", "DATE UPDATED", "APPT ID", "CUST ID", "CONTACT ID\n"));
                     report.append(String.format(outputFormat, "------------", "------------", "-------", "-------", "----------\n"));
                 }
 
                 report.append(String.format(outputFormat,
-                        Time.toLocalTime(R.getTimestamp("Created")).format(Time.dateFormatter),
-                        Time.toLocalTime(R.getTimestamp("Updated")).format(Time.dateFormatter),
+                        R.getTimestamp("Created").toLocalDateTime().format(Time.dateFormatter),
+                        R.getTimestamp("Updated").toLocalDateTime().format(Time.dateFormatter),
                         R.getInt("ApptID"),
                         R.getInt("CustID"),
                         R.getInt("ContID"))).append('\n');

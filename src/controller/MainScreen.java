@@ -23,7 +23,7 @@ import util.Time;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -150,10 +150,10 @@ public class MainScreen implements Initializable {
         Location.setCellValueFactory(new PropertyValueFactory<Appointment,String>("location"));
         Contact.setCellValueFactory(new PropertyValueFactory<Appointment,String>("contact"));
         Type.setCellValueFactory(new PropertyValueFactory<Appointment,String>("type"));
-        Start.setCellValueFactory(new PropertyValueFactory<Appointment, ZonedDateTime>("start"));
-        Start.setCellFactory(tableColumn -> new TableCell<Appointment, ZonedDateTime>() {
+        Start.setCellValueFactory(new PropertyValueFactory<Appointment, LocalDateTime>("start"));
+        Start.setCellFactory(tableColumn -> new TableCell<Appointment, LocalDateTime>() {
             @Override
-            protected void updateItem(ZonedDateTime item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item == null || empty)
@@ -162,10 +162,10 @@ public class MainScreen implements Initializable {
                     setText(Time.dateFormatter.format(item));
             }
         });
-        End.setCellValueFactory(new PropertyValueFactory<Appointment, ZonedDateTime>("end"));
-        End.setCellFactory(tableColumn -> new TableCell<Appointment, ZonedDateTime>() {
+        End.setCellValueFactory(new PropertyValueFactory<Appointment, LocalDateTime>("end"));
+        End.setCellFactory(tableColumn -> new TableCell<Appointment, LocalDateTime>() {
             @Override
-            protected void updateItem(ZonedDateTime item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item == null || empty)
@@ -182,10 +182,10 @@ public class MainScreen implements Initializable {
         CustAddress.setCellValueFactory(new PropertyValueFactory<Customer,String>("address"));
         CustPostal.setCellValueFactory(new PropertyValueFactory<Customer,String>("postalCode"));
         CustPhone.setCellValueFactory(new PropertyValueFactory<Customer,String>("phone"));
-        CustCreatedOn.setCellValueFactory(new PropertyValueFactory<Customer, ZonedDateTime>("createDate"));
-        CustCreatedOn.setCellFactory(tableColumn -> new TableCell<Customer, ZonedDateTime>() {
+        CustCreatedOn.setCellValueFactory(new PropertyValueFactory<Customer, LocalDateTime>("createDate"));
+        CustCreatedOn.setCellFactory(tableColumn -> new TableCell<Customer, LocalDateTime>() {
             @Override
-            protected void updateItem(ZonedDateTime item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item == null || empty)
@@ -196,10 +196,10 @@ public class MainScreen implements Initializable {
         });
         CustCreatedBy.setCellValueFactory(new PropertyValueFactory<Customer,String>("createdBy"));
 
-        CustLastUpdate.setCellValueFactory(new PropertyValueFactory<Customer, ZonedDateTime>("lastUpdate"));
-        CustLastUpdate.setCellFactory(tableColumn -> new TableCell<Customer, ZonedDateTime>() {
+        CustLastUpdate.setCellValueFactory(new PropertyValueFactory<Customer, LocalDateTime>("lastUpdate"));
+        CustLastUpdate.setCellFactory(tableColumn -> new TableCell<Customer, LocalDateTime>() {
             @Override
-            protected void updateItem(ZonedDateTime item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item == null || empty)
@@ -273,8 +273,8 @@ public class MainScreen implements Initializable {
      */
     public void checkForUpcomingAppts() {
         if (this.user != null && this.appts != null && this.appts.size() > 0) {
-            final ZonedDateTime now       = ZonedDateTime.now();
-            final ZonedDateTime timeFrame = now.plusMinutes(15);
+            final LocalDateTime now       = LocalDateTime.now();
+            final LocalDateTime timeFrame = now.plusMinutes(15);
             String alertOutput = "You do not have any upcoming appointments within the next 15 minutes.";
 
             for (final Appointment A : this.appts) {

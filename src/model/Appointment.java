@@ -1,6 +1,6 @@
 package model;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 /**
  * Class representing an Appointment. An appointment is held by a User, and
@@ -14,11 +14,11 @@ public class Appointment {
     private String desc;
     private String location;
     private String type;
-    private ZonedDateTime start;
-    private ZonedDateTime end;
-    private ZonedDateTime createDate;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private LocalDateTime createDate;
     private String createdBy;
-    private ZonedDateTime lastUpdate;
+    private LocalDateTime lastUpdate;
     private String lastUpdatedBy;
     private int customerId;
     private int userId;
@@ -139,7 +139,7 @@ public class Appointment {
      *
      * @return The start time of the appointment, in local time
      */
-    public ZonedDateTime getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
@@ -148,7 +148,7 @@ public class Appointment {
      *
      * @param start The start time of the appointment, in local time
      */
-    public void setStart(ZonedDateTime start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
@@ -158,7 +158,7 @@ public class Appointment {
      *
      * @return The end time of the appointment, in local time
      */
-    public ZonedDateTime getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
@@ -167,7 +167,7 @@ public class Appointment {
      *
      * @param end The end time of the appointment, in local time
      */
-    public void setEnd(ZonedDateTime end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
     }
 
@@ -177,7 +177,7 @@ public class Appointment {
      *
      * @return The date and time appointment was created
      */
-    public ZonedDateTime getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
@@ -186,7 +186,7 @@ public class Appointment {
      *
      * @param createDate The date and time appointment was created, in local time
      */
-    public void setCreateDate(ZonedDateTime createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
@@ -214,7 +214,7 @@ public class Appointment {
      *
      * @return The date and time appointment was last updated
      */
-    public ZonedDateTime getLastUpdate() {
+    public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
 
@@ -223,7 +223,7 @@ public class Appointment {
      *
      * @param lastUpdate The date and time appointment was last updated
      */
-    public void setLastUpdate(ZonedDateTime lastUpdate) {
+    public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

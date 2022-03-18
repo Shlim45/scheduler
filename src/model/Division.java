@@ -1,6 +1,6 @@
 package model;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 /**
  * Class representing a Top-Level Division.  Divisions are used
@@ -11,9 +11,9 @@ import java.time.ZonedDateTime;
 public class Division {
     private int divisionId;
     private String division;
-    private ZonedDateTime createDate;
+    private LocalDateTime createDate;
     private String createdBy;
-    private ZonedDateTime lastUpdate;
+    private LocalDateTime lastUpdate;
     private String lastUpdatedBy;
     private int countryId;
 
@@ -70,7 +70,7 @@ public class Division {
      *
      * @return The date and time division was created
      */
-    public ZonedDateTime getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
@@ -79,7 +79,7 @@ public class Division {
      *
      * @param createDate The date and time division was created, in local time
      */
-    public void setCreateDate(ZonedDateTime createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
@@ -107,7 +107,7 @@ public class Division {
      *
      * @return The date and time division was last updated
      */
-    public ZonedDateTime getLastUpdate() {
+    public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
 
@@ -116,7 +116,7 @@ public class Division {
      *
      * @param lastUpdate The date and time division was last updated
      */
-    public void setLastUpdate(ZonedDateTime lastUpdate) {
+    public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 
